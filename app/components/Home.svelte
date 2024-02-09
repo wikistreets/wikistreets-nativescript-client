@@ -4,7 +4,7 @@
     <stackLayout height="100%">
         <listView height="100%" separatorColor="transparent" items="{features}">
         <Template let:item>
-            <label text="{item.properties.title}" />
+            <label class="text-sky-400" text="{item.properties.title}" />
         </Template>
         </listView>
     </stackLayout>
