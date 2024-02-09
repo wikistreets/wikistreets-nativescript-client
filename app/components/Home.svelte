@@ -1,17 +1,21 @@
 <page>
     <actionBar title="Home" />
-    <gridLayout>
-        <label class="info">
-            <formattedString>
-                <span class="fas" text="&#xf135;" />
-                <span text=" {message}" />
-            </formattedString>
-        </label>
-    </gridLayout>
+
+    <stackLayout height="100%">
+        <listView height="100%" separatorColor="transparent" items="{features}">
+        <Template let:item>
+            <label text="{item.properties.title}" />
+        </Template>
+        </listView>
+    </stackLayout>
 </page>
 
-<script lang="ts">
-    let message: string = "Blank Svelte Native App"
+<script>
+  // Add this 👇
+  import { Template } from 'svelte-native/components'
+  import { FeatureService } from '../services/FeatureService'
+
+  let features = FeatureService.getInstance().getFeatures()
 </script>
 
 <style>
