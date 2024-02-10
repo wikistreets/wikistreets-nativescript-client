@@ -3,7 +3,7 @@ import { FeatureModel } from "../models/feature";
 export class FeatureService {
   private features: FeatureModel[] = [
     {
-      _id: 1,
+      id: 1,
       geometry: {
         coordinates: [-8.4504292, 39.4670766],
         type: "Point",
@@ -15,7 +15,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 2,
+      id: 2,
       geometry: {
         coordinates: [123.6231723, -10.344067],
         type: "Point",
@@ -27,7 +27,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 3,
+      id: 3,
       geometry: { coordinates: [169.2803499, -19.54172], type: "Point" },
       properties: {
         title: "Waterbuck, common",
@@ -36,7 +36,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 4,
+      id: 4,
       geometry: { coordinates: [43.394005, -11.4749128], type: "Point" },
       properties: {
         title: "Koala",
@@ -45,7 +45,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 5,
+      id: 5,
       geometry: { coordinates: [23.50527, -33.29717], type: "Point" },
       properties: {
         title: "Buttermilk snake",
@@ -54,7 +54,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 6,
+      id: 6,
       geometry: { coordinates: [124.048453, 41.821778], type: "Point" },
       properties: {
         title: "Toddy cat",
@@ -63,7 +63,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 7,
+      id: 7,
       geometry: { coordinates: [101.803717, 36.599744], type: "Point" },
       properties: {
         title: "Wapiti, elk,",
@@ -72,7 +72,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 8,
+      id: 8,
       geometry: { coordinates: [101.2750531, 14.0899827], type: "Point" },
       properties: {
         title: "Gull, southern black-backed",
@@ -81,7 +81,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 9,
+      id: 9,
       geometry: { coordinates: [121.1174238, 30.1787074], type: "Point" },
       properties: {
         title: "Eurasian beaver",
@@ -90,7 +90,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 10,
+      id: 10,
       geometry: { coordinates: [106.8030892, -6.6409658], type: "Point" },
       properties: {
         title: "Red-winged hawk (unidentified)",
@@ -99,7 +99,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 11,
+      id: 11,
       geometry: { coordinates: [106.9093, -6.334631], type: "Point" },
       properties: {
         title: "Frog (unidentified)",
@@ -108,7 +108,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 12,
+      id: 12,
       geometry: { coordinates: [115.299029, 28.391349], type: "Point" },
       properties: {
         title: "Steenbuck",
@@ -117,7 +117,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 13,
+      id: 13,
       geometry: { coordinates: [-73.7316825, 45.5734042], type: "Point" },
       properties: {
         title: "Raccoon, crab-eating",
@@ -126,7 +126,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 14,
+      id: 14,
       geometry: { coordinates: [-77.3439283, 1.2296124], type: "Point" },
       properties: {
         title: "Sacred ibis",
@@ -135,7 +135,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 15,
+      id: 15,
       geometry: { coordinates: [23.2517507, 42.6687933], type: "Point" },
       properties: {
         title: "Rat, white-faced tree",
@@ -144,7 +144,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 16,
+      id: 16,
       geometry: { coordinates: [112.837815, 22.060541], type: "Point" },
       properties: {
         title: "Capuchin, brown",
@@ -153,7 +153,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 17,
+      id: 17,
       geometry: { coordinates: [105.1171246, 20.3814569], type: "Point" },
       properties: {
         title: "Coke's hartebeest",
@@ -162,7 +162,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 18,
+      id: 18,
       geometry: { coordinates: [-8.2776432, 41.4821084], type: "Point" },
       properties: {
         title: "Duiker, common",
@@ -171,7 +171,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 19,
+      id: 19,
       geometry: { coordinates: [105.6259, -6.7267], type: "Point" },
       properties: {
         title: "Cormorant, flightless",
@@ -180,7 +180,7 @@ export class FeatureService {
       },
     },
     {
-      _id: 20,
+      id: 20,
       geometry: { coordinates: [-40.1526661, -4.3253636], type: "Point" },
       properties: {
         title: "Gecko, barking",
