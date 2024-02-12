@@ -22,7 +22,7 @@
      */
     const post = posts[e.index]
     console.log(`listItemTap: ${post?.id} -> ${post?.properties.title}`)
-    feedbackMessage = post?.properties.title
+    feedbackMessage = `Last viewed: ${post?.properties.title}`
     navigate({
       page: PostDetails,
       props: { postId: post.id },
