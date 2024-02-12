@@ -1,7 +1,9 @@
-<script>
-  const doLogin = () => {
-    console.log("Login button clicked");
-  };
+<script lang="ts">
+  let email: String = ''
+  let password: String = ''
+  const handleFormSubmit = () => {
+    console.log(`Form submit with email='${email}', password='${password}'`)
+  }
 </script>
 
 <page>
@@ -12,8 +14,9 @@
       keyboardType="email"
       autocorrect="false"
       autocapitalizationType="none"
+      text={email}
     />
-    <textField hint="Password" secure="true" />
-    <button text="Log In" on:click={doLogin} />
+    <textField hint="Password" secure="true" text={password} />
+    <button text="Log In" on:tap={handleFormSubmit} />
   </stackLayout>
 </page>
