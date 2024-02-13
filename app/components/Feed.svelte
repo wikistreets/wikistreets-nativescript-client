@@ -1,3 +1,5 @@
+<!-- @component A feed, i.e. a list of posts. -->
+
 <script lang="ts">
   import { CoreTypes, ItemEventData } from '@nativescript/core'
   import { Template } from 'svelte-native/components'
@@ -5,6 +7,7 @@
   import { FeatureService } from '../services/FeatureService'
 
   // import other pages or components
+  import PostListItem from './PostListItem.svelte'
   import PostDetails from '../pages/PostDetails.svelte'
 
   let posts = FeatureService.getInstance().getFeatures()
@@ -26,12 +29,17 @@
     navigate({
       page: PostDetails,
       props: { postId: post.id },
+      clearHistory: false,
     })
   }
 </script>
 
-<stackLayout orientation="vertical">
-  <label id="foo" class="my-4 text-center text-md" text={feedbackMessage} />
+<stackLayout orientation="vertical" class="mb-12">
+  <label
+    id="foo"
+    class="py-4 text-center text-md bg-green-100"
+    text={feedbackMessage}
+  />
   <listView
     class="list-group"
     separatorColor="transparent"
@@ -40,38 +48,13 @@
     on:itemTap={listItemTap}
   >
     <Template key="odd" let:item>
-      <gridLayout
-        rows="*"
-        columns="auto, *"
-        margin="5 10"
-        padding="0"
-        class="bg-white"
-      >
-        <label
-          row="0"
-          col="0"
-          class="p-4 text-lg"
-          text={item.properties.title}
-        />
-        <label row="0" col="1" class="p-4 text-sm" text={item.geometry.type} />
-      </gridLayout>
+      <PostListItem
+        {item}
+        classes="bg-slate-100 border-b-slate-400 border-b-2"
+      />
     </Template>
     <Template key="even" let:item>
-      <gridLayout
-        rows="*"
-        columns="auto, *"
-        margin="5 10"
-        padding="0"
-        class="bg-slate-200"
-      >
-        <label
-          row="0"
-          col="0"
-          class="p-4 text-lg"
-          text={item.properties.title}
-        />
-        <label row="0" col="1" class="p-4 text-sm" text={item.geometry.type} />
-      </gridLayout>
+      <PostListItem {item} classes="border-b-slate-400 border-b-2" />
     </Template>
   </listView>
 </stackLayout>

@@ -1,8 +1,13 @@
+<!-- @component You know what a header is.  -->
+
 <script lang="ts">
-  import { CoreTypes, TapGestureEventData } from '@nativescript/core'
+  import { icons } from '../utils/icons'
 </script>
 
-<stackLayout orientation="vertical">
-  <actionBar title="Home" />
-  <label text="Header goes here" class="text-center text-lg" />
-</stackLayout>
+<actionBar>
+  <gridLayout columns="auto, *" rows="*" horizontalAlignment="left">
+    <label text={icons.menu} row="0" col="0" class="icon"></label>
+    <textField hint="Search" row="0" col="1" class="text-lg italic px-2"
+    ></textField>
+  </gridLayout>
+</actionBar>

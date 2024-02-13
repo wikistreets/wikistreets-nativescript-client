@@ -83,6 +83,7 @@ export const icons = {
   'collection-text': '\uf150',
   'collection-video': '\uf151',
   compass: '\uf152',
+  copyright: '\u00A9',
   cutlery: '\uf153',
   delete: '\uf154',
   dialpad: '\uf155',

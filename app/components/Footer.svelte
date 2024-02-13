@@ -1,8 +1,10 @@
+<!-- @component You know what a footer is.  -->
+
 <script lang="ts">
-  import { CoreTypes, TapGestureEventData } from '@nativescript/core'
+  import { icons } from '../utils/icons'
 </script>
 
-<stackLayout orientation="vertical">
-  <actionBar title="Home" />
-  <label text="Footer goes here" class="text-center text-lg" />
-</stackLayout>
+<gridLayout columns="auto, *" rows="*" horizontalAlignment="center">
+  <label text={icons.copyright} row="0" col="0" class="icon" />
+  <label class="text-center text-lg" text="2024.  All rights reserved" />
+</gridLayout>
