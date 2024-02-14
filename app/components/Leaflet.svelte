@@ -13,12 +13,18 @@
   $: webView = pageRef ? pageRef.getViewById('webview') : null
   $: oWebViewInterface = webView
     ? (() => {
-        const obj = new webViewInterfaceModule.WebViewInterface(
+        const interfaceObj = new webViewInterfaceModule.WebViewInterface(
           webView,
           '~/assets/leaflet.html',
         )
-        console.log(`Webview interface object: ${obj}`)
-        return obj
+        console.log(`Webview interface object: ${interfaceObj}`)
+        webView.on('loadFinished', (args: any) => {
+          if (!args.error) {
+            // emit event to webView or call JS function of webView
+            // interfaceObj.testIt('Hell world!') // call a method in the webview... assuming it's there.
+          }
+        })
+        return interfaceObj
       })()
     : null
 </script>
