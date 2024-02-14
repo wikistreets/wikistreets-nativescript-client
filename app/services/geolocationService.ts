@@ -9,15 +9,25 @@ export class GeolocationService {
     maximumAge: 20000,
     timeout: 20000,
   }
-  static getCurrentLocation(settings?: any): Promise<geolocation.Location> {
+
+  static getCurrentLocationHighAccuracySync() {
+    const geoLoc = (async () => {
+      // call the async function and await the results
+      const geoLoc: any = await GeolocationService.getCurrentLocation()
+      return geoLoc
+    })()
+    return geoLoc // ultimate return
+  }
+
+  static async getCurrentLocation(
+    settings?: any
+  ): Promise<geolocation.Location> {
     /**
      * Returns current geolocation
      */
     settings = settings
       ? settings
       : GeolocationService.DEFAULT_LOCATION_SETTINGS
-    return geolocation.getCurrentLocation(settings).then(geoLoc => {
-      return geoLoc // contains latitude, longitude
-    })
+    return await geolocation.getCurrentLocation(settings) // contains latitude, longitude
   }
 }

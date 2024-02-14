@@ -1,14 +1,18 @@
 <!-- @component A feed, i.e. a list of posts. -->
 
 <script lang="ts">
-  import { CoreTypes, ItemEventData } from '@nativescript/core'
+  import { CoreTypes, Observable, ItemEventData } from '@nativescript/core'
   import { Template } from 'svelte-native/components'
-  import { navigate, showModal } from 'svelte-native'
+  import { navigate, showModal, closeModal } from 'svelte-native'
   import { FeatureService } from '../services/FeatureService'
 
   // import other pages or components
   import PostListItem from './PostListItem.svelte'
   import PostDetails from '../pages/PostDetails.svelte'
+
+  // props
+  export let row: number // when used in gridlayout
+  export let pageRef: Observable
 
   let posts = FeatureService.getInstance().getFeatures()
   let selectListItemTemplate = (item: any, index: number, items: any[]) => {
@@ -16,7 +20,7 @@
     return index % 2 === 0 ? 'even' : 'odd'
   }
 
-  let feedbackMessage: String = `Please don't pet the animals.  Click on them.`
+  let feedbackMessage: string = `Please don't pet the animals.  Click on them.`
 
   const listItemTap = (e: ItemEventData) => {
     /**
@@ -34,7 +38,7 @@
   }
 </script>
 
-<stackLayout orientation="vertical" class="mb-12">
+<stackLayout orientation="vertical" class="mb-12" {row}>
   <label
     id="foo"
     class="py-4 text-center text-md bg-green-100"

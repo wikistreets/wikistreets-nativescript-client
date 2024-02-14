@@ -1,7 +1,7 @@
 <script lang="ts">
   // props
   export let item: any = {}
-  export let classes: String = ''
+  export let classes: string = ''
 </script>
 
 <gridLayout rows="*" columns="auto, *" padding="0" class={classes}>

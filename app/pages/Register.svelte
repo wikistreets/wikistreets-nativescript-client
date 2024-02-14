@@ -1,7 +1,7 @@
 <script lang="ts">
-  let email: String = ''
-  let username: String = ''
-  let password: String = ''
+  let email: string = ''
+  let username: string = ''
+  let password: string = ''
   const handleFormSubmit = () => {
     console.log(
       `Form submit with email='${email}', username='${username}', password='${password}'`,

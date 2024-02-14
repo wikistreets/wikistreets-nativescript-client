@@ -8,6 +8,7 @@
     "@nativescript/geolocation": "^8.3.1",
     "@nativescript/tailwind": "^2.0.1",
     "@nativescript/theme": "~3.0.2",
+    "nativescript-webview-interface": "^1.4.4",
     "svelte-native": "~1.0.9",
     "tailwindcss": "^3.4.1"
   },
