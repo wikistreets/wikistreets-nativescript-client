@@ -5,6 +5,7 @@
   import Leaflet from '../components/Leaflet.svelte'
   import { GeolocationService } from '../services/GeolocationService'
   import Theme from '@nativescript/theme' // to detect dark mode
+  import Footer from '~/components/Footer.svelte'
 
   // determine 'dark', 'light', or 'auto' mode of device
   const pageClass: string = ['dark', 'auto', 'ns-dark'].indexOf(Theme.getMode())
@@ -26,10 +27,9 @@
 
 <page class={pageClass} on:navigatingTo={pageLoad}>
   <Header />
-
-  <gridLayout rows="1*, 3*">
-    <Leaflet row="0" {pageRef} />
-    <Feed row="1" {pageRef} />
+  <gridLayout rows="2*, 3*">
+    <Leaflet row="0" page={pageRef} />
+    <Feed row="1" />
   </gridLayout>
 </page>
 

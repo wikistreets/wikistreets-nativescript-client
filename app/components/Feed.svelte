@@ -12,7 +12,6 @@
 
   // props
   export let row: number // when used in gridlayout
-  export let pageRef: Observable
 
   let posts = FeatureService.getInstance().getFeatures()
   let selectListItemTemplate = (item: any, index: number, items: any[]) => {
@@ -41,7 +40,7 @@
 <stackLayout orientation="vertical" class="mb-12" {row}>
   <label
     id="foo"
-    class="py-4 text-center text-md bg-green-100 dark:bg-green-900"
+    class="py-4 text-center text-md bg-green-100 dark:bg-gray-900"
     text={feedbackMessage}
   />
   <listView
@@ -54,13 +53,13 @@
     <Template key="odd" let:item>
       <PostListItem
         {item}
-        classes="bg-gray-100 dark:bg-gray-800 border-b-gray-400 border-b-2"
+        class="bg-gray-100 dark:bg-gray-800 border-b-gray-400 border-b-2"
       />
     </Template>
     <Template key="even" let:item>
       <PostListItem
         {item}
-        classes="dark:bg-gray-900 border-b-gray-400 border-b-2"
+        class="dark:bg-gray-900 border-b-gray-400 border-b-2"
       />
     </Template>
   </listView>

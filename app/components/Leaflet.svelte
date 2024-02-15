@@ -9,7 +9,8 @@
 
   // props
   export let row: number // if within a gridLayout
-  export let pageRef: Page
+  let pageRef: Page
+  export { pageRef as page }
 
   // webview interface
   $: webView = pageRef ? pageRef.getViewById('webview') : null
