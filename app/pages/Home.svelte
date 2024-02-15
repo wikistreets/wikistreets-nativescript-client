@@ -4,6 +4,13 @@
   import Feed from '../components/Feed.svelte'
   import Leaflet from '../components/Leaflet.svelte'
   import { GeolocationService } from '../services/GeolocationService'
+  import Theme from '@nativescript/theme' // to detect dark mode
+
+  // determine 'dark', 'light', or 'auto' mode of device
+  const pageClass: string = ['dark', 'auto', 'ns-dark'].indexOf(Theme.getMode())
+    ? 'dark'
+    : ''
+  console.log(`Theme mode: ${pageClass}`)
 
   // get high acuracy GPS
   const geoLoc: any = GeolocationService.getCurrentLocationHighAccuracySync() // what it sounds like
@@ -17,7 +24,7 @@
   }
 </script>
 
-<page on:navigatingTo={pageLoad}>
+<page class={pageClass} on:navigatingTo={pageLoad}>
   <Header />
 
   <gridLayout rows="1*, 3*">

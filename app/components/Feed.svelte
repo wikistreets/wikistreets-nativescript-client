@@ -41,7 +41,7 @@
 <stackLayout orientation="vertical" class="mb-12" {row}>
   <label
     id="foo"
-    class="py-4 text-center text-md bg-green-100"
+    class="py-4 text-center text-md bg-green-100 dark:bg-green-900"
     text={feedbackMessage}
   />
   <listView
@@ -54,11 +54,14 @@
     <Template key="odd" let:item>
       <PostListItem
         {item}
-        classes="bg-slate-100 border-b-slate-400 border-b-2"
+        classes="bg-gray-100 dark:bg-gray-800 border-b-gray-400 border-b-2"
       />
     </Template>
     <Template key="even" let:item>
-      <PostListItem {item} classes="border-b-slate-400 border-b-2" />
+      <PostListItem
+        {item}
+        classes="dark:bg-gray-900 border-b-gray-400 border-b-2"
+      />
     </Template>
   </listView>
 </stackLayout>
