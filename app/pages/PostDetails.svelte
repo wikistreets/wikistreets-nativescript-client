@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { navigate, showModal } from 'svelte-native'
   import { FeatureService } from '../services/FeatureService'
 
   export let postId: number

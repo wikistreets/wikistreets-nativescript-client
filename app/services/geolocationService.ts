@@ -3,20 +3,11 @@ import { CoreTypes } from '@nativescript/core' // for high accuracy gps
 
 export class GeolocationService {
   // default settings
-  private static DEFAULT_LOCATION_SETTINGS = {
+  static DEFAULT_LOCATION_SETTINGS = {
     desiredAccuracy: CoreTypes.Accuracy.high,
     updateDistance: 10,
     maximumAge: 20000,
     timeout: 20000,
-  }
-
-  static getCurrentLocationHighAccuracySync() {
-    const geoLoc = (async () => {
-      // call the async function and await the results
-      const geoLoc: any = await GeolocationService.getCurrentLocation()
-      return geoLoc
-    })()
-    return geoLoc // ultimate return
   }
 
   static async getCurrentLocation(
@@ -28,6 +19,7 @@ export class GeolocationService {
     settings = settings
       ? settings
       : GeolocationService.DEFAULT_LOCATION_SETTINGS
-    return await geolocation.getCurrentLocation(settings) // contains latitude, longitude
+    const geoLoc = await geolocation.getCurrentLocation(settings) // contains latitude, longitude
+    return geoLoc
   }
 }

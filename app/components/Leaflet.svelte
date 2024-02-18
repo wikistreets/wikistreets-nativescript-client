@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { Frame, Page, Observable, knownFolders } from '@nativescript/core'
+  import { Page, knownFolders } from '@nativescript/core'
   const webViewInterfaceModule = require('nativescript-webview-interface')
 
   // get html file
