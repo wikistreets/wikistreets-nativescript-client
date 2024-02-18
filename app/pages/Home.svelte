@@ -19,7 +19,7 @@
 <page on:navigatingTo={pageLoad}>
   <Header />
   <gridLayout rows="2*, 3*">
-    <Leaflet row="0" page={pageRef} />
+    <Leaflet page={pageRef} row="0" htmlFilePath="~/assets/leaflet.html" />
     <Feed row="1" />
   </gridLayout>
 </page>

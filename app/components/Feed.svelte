@@ -10,9 +10,6 @@
   import PostListItem from './PostListItem.svelte'
   import PostDetails from '../pages/PostDetails.svelte'
 
-  // props
-  export let row: number // when used in gridlayout
-
   let posts = FeatureService.getInstance().getFeatures()
   let selectListItemTemplate = (item: any, index: number, items: any[]) => {
     // different list item keys for even and odd rows
@@ -37,7 +34,7 @@
   }
 </script>
 
-<stackLayout orientation="vertical" class="mb-12" {row}>
+<stackLayout orientation="vertical" class="mb-12" {...$$restProps}>
   <label
     id="foo"
     class="py-4 text-center text-md bg-green-100 dark:bg-gray-900"

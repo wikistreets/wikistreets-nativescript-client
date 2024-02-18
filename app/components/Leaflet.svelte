@@ -4,13 +4,9 @@
   import { Page, knownFolders } from '@nativescript/core'
   const webViewInterfaceModule = require('nativescript-webview-interface')
 
-  // get html file
-  // const appPath = knownFolders.currentApp().path
-  // const htmlFilePath = appPath + '/assets/leaflet.html'
-  const htmlFilePath = '~/assets/leaflet.html'
+  export let htmlFilePath: string
 
   // props
-  export let row: number // if within a gridLayout
   let pageRef: Page
   export { pageRef as page }
 
@@ -39,4 +35,4 @@
     : null
 </script>
 
-<webView id="webview" src={htmlFilePath} class="h-dvh w-dvw" {row} />
+<webView id="webview" src={htmlFilePath} class="h-dvh w-dvw" {...$$restProps} />
