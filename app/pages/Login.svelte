@@ -1,3 +1,5 @@
+<!-- @component Log in form. -->
+
 <script lang="ts">
   let email: string = ''
   let password: string = ''

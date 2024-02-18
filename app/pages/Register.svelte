@@ -1,3 +1,5 @@
+<!-- @component Register form for new users. -->
+
 <script lang="ts">
   let email: string = ''
   let username: string = ''

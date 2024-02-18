@@ -1,3 +1,5 @@
+<!-- @component Top-most component that first loads. -->
+
 <script lang="ts">
   import * as geolocation from '@nativescript/geolocation'
   import { GeolocationService as GeoService } from './services/GeolocationService'

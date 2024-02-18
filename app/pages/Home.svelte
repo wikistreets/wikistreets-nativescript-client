@@ -1,3 +1,5 @@
+<!-- @component Home page showing the default map and recent activity feed. -->
+
 <script lang="ts">
   import { Frame, Page, Observable, EventData } from '@nativescript/core'
   import Header from '../components/Header.svelte'

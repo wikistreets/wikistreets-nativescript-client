@@ -1,3 +1,5 @@
+<!-- @component A single post, rendered as a list item. -->
+
 <script lang="ts">
   // props
   export let item: any = {}

@@ -1,3 +1,5 @@
+<!-- @component Detail screen for a single post. -->
+
 <script lang="ts">
   import { FeatureService } from '../services/FeatureService'
 
