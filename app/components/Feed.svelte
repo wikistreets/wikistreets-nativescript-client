@@ -1,14 +1,33 @@
 <!-- @component A feed, i.e. a list of posts. -->
 
 <script lang="ts">
-  import { CoreTypes, Observable, ItemEventData } from '@nativescript/core'
+  import {
+    CoreTypes,
+    Observable,
+    ItemEventData,
+    ScrollView,
+  } from '@nativescript/core'
   import { Template } from 'svelte-native/components'
   import { navigate, showModal, closeModal } from 'svelte-native'
+  import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
+  import { PullToRefresh } from '@nativescript-community/ui-pulltorefresh'
   import { FeatureService } from '../services/FeatureService'
 
   // import other pages or components
   import PostListItem from './PostListItem.svelte'
   import PostDetails from '../pages/PostDetails.svelte'
+
+  let pullRefresh: NativeViewElementNode<PullToRefresh>
+  async function refresh() {
+    if (pullRefresh) {
+      pullRefresh.nativeView.refreshing = true
+    }
+    // do something to refesh page await refreshWeather();
+    console.log(`refreshing feed...`)
+    if (pullRefresh) {
+      pullRefresh.nativeView.refreshing = false
+    }
+  }
 
   let posts = FeatureService.getInstance().getFeatures()
   let selectListItemTemplate = (item: any, index: number, items: any[]) => {
@@ -17,7 +36,6 @@
   }
 
   let feedbackMessage: string = `Please don't pet the animals.  Click on them.`
-
   const listItemTap = (e: ItemEventData) => {
     /**
      * Handle tap events on list items
@@ -34,30 +52,32 @@
   }
 </script>
 
-<stackLayout orientation="vertical" class="mb-12" {...$$restProps}>
+<stackLayout orientation="vertical" {...$$restProps}>
   <label
     id="foo"
     class="py-4 text-center text-md bg-green-100 dark:bg-gray-900"
     text={feedbackMessage}
   />
-  <listView
-    class="list-group"
-    separatorColor="transparent"
-    items={posts}
-    itemTemplateSelector={selectListItemTemplate}
-    on:itemTap={listItemTap}
-  >
-    <Template key="odd" let:item>
-      <PostListItem
-        {item}
-        class="bg-gray-100 dark:bg-gray-800 border-b-gray-400 border-b-2"
-      />
-    </Template>
-    <Template key="even" let:item>
-      <PostListItem
-        {item}
-        class="dark:bg-gray-900 border-b-gray-400 border-b-2"
-      />
-    </Template>
-  </listView>
+  <pullrefresh bind:this={pullRefresh} on:refresh={refresh}>
+    <listView
+      class="list-group w-full h-full"
+      separatorColor="transparent"
+      items={posts}
+      itemTemplateSelector={selectListItemTemplate}
+      on:itemTap={listItemTap}
+    >
+      <Template key="odd" let:item>
+        <PostListItem
+          {item}
+          class="bg-gray-100 dark:bg-gray-800 border-b-gray-400 border-b-2"
+        />
+      </Template>
+      <Template key="even" let:item>
+        <PostListItem
+          {item}
+          class="dark:bg-gray-900 border-b-gray-400 border-b-2"
+        />
+      </Template>
+    </listView>
+  </pullrefresh>
 </stackLayout>

@@ -2,10 +2,14 @@
 
 <script lang="ts">
   import { Utils, EventData } from '@nativescript/core'
+  import { user_token, user_profile } from '../stores/user'
+  import { onMount } from 'svelte'
+
   const clearSearch = (args: EventData) => {
     Utils.dismissKeyboard()
   }
   import { icons } from '../utils/icons'
+  export let onHamburger: () => void
   let searchQuery: string
   let onSubmit: (e: any) => {}
 </script>
@@ -17,13 +21,13 @@
     horizontalAlignment="left"
     class="pr-2 pb-2"
   >
-    <label row="0" col="0" text={icons.menu} class="text-xl icon"></label>
-    <searchBar
-      id="searchbar"
+    <label
       row="0"
-      col="1"
-      class="text-lg italic"
-      hint="Search"
+      col="0"
+      text={icons.menu}
+      class="text-xl icon"
+      on:tap={onHamburger}
     />
+    <searchBar id="searchbar" row="0" col="1" class="text-lg" hint="Search" />
   </gridLayout>
 </actionBar>

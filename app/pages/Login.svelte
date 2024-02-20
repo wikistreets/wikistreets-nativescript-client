@@ -1,24 +1,64 @@
 <!-- @component Log in form. -->
 
 <script lang="ts">
+  import { navigate, closeModal } from 'svelte-native'
+  import Register from '~/pages/Register.svelte'
+
   let email: string = ''
   let password: string = ''
-  const handleFormSubmit = () => {
+  const onSubmit = () => {
     console.log(`Form submit with email='${email}', password='${password}'`)
   }
 </script>
 
-<page>
-  <actionBar title="Log In" />
-  <stackLayout orientation="vertical">
+<page {...$$restProps}>
+  <actionBar>
+    <actionItem
+      ios.position="left"
+      text="Cancel"
+      on:tap={() => closeModal('Register closed')}
+    />
+    <actionItem ios.position="right" text="Log in" on:tap={onSubmit} />
+  </actionBar>
+  <stackLayout
+    orientation="vertical"
+    horizontalAlignment="center"
+    class="w-full"
+  >
+    <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" />
+    <textView editable={false} class="m-4 h-8 text-center">
+      <span class="text-lg p-4 text-black dark:text-white">
+        Log in to your account.
+      </span>
+    </textView>
     <textField
       hint="Email"
+      text={email}
+      on:textChange={e => (email = e.value)}
       keyboardType="email"
       autocorrect="false"
       autocapitalizationType="none"
-      text={email}
+      class="text-lg p-4"
     />
-    <textField hint="Password" secure="true" text={password} />
-    <button text="Log In" on:tap={handleFormSubmit} />
+    <textField
+      hint="Password"
+      text={password}
+      on:textChange={e => (password = e.value)}
+      secure="true"
+      autocorrect="false"
+      autocapitalizationType="none"
+      class="text-lg p-4"
+    />
+    <button class="my-8 p-4 text-xl" text="- Log in -" on:tap={onSubmit} />
+    <textView
+      editable={false}
+      class="m-4 text-center"
+      on:tap={() =>
+        navigate({ page: Register, clearHistory: true, animated: false })}
+    >
+      <span class="text-md p-4 text-black dark:text-white">
+        Don't have an account?
+      </span>
+    </textView>
   </stackLayout>
 </page>

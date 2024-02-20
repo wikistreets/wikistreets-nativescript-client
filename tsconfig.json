@@ -1,6 +1,11 @@
 {
+  "--comments--": [
+    "Modified compilerOptions: strict, strictNullChecks, and noImplicitAny to false so copied svelte-native-realworld code would work"
+  ],
   "compilerOptions": {
-    "strict": true,
+    "strict": false,
+    "strictNullChecks": false,
+    "noImplicitAny": false,
     "target": "ES2020",
     "module": "esnext",
     "moduleResolution": "node",

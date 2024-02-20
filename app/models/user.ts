@@ -1,7 +1,8 @@
-export interface UserModel {
+export interface User {
   id: number
   username: string
   email: string
   passwordHash: string
-  profileImageThumbnail: string
+  image?: string
+  token?: string
 }

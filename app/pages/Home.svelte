@@ -2,11 +2,16 @@
 
 <script lang="ts">
   import { Frame, Page, Observable, EventData } from '@nativescript/core'
-  import Header from '../components/Header.svelte'
-  import Feed from '../components/Feed.svelte'
-  import Leaflet from '../components/Leaflet.svelte'
+  import { GPS } from '@nativescript-community/gps'
+  import { Drawer } from '@nativescript-community/ui-drawer'
+  import Header from '~/components/Header.svelte'
+  import HamburgerMenu from '~/components/HamburgerMenu.svelte'
+  import Feed from '~/components/Feed.svelte'
+  import Leaflet from '~/components/Leaflet.svelte'
   import Theme from '@nativescript/theme' // to detect dark mode
   import Footer from '~/components/Footer.svelte'
+
+  let gps: GPS
 
   // get a reference to the current page to pass to child components
   let pageRef: Page
@@ -14,22 +19,31 @@
     pageRef = args.object as Page
     console.log(`page: ${pageRef}`)
   }
+
+  let drawer: Drawer
+
+  function onOpenDrawer() {
+    drawer.open()
+  }
+  function onCloseDrawer() {
+    drawer.close()
+  }
+  function toggleDrawer() {
+    drawer.toggle()
+  }
 </script>
 
 <page on:navigatingTo={pageLoad}>
-  <Header />
-  <gridLayout rows="2*, 3*">
-    <Leaflet page={pageRef} row="0" htmlFilePath="~/assets/leaflet.html" />
-    <Feed row="1" />
-  </gridLayout>
+  <Header onHamburger={toggleDrawer} />
+
+  <drawer bind:this={drawer} class="drawer">
+    <HamburgerMenu prop:leftDrawer class="w-full h-full" rows="*" {drawer} />
+    <gridLayout prop:mainContent rows="2*, 3*">
+      <Leaflet page={pageRef} htmlFilePath="~/assets/leaflet.html" row="0" />
+      <Feed row="1" class="mb-12 w-full h-full" />
+    </gridLayout>
+  </drawer>
 </page>
 
 <style>
-  /* actionBar {
-    background-color: black;
-    color: white;
-  }
-  actionBar label {
-    color: white;
-  } */
 </style>
