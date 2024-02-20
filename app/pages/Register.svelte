@@ -10,8 +10,9 @@
   let password: string = ''
   const onSubmit = () => {
     console.log(
-      `Form submit with email='${email}', username='${username}', password='${password}'`,
+      `Form data: email='${email}', username='${username}', password='${password}'`,
     )
+    closeModal('Register form submitted')
   }
 </script>
 
@@ -19,10 +20,18 @@
   <actionBar>
     <actionItem
       ios.position="left"
+      android.position="actionBar"
+      ios.systemIcon="24"
       text="Cancel"
-      on:tap={() => closeModal('Register closed')}
+      on:tap={() => closeModal('Register form canceled')}
     />
-    <actionItem ios.position="right" text="Register" on:tap={onSubmit} />
+    <actionItem
+      ios.position="right"
+      android.position="actionBar"
+      ios.systemIcon="3"
+      text="Register"
+      on:tap={onSubmit}
+    />
   </actionBar>
   <stackLayout
     orientation="vertical"

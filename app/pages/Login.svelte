@@ -7,7 +7,8 @@
   let email: string = ''
   let password: string = ''
   const onSubmit = () => {
-    console.log(`Form submit with email='${email}', password='${password}'`)
+    console.log(`Form data: email='${email}', password='${password}'`)
+    closeModal('Login form submitted')
   }
 </script>
 
@@ -15,10 +16,18 @@
   <actionBar>
     <actionItem
       ios.position="left"
+      android.position="actionBar"
+      ios.systemIcon="24"
       text="Cancel"
-      on:tap={() => closeModal('Register closed')}
+      on:tap={() => closeModal('Login form canceled')}
     />
-    <actionItem ios.position="right" text="Log in" on:tap={onSubmit} />
+    <actionItem
+      ios.position="right"
+      android.position="actionBar"
+      ios.systemIcon="3"
+      text="Log in"
+      on:tap={onSubmit}
+    />
   </actionBar>
   <stackLayout
     orientation="vertical"
