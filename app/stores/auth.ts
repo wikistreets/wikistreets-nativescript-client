@@ -1,14 +1,36 @@
 import { derived, writable, Writable } from 'svelte/store'
 
-class AuthStore {
-  constructor(
-    public isLoggedIn: Writable<boolean> = writable(false),
-    public token: Writable<string> = writable('')
-  ) {}
+const token: Writable<string> = writable('')
+const user: Writable<object> = writable({})
+
+const isAuthenticated = derived([token, user], ([$token, $user]) => {
+  return !!$token && Object.keys($user).length > 0
+})
+
+const createAuthStore = () => {
+  const logout = () => {
+    token.set('')
+    user.set({})
+  }
+
+  return {
+    token,
+    user,
+    isAuthenticated,
+    logout,
+  }
 }
 
-// Export a singleton
-export const authStore = new AuthStore()
+// export a singleton
+export const authStore = createAuthStore()
 
-// Allow for multiple stores (good for contexts)
-// export const createAuthStore = () => new AuthStore();
+// subscribe to token changes and print out a message when changed
+token.subscribe(value => {
+  console.log('authStore: Token:', value)
+})
+user.subscribe(value => {
+  console.log('authStore: User:', value)
+})
+isAuthenticated.subscribe(value => {
+  console.log('authStore: isAuthenticated:', value)
+})
