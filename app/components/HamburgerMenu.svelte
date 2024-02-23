@@ -113,7 +113,7 @@
         color="black"
         backgroundColor="white"
         on:tap={() => {
-          navigateModalTo(null)
+          cleanNavigateTo(null)
         }}
       />
     </stacklayout>

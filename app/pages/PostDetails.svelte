@@ -2,6 +2,7 @@
 
 <script lang="ts">
   import { goBack } from 'svelte-native'
+  import { closeModal } from 'svelte-native'
   import { FeatureService } from '../services/FeatureService'
 
   export let postId: number
