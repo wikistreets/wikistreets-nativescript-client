@@ -56,17 +56,12 @@
 <gridlayout {...$$restProps}>
   <stacklayout row="0" class="bg-gray-800">
     {#if $isAuthenticated}
-      <stacklayout class="p-12 pb-24 align-middle text-center">
-        <stacklayout col="0" class="avatar bg-white rounded-full w-24 h-24">
-          <label class="text-black align-middle h-full text-lg" text="FB" />
-        </stacklayout>
-        <stacklayout>
-          <label text={$user?.handle} />
-          <label text={$user?.email} />
-        </stacklayout>
+      <stacklayout class="w-full p-12 align-middle text-center">
+        <label class="w-full" text={$user?.handle} />
+        <label class="w-full" text={$user?.email} />
       </stacklayout>
     {/if}
-    <stacklayout class="p-12">
+    <stacklayout class="p-12 pb-24 align-middle text-center">
       <button
         text="- Home -"
         color="black"

@@ -2,8 +2,8 @@
 
 <script lang="ts">
   import { Utils, EventData } from '@nativescript/core'
-  import { user_token, user_profile } from '../stores/user'
-  import { onMount } from 'svelte'
+  // import { user, isAuthenticated } from '~/stores/auth'
+  // import { onMount } from 'svelte'
 
   const clearSearch = (args: EventData) => {
     Utils.dismissKeyboard()

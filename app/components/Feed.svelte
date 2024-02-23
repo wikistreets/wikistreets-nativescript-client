@@ -12,6 +12,7 @@
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
   import { PullToRefresh } from '@nativescript-community/ui-pulltorefresh'
   import { FeatureService } from '../services/FeatureService'
+  import { user, isAuthenticated } from '~/stores/auth'
 
   // import other pages or components
   import PostListItem from './PostListItem.svelte'
@@ -35,7 +36,11 @@
     return index % 2 === 0 ? 'even' : 'odd'
   }
 
-  let feedbackMessage: string = `Please don't pet the animals.  Click on them.`
+  let feedbackMessage: string
+  $: feedbackMessage = $isAuthenticated
+    ? `${$user?.handle}'s feed`
+    : `Please don't pet the animals.  Click on them.`
+
   const listItemTap = (e: ItemEventData) => {
     /**
      * Handle tap events on list items
