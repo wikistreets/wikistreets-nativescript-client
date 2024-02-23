@@ -65,7 +65,7 @@
   />
   <pullrefresh bind:this={pullRefresh} on:refresh={refresh}>
     <listView
-      class="list-group w-full h-full"
+      class="list-group"
       separatorColor="transparent"
       items={posts}
       itemTemplateSelector={selectListItemTemplate}

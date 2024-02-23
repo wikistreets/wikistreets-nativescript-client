@@ -38,9 +38,9 @@
 
   <drawer bind:this={drawer} class="drawer">
     <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
-    <gridLayout prop:mainContent rows="2*, 3*">
+    <gridLayout prop:mainContent rows="2*, 3*" class="bg-green-900 h-full">
       <Leaflet page={pageRef} htmlFilePath="~/assets/leaflet.html" row="0" />
-      <Feed row="1" class="mb-12 w-full h-full" />
+      <Feed row="1" />
     </gridLayout>
   </drawer>
 </page>

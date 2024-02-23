@@ -4,11 +4,10 @@
   import { Page, knownFolders } from '@nativescript/core'
   const webViewInterfaceModule = require('nativescript-webview-interface')
 
-  export let htmlFilePath: string
-
   // props
   let pageRef: Page
   export { pageRef as page }
+  export let htmlFilePath: string
 
   // webview interface
   $: webView = pageRef ? pageRef.getViewById('webview') : null
@@ -35,4 +34,4 @@
     : null
 </script>
 
-<webView id="webview" src={htmlFilePath} class="h-dvh w-dvw" {...$$restProps} />
+<webView id="webview" src={htmlFilePath} {...$$restProps} />
