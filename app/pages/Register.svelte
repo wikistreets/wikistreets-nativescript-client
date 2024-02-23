@@ -3,7 +3,7 @@
 <script lang="ts">
   import { navigate, closeModal } from 'svelte-native'
   import { TextField } from '@nativescript/core'
-  import { authStore } from '~/stores/auth'
+  import { user, token } from '~/stores/auth'
   import { config } from '~/config/config'
   import Login from '~/pages/Login.svelte'
 
@@ -14,6 +14,9 @@
   let error: string
 
   const onSubmit = async () => {
+    /**
+     * Handle register form submission.  Update authentication store if successful.  Show error if not.
+     */
     console.log(
       `Form data: email='${email}', handle='${handle}', password='${password}'`,
     )
@@ -29,12 +32,11 @@
 
       const data = await response.json()
       if (response.ok) {
-        const { token, user } = data
         // check for a token and update auth store if present
-        if (token) {
+        if (data.token) {
           console.log(`Token received: ${data.token}`)
-          authStore.token.set(token)
-          authStore.user.set(user)
+          token.set(data.token)
+          user.set(data.user)
           closeModal('Registration successful')
         } else if (data.error) {
           error = data.error

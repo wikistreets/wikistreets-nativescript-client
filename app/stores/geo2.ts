@@ -1,3 +1,7 @@
+/**
+ * Svelte store for keeping track of user's geolocation globally across app.
+ */
+
 import {
   GPS,
   DefaultLatLonKeys,

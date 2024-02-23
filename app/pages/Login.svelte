@@ -3,7 +3,7 @@
 <script lang="ts">
   import { navigate, closeModal } from 'svelte-native'
   import Register from '~/pages/Register.svelte'
-  import { authStore } from '~/stores/auth'
+  import { token, user } from '~/stores/auth'
   import { config } from '~/config/config'
 
   let email: string = ''
@@ -12,6 +12,9 @@
   let error: string
 
   const onSubmit = async () => {
+    /**
+     * Handle login form submission.  Update authentication store if successful.  Show error if not.
+     */
     console.log(`Form data: email='${email}', password='${password}'`)
 
     try {
@@ -25,12 +28,11 @@
 
       const data = await response.json()
       if (response.ok) {
-        const { token, user } = data
         // check for a token and update auth store if present
-        if (token) {
+        if (data.token) {
           console.log(`Token received: ${data.token}`)
-          authStore.token.set(token)
-          authStore.user.set(user)
+          token.set(data.token)
+          user.set(data.user)
           closeModal('Login successful')
         } else if (data.error) {
           error = data.error
