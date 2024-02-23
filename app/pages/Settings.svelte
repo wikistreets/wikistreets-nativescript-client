@@ -1,29 +1,35 @@
-<!-- @component Log in form. -->
+<!-- @component Account Settings -->
 
 <script lang="ts">
-  import { navigate, closeModal } from 'svelte-native'
-  import Register from '~/pages/Register.svelte'
+  import { navigate, goBack } from 'svelte-native'
   import { token, user } from '~/stores/auth'
   import { config } from '~/config/config'
+  import EditableInput from '~/components/EditableInput.svelte'
 
-  let email: string = ''
-  let password: string = ''
+  let email: string
+  let handle: string
+  let password: string
+  $: email = $user?.email
+  $: handle = $user?.handle
+  $: password = $user?.password
 
   let error: string
 
-  const onSubmit = async () => {
+  const onSettingChange = async setting => {
     /**
-     * Handle login form submission.  Update authentication store if successful.  Show error if not.
+     * Handle account settings form submission.  Update authentication store if successful.  Show error if not.
      */
-    console.log(`Form data: email='${email}', password='${password}'`)
+
+    error = null // clear any prior error
+    console.log(`Form data: ${JSON.stringify(setting)}`)
 
     try {
-      const response = await fetch(`${config.WIKISTREETS_API}/users/signin`, {
+      const response = await fetch(`${config.WIKISTREETS_API}/users/edit`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify(setting),
       })
 
       const data = await response.json()
@@ -33,7 +39,7 @@
           console.log(`Token received: ${data.token}`)
           token.set(data.token)
           user.set(data.user)
-          closeModal('Login successful')
+          // closeModal('Registration successful')
         } else if (data.error) {
           error = data.error
           console.error(error)
@@ -53,21 +59,11 @@
 </script>
 
 <page {...$$restProps}>
-  <actionBar>
-    <actionItem
-      ios.position="left"
-      android.position="actionBar"
-      ios.systemIcon="24"
-      android.systemIcon="ic_menu_close_clear_cancel"
-      text="Cancel"
-      on:tap={() => closeModal('Login form canceled')}
-    />
-    <actionItem
-      ios.position="right"
-      android.position="actionBar"
-      ios.systemIcon="3"
-      text="Log in"
-      on:tap={onSubmit}
+  <actionBar title="Settings">
+    <navigationButton
+      text="Back"
+      android.systemIcon="ic_menu_back"
+      on:tap={goBack}
     />
   </actionBar>
   <stackLayout
@@ -78,7 +74,7 @@
     <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" />
     <textView editable={false} class="m-4 h-8 text-center">
       <span class="text-lg p-4 text-black dark:text-white">
-        Log in to your account.
+        Your account settings.
       </span>
     </textView>
 
@@ -90,32 +86,29 @@
       </textView>
     {/if}
 
-    <textField
-      hint="Email"
+    <EditableInput
+      label="Email"
       bind:text={email}
       keyboardType="email"
       autocorrect="false"
       autocapitalizationType="none"
-      class="text-lg p-4"
+      onChange={value => {
+        email = value
+        onSettingChange({ email })
+      }}
+      class="m-4"
     />
-    <textField
-      hint="Password"
-      bind:text={password}
-      secure="true"
+
+    <EditableInput
+      label="Handle"
+      bind:text={handle}
       autocorrect="false"
       autocapitalizationType="none"
-      class="text-lg p-4"
+      onChange={value => {
+        handle = value
+        onSettingChange({ handle })
+      }}
+      class="m-4"
     />
-    <button class="my-8 p-4 text-xl" text="- Log in -" on:tap={onSubmit} />
-    <textView
-      editable={false}
-      class="m-4 text-center"
-      on:tap={() =>
-        navigate({ page: Register, clearHistory: true, animated: false })}
-    >
-      <span class="text-md p-4 text-black dark:text-white">
-        Don't have an account?
-      </span>
-    </textView>
   </stackLayout>
 </page>

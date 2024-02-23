@@ -62,6 +62,7 @@
       ios.position="left"
       android.position="actionBar"
       ios.systemIcon="24"
+      android.systemIcon="ic_menu_close_clear_cancel"
       text="Cancel"
       on:tap={() => closeModal('Register form canceled')}
     />

@@ -37,7 +37,7 @@
   <Header onHamburger={toggleDrawer} />
 
   <drawer bind:this={drawer} class="drawer">
-    <HamburgerMenu prop:leftDrawer class="w-full h-full" rows="*" {drawer} />
+    <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
     <gridLayout prop:mainContent rows="2*, 3*">
       <Leaflet page={pageRef} htmlFilePath="~/assets/leaflet.html" row="0" />
       <Feed row="1" class="mb-12 w-full h-full" />

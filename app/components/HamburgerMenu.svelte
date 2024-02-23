@@ -7,10 +7,11 @@
   import { user, isAuthenticated, logout } from '~/stores/auth'
   import AuthModalFrame from '~/components/AuthModalFrame.svelte'
   import Home from '~/pages/Home.svelte'
+  import Settings from '~/pages/Settings.svelte'
 
-  const navigateTo = (pageRef: Page | null): void => {
+  const cleanNavigateTo = (pageRef: Page | null): void => {
     /**
-     * Navigate to a different page.
+     * Navigate to a different page with no history or animation.
      */
     drawer.close()
     if (pageRef) {
@@ -56,23 +57,33 @@
 <gridlayout {...$$restProps}>
   <stacklayout row="0" class="bg-gray-800">
     {#if $isAuthenticated}
-      <stacklayout class="w-full p-12 align-middle text-center">
+      <stacklayout class="p-12 align-middle text-center">
         <label class="w-full" text={$user?.handle} />
         <label class="w-full" text={$user?.email} />
       </stacklayout>
     {/if}
     <stacklayout class="p-12 pb-24 align-middle text-center">
       <button
-        text="- Home -"
+        text="Home"
         color="black"
         backgroundColor="white"
         on:tap={() => {
-          navigateTo(Home)
+          cleanNavigateTo(Home)
         }}
       />
       {#if $isAuthenticated}
         <button
-          text="- Log out -"
+          text="Settings"
+          color="black"
+          backgroundColor="white"
+          on:tap={() => {
+            navigate({
+              page: Settings,
+            })
+          }}
+        />
+        <button
+          text="Log out"
           color="black"
           backgroundColor="white"
           on:tap={() => {
@@ -81,7 +92,7 @@
         />
       {:else}
         <button
-          text="- Log in -"
+          text="Log in"
           color="black"
           backgroundColor="white"
           on:tap={() => {
@@ -89,7 +100,7 @@
           }}
         />
         <button
-          text="- Register -"
+          text="Register"
           color="black"
           backgroundColor="white"
           on:tap={() => {
@@ -98,11 +109,11 @@
         />
       {/if}
       <button
-        text="- Contact -"
+        text="Contact"
         color="black"
         backgroundColor="white"
         on:tap={() => {
-          navigateTo(null)
+          navigateModalTo(null)
         }}
       />
     </stacklayout>
