@@ -15,6 +15,7 @@
     /**
      * Handle login form submission.  Update authentication store if successful.  Show error if not.
      */
+    error = '' // clear any prior error
     console.log(`Form data: email='${email}', password='${password}'`)
 
     try {
@@ -46,8 +47,8 @@
         console.error(error)
       }
     } catch (err) {
-      error = err
-      console.error(error)
+      error = 'No account found.  Perhaps try again.'
+      console.error(err)
     }
   }
 </script>
@@ -65,7 +66,6 @@
     <actionItem
       ios.position="right"
       android.position="actionBar"
-      ios.systemIcon="3"
       text="Log in"
       on:tap={onSubmit}
     />
@@ -76,37 +76,40 @@
     class="w-full"
   >
     <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" />
+
     <textView editable={false} class="m-4 h-8 text-center">
-      <span class="text-lg p-4 text-black dark:text-white">
-        Log in to your account.
+      <span class="w-full text-center text-lg my-0 p-4">
+        {#if !error}
+          Log in to your account.
+        {:else}
+          {error}
+        {/if}
       </span>
     </textView>
-
-    {#if error}
-      <textView editable={false} class="m-4 h-8 text-center">
-        <span class="text-lg p-4 text-red dark:text-red">
-          {error}
-        </span>
-      </textView>
-    {/if}
 
     <textField
       hint="Email"
       bind:text={email}
       keyboardType="email"
-      autocorrect="false"
       autocapitalizationType="none"
-      class="text-lg p-4"
+      autocorrect="false"
+      class="text-lg p-4 my-4 border-2 rounded-md border-slate-500"
     />
     <textField
       hint="Password"
       bind:text={password}
       secure="true"
-      autocorrect="false"
       autocapitalizationType="none"
-      class="text-lg p-4"
+      autocorrect="false"
+      class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
+      on:returnPress={onSubmit}
     />
-    <button class="my-8 p-4 text-xl" text="- Log in -" on:tap={onSubmit} />
+
+    <label
+      class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
+      text="Log in"
+      on:tap={onSubmit}
+    />
     <textView
       editable={false}
       class="m-4 text-center"

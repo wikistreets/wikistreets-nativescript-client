@@ -24,10 +24,11 @@
     console.log(`Form data: ${JSON.stringify(setting)}`)
 
     try {
-      const response = await fetch(`${config.WIKISTREETS_API}/users/edit`, {
+      const response = await fetch(`${config.WIKISTREETS_API}/users/update`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          Authorization: `Bearer ${$token}`, // necessary for JWT authentication
         },
         body: JSON.stringify(setting),
       })
@@ -88,10 +89,8 @@
 
     <EditableInput
       label="Email"
-      bind:text={email}
+      text={email}
       keyboardType="email"
-      autocorrect="false"
-      autocapitalizationType="none"
       onChange={value => {
         email = value
         onSettingChange({ email })
@@ -101,12 +100,21 @@
 
     <EditableInput
       label="Handle"
-      bind:text={handle}
-      autocorrect="false"
-      autocapitalizationType="none"
+      text={handle}
       onChange={value => {
         handle = value
         onSettingChange({ handle })
+      }}
+      class="m-4"
+    />
+
+    <EditableInput
+      label="Password"
+      text="************"
+      secure="true"
+      onChange={value => {
+        handle = value
+        onSettingChange({ password })
       }}
       class="m-4"
     />

@@ -2,6 +2,7 @@
   export let text: string = 'Enter here...'
   export let label: string = ''
   export let onChange: Function = () => {}
+  export let secure: 'true' | 'false' = 'false'
   export let keyboardType:
     | 'number'
     | 'datetime'
@@ -10,7 +11,7 @@
     | 'email'
     | 'integer'
     | null = null
-  export let autocorrect: string = 'false'
+  export let autocorrect: 'true' | 'false' = 'false'
   export let autocapitalizationType:
     | 'none'
     | 'words'
@@ -31,25 +32,27 @@
 </script>
 
 <flexboxLayout {...$$restProps}>
-  <label text={label} on:tap={toggleEditable} class="text-lg text-left w-1/3" />
+  <label text={label} on:tap={toggleEditable} class="text-lg text-left w-1/4" />
   {#if editable}
     <textField
       hint={text}
       bind:text
+      {secure}
       {autocorrect}
       {keyboardType}
       {autocapitalizationType}
-      class="w-1/3 text-lg py-4 px-0"
+      class="w-1/2 text-lg p-4 px-4 my-0 border-2 rounded-md border-slate-500"
+      on:returnPress={onSubmit}
     />
-    <button class="text-xl w-1/3 px-0" text="Save" on:tap={onSubmit} />
-  {:else}
     <label
-      {text}
-      on:tap={toggleEditable}
-      class="text-lg text-left w-1/3 px-0"
+      class="w-1/4 text-lg text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
+      text="Save"
+      on:tap={onSubmit}
     />
-    <button
-      class="text-xl w-1/3 px-0"
+  {:else}
+    <label {text} on:tap={toggleEditable} class="w-1/2 text-lg p-4 my-0" />
+    <label
+      class="w-1/4 text-lg text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
       text="Edit"
       on:tap={() => (editable = true)}
     />

@@ -69,7 +69,6 @@
     <actionItem
       ios.position="right"
       android.position="actionBar"
-      ios.systemIcon="3"
       text="Register"
       on:tap={onSubmit}
     />
@@ -80,44 +79,48 @@
     class="w-full"
   >
     <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" />
+
     <textView editable={false} class="m-4 h-8 text-center">
-      <span class="text-lg p-4 text-black dark:text-white">
-        Register to make a new account
+      <span class="w-full text-center text-lg my-0 p-4">
+        {#if !error}
+          Create a new account
+        {:else}
+          {error}
+        {/if}
       </span>
     </textView>
-
-    {#if error}
-      <textView editable={false} class="m-4 h-8 text-center">
-        <span class="text-lg p-4 text-red dark:text-red">
-          {error}
-        </span>
-      </textView>
-    {/if}
 
     <textField
       hint="Email"
       bind:text={email}
       keyboardType="email"
-      autocorrect="false"
       autocapitalizationType="none"
-      class="text-lg p-4"
+      autocorrect="false"
+      class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
     />
     <textField
-      hint="handle"
+      hint="Handle"
       bind:text={handle}
-      autocorrect="false"
       autocapitalizationType="none"
-      class="text-lg p-4"
+      autocorrect="false"
+      class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
     />
     <textField
       hint="Password"
       bind:text={password}
       secure="true"
-      autocorrect="false"
       autocapitalizationType="none"
-      class="text-lg p-4"
+      autocorrect="false"
+      class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
+      on:returnPress={onSubmit}
     />
-    <button class="mt-8 p-4 text-xl" text="- Register -" on:tap={onSubmit} />
+
+    <label
+      class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
+      text="Register"
+      on:tap={onSubmit}
+    />
+
     <textView
       editable={false}
       class="m-4 text-center"
