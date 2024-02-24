@@ -9,11 +9,17 @@ import { svelteNativeNoFrame } from 'svelte-native'
 import { registerNativeViewElement } from 'svelte-native/dom'
 import { install as installDrawer } from '@nativescript-community/ui-drawer'
 import DrawerElement from '@nativescript-community/ui-drawer/svelte'
+import { install as installBottomSheet } from '@nativescript-community/ui-persistent-bottomsheet'
+import BottomSheetElement from '@nativescript-community/ui-persistent-bottomsheet/svelte'
+
 import App from '~/App.svelte'
 
 // necessary ui-drawer setup: https://github.com/nativescript-community/ui-drawer
 installDrawer()
 DrawerElement.register()
+
+installBottomSheet()
+BottomSheetElement.register()
 
 // pull to refresh
 registerNativeViewElement(

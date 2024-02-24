@@ -13,6 +13,8 @@
 
   let gps: GPS
 
+  let stepIndex = 1
+
   // get a reference to the current page to pass to child components
   let pageRef: Page
   const pageLoad = (args: EventData) => {
@@ -35,14 +37,22 @@
 
 <page on:navigatingTo={pageLoad}>
   <Header onHamburger={toggleDrawer} />
-
-  <drawer bind:this={drawer} class="drawer">
-    <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
-    <gridLayout prop:mainContent rows="2*, 3*" class="h-full">
-      <Leaflet page={pageRef} htmlFilePath="~/assets/leaflet.html" row="0" />
-      <Feed row="1" />
-    </gridLayout>
-  </drawer>
+  <bottomSheet
+    {stepIndex}
+    steps={[20, 200, 400, 600]}
+    on:stepIndexChange={e => (stepIndex = e.value)}
+  >
+    <drawer bind:this={drawer} class="drawer h-full w-full">
+      <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
+      <Leaflet
+        prop:mainContent
+        class="h-full w-full"
+        page={pageRef}
+        htmlFilePath="~/assets/leaflet.html"
+      />
+    </drawer>
+    <Feed prop:bottomSheet class="h-full w-full" />
+  </bottomSheet>
 </page>
 
 <style>

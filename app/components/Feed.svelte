@@ -58,7 +58,7 @@
 </script>
 
 <stackLayout orientation="vertical" {...$$restProps}>
-  <label class="py-4 text-center text-md" text={feedbackMessage} />
+  <label class="py-4 text-center text-md bg-slate-600" text={feedbackMessage} />
   <pullrefresh bind:this={pullRefresh} on:refresh={refresh}>
     <listView
       class="list-group"
