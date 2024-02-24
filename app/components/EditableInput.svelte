@@ -45,14 +45,14 @@
       on:returnPress={onSubmit}
     />
     <label
-      class="w-1/4 text-lg text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
+      class="w-1/4 text-sm text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
       text="Save"
       on:tap={onSubmit}
     />
   {:else}
     <label {text} on:tap={toggleEditable} class="w-1/2 text-lg p-4 my-0" />
     <label
-      class="w-1/4 text-lg text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
+      class="w-1/4 text-sm text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
       text="Edit"
       on:tap={() => (editable = true)}
     />
