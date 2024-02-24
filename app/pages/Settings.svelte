@@ -1,7 +1,6 @@
 <!-- @component Account Settings -->
 
 <script lang="ts">
-  import { navigate, goBack } from 'svelte-native'
   import { token, user } from '~/stores/auth'
   import { config } from '~/config/config'
   import EditableInput from '~/components/EditableInput.svelte'
@@ -15,13 +14,15 @@
 
   let error: string
 
+  export let onComplete: Function = () => {}
+
   const onSettingChange = async setting => {
     /**
      * Handle account settings form submission.  Update authentication store if successful.  Show error if not.
      */
 
     error = null // clear any prior error
-    console.log(`Form data: ${JSON.stringify(setting)}`)
+    // console.log(`Form data: ${JSON.stringify(setting)}`)
 
     try {
       const response = await fetch(`${config.WIKISTREETS_API}/users/update`, {
@@ -37,36 +38,48 @@
       if (response.ok) {
         // check for a token and update auth store if present
         if (data.token) {
-          console.log(`Token received: ${data.token}`)
+          // console.log(`Token received: ${data.token}`)
           token.set(data.token)
           user.set(data.user)
-          // closeModal('Registration successful')
+          // onComplete('Settings updated')
         } else if (data.error) {
           error = data.error
-          console.error(error)
+          // console.error(error)
         } else {
           error = 'No token found in response'
-          console.error(error)
+          // console.error(error)
         }
       } else {
         error = data?.error
-        console.error(error)
+        // console.error(error)
       }
     } catch (err) {
       error = err
-      console.error(error)
+      // console.error(error)
     }
   }
 </script>
 
 <page {...$$restProps}>
-  <actionBar title="Settings">
-    <navigationButton
-      text="Back"
-      android.systemIcon="ic_menu_back"
-      on:tap={goBack}
+  <actionBar>
+    <actionItem
+      ios.position="left"
+      android.position="actionBar"
+      ios.systemIcon="24"
+      android.systemIcon="ic_menu_close_clear_cancel"
+      text="Cancel"
+      on:tap={() => onComplete('Login form canceled')}
+    />
+    <actionItem
+      ios.position="right"
+      android.position="actionBar"
+      text="Done"
+      on:tap={() => {
+        onComplete('Settings updated')
+      }}
     />
   </actionBar>
+
   <stackLayout
     orientation="vertical"
     horizontalAlignment="center"
@@ -95,7 +108,7 @@
         email = value
         onSettingChange({ email })
       }}
-      class="m-4"
+      class="p-4 m-4"
     />
 
     <EditableInput
@@ -105,7 +118,7 @@
         handle = value
         onSettingChange({ handle })
       }}
-      class="m-4"
+      class="px-4 m-4"
     />
 
     <EditableInput
@@ -116,7 +129,7 @@
         handle = value
         onSettingChange({ password })
       }}
-      class="m-4"
+      class="px-4 m-4"
     />
   </stackLayout>
 </page>

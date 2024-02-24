@@ -7,7 +7,6 @@
   import { user, isAuthenticated, logout } from '~/stores/auth'
   import AuthModalFrame from '~/components/AuthModalFrame.svelte'
   import Home from '~/pages/Home.svelte'
-  import Settings from '~/pages/Settings.svelte'
 
   const cleanNavigateTo = (pageRef: Page | null): void => {
     /**
@@ -77,9 +76,7 @@
           color="black"
           backgroundColor="white"
           on:tap={() => {
-            navigate({
-              page: Settings,
-            })
+            modalTo('Settings')
           }}
         />
         <button

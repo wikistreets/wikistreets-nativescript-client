@@ -13,13 +13,15 @@
 
   let error: string
 
+  export let onComplete: Function = () => {}
+
   const onSubmit = async () => {
     /**
      * Handle register form submission.  Update authentication store if successful.  Show error if not.
      */
-    console.log(
-      `Form data: email='${email}', handle='${handle}', password='${password}'`,
-    )
+    // console.log(
+    //   `Form data: email='${email}', handle='${handle}', password='${password}'`,
+    // )
 
     try {
       const response = await fetch(`${config.WIKISTREETS_API}/users/signup`, {
@@ -34,24 +36,24 @@
       if (response.ok) {
         // check for a token and update auth store if present
         if (data.token) {
-          console.log(`Token received: ${data.token}`)
+          // console.log(`Token received: ${data.token}`)
           token.set(data.token)
           user.set(data.user)
-          closeModal('Registration successful')
+          onComplete('Registration successful')
         } else if (data.error) {
           error = data.error
-          console.error(error)
+          // console.error(error)
         } else {
           error = 'No token found in response'
-          console.error(error)
+          // console.error(error)
         }
       } else {
         error = data?.error
-        console.error(error)
+        // console.error(error)
       }
     } catch (err) {
       error = err
-      console.error(error)
+      // console.error(error)
     }
   }
 </script>
@@ -64,7 +66,7 @@
       ios.systemIcon="24"
       android.systemIcon="ic_menu_close_clear_cancel"
       text="Cancel"
-      on:tap={() => closeModal('Register form canceled')}
+      on:tap={() => onComplete('Register form canceled')}
     />
     <actionItem
       ios.position="right"
@@ -73,6 +75,7 @@
       on:tap={onSubmit}
     />
   </actionBar>
+
   <stackLayout
     orientation="vertical"
     horizontalAlignment="center"
@@ -125,7 +128,12 @@
       editable={false}
       class="m-4 text-center"
       on:tap={() =>
-        navigate({ page: Login, clearHistory: true, animated: false })}
+        navigate({
+          page: Login,
+          clearHistory: true,
+          animated: false,
+          props: { onComplete },
+        })}
     >
       <span class="text-md p-4 text-black dark:text-white">
         Already have an account?
