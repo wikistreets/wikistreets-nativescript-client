@@ -13,7 +13,7 @@
 
   let gps: GPS
 
-  let stepIndex = 1
+  let stepIndex = 2
 
   // get a reference to the current page to pass to child components
   let pageRef: Page
