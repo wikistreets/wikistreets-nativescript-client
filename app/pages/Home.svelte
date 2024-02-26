@@ -2,6 +2,7 @@
 
 <script lang="ts">
   import { Page, View, EventData, Screen } from '@nativescript/core'
+  import { get } from 'svelte/store'
   import { GPS } from '@nativescript-community/gps'
   import { Drawer } from '@nativescript-community/ui-drawer'
   import Header from '~/components/Header.svelte'
@@ -24,7 +25,7 @@
 
   // controls for the persistent bottom sheet
   let stepIndex = config.bottomSheet.startSnap
-  let bottomSheetSteps = config.bottomSheet.snapPoints
+  let steps = config.bottomSheet.snapPoints
 
   const pageLoad = (args: EventData) => {
     /**
@@ -44,6 +45,12 @@
       console.log(`feed - y: ${Math.round(y)}`)
       // mapWatcher.view.height = screenHeight - (screenHeight - y) // update map
     })
+  }
+
+  function nextStep() {
+    // increment step index but return to zero if at end
+    stepIndex = stepIndex === steps.length - 1 ? 0 : stepIndex + 1
+    console.log(`step: ${stepIndex} -> ${steps[stepIndex]}`)
   }
 
   function onBottomSheetStepIndexChange(e) {
@@ -71,7 +78,7 @@
   <bottomSheet
     id="bottomSheet"
     {stepIndex}
-    bind:steps={bottomSheetSteps}
+    {steps}
     on:stepIndexChange={onBottomSheetStepIndexChange}
   >
     <drawer bind:this={drawer} class="drawer h-full w-full">
@@ -84,7 +91,12 @@
         htmlFilePath="~/assets/leaflet.html"
       />
     </drawer>
-    <Feed id="feed" prop:bottomSheet class="h-full w-full" />
+    <Feed
+      id="feed"
+      prop:bottomSheet
+      class="h-full w-full"
+      onGripTap={nextStep}
+    />
   </bottomSheet>
 </page>
 

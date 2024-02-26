@@ -3,6 +3,6 @@ export const config = {
 
   bottomSheet: {
     startSnap: 3,
-    snapPoints: [20, 140, 200, 400, 600, 700],
+    snapPoints: [20, 200, 400, 600, 700],
   },
 }

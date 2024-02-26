@@ -36,6 +36,8 @@
     return index % 2 === 0 ? 'even' : 'odd'
   }
 
+  export let onGripTap: () => void // when user taps the grip at the top of the feed
+
   let feedbackMessage: string
   $: feedbackMessage = $isAuthenticated
     ? `${$user?.handle}'s feed`
@@ -59,8 +61,9 @@
 
 <stackLayout orientation="vertical" {...$$restProps}>
   <label
-    class="py-4 text-center text-md bg-slate-600 rounded-t-sm"
+    class="py-4 text-center text-md bg-slate-600 rounded-t-lg"
     text={feedbackMessage}
+    on:tap={onGripTap}
   />
   <pullrefresh bind:this={pullRefresh} on:refresh={refresh}>
     <listView
