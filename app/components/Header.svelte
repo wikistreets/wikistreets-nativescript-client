@@ -14,7 +14,7 @@
   let onSubmit: (e: any) => {}
 </script>
 
-<actionBar on:tap={clearSearch}>
+<actionBar on:tap={clearSearch} {...$$restProps}>
   <gridLayout
     columns="auto, *"
     rows="*"

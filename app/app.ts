@@ -18,6 +18,7 @@ import App from '~/App.svelte'
 installDrawer()
 DrawerElement.register()
 
+// necessary ui-drawer setup: https://github.com/nativescript-community/ui-persistent-bottomsheet
 installBottomSheet()
 BottomSheetElement.register()
 
