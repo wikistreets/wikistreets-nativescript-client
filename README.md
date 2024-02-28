@@ -14,6 +14,14 @@ Native mobile app developed with Nativescript, Svelte, and TailwindCSS.
 - run the app without debugging in simulator: `ns run ios` or `ns run android`
 - run the app on a physical device - [see details](https://docs.nativescript.org/guide/running#running-on-physical-devices)
 
+## Debugging
+
+If running on Android produces errors about `Duplicate class` in Kotlin, follow the solution mentioned [here](https://stackoverflow.com/a/77432977) and insert the following line into the `platforms/android/build.gradle` at the bottom of the `dependencies { ... }` code block:
+
+```js
+implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
+```
+
 ## Toolkit
 
 Built with almost entirely open source platforms and tools, including but not limited to:
