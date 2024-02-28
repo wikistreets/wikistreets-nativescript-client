@@ -61,7 +61,7 @@
 
 <stackLayout orientation="vertical" {...$$restProps}>
   <label
-    class="py-4 text-center text-md bg-slate-600 rounded-t-lg"
+    class="py-4 text-center text-md text-white bg-slate-600 rounded-t-lg"
     text={feedbackMessage}
     on:tap={onGripTap}
   />
@@ -82,7 +82,7 @@
       <Template key="even" let:item>
         <PostListItem
           {item}
-          class="dark:bg-gray-900 border-b-gray-400 border-b-2"
+          class="bg-gray-200 dark:bg-gray-900 border-b-gray-400 border-b-2"
         />
       </Template>
     </listView>

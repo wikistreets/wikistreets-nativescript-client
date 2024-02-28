@@ -94,7 +94,7 @@
     <Feed
       id="feed"
       prop:bottomSheet
-      class="h-full w-full"
+      class="h-full w-full bg-slate-100"
       onGripTap={nextStep}
     />
   </bottomSheet>
