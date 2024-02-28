@@ -6,6 +6,7 @@ Native mobile app developed with Nativescript, Svelte, and TailwindCSS.
 
 - create Apple Developer account at https://developer.apple.com/
 - install [XCode](https://developer.apple.com/xcode/) and [Android Studio](https://developer.android.com/studio)
+- set up environment according to [instructions](https://docs.nativescript.org/setup/)
 - install nativescript: `npm install -g nativescript`
 - install dependencies: `npm install`
 - ensure that `tailwindcss` is at version 3.1.8, since later versions are [currently incompatible](https://github.com/NativeScript/tailwind/issues/187)
