@@ -1,8 +1,8 @@
 <!-- @component Home page showing the default map and recent activity feed. -->
 
 <script lang="ts">
-  import { Application, Frame, Page, View, EventData, Screen } from '@nativescript/core'
-  import { navigate } from 'svelte-native'
+  import { Application, Frame, Page, View, EventData, Screen, on } from '@nativescript/core'
+  import { navigate, showModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount } from 'svelte'
   import { get } from 'svelte/store'
@@ -20,12 +20,12 @@
   import { config } from '~/config/config'
 
   let parent: Frame | View
-  let page: NativeViewElementNode<Page>;
+  let page: NativeViewElementNode<Page>; // bound to page
+  let pageRef: Page // reference to the current page
 
   let gps: GPS
 
   // about the screen
-  let pageRef: Page // reference to the current page
   let screenHeight: number = Screen.mainScreen.heightDIPs
   let screenWidth: number = Screen.mainScreen.widthDIPs
   let mapWatcher: ViewWatcher
@@ -35,7 +35,9 @@
   let stepIndex = config.bottomSheet.startSnap
   let steps = config.bottomSheet.snapPoints
 
-  let feed: Feed
+  let feed: View
+  let map: View
+  let bottomSheet: View
   let posts: any[] = [] // will hold posts fetched from API
 
   onMount(() => {
@@ -52,6 +54,7 @@
      * Nativescript callback when page is loaded
      */
     pageRef = e.object as Page // save reference to the current page
+    // pageRef = page.nativeElement
     // console.log(`onPageLoad`)
     
     parent = Frame.topmost() || Application.getRootView()
@@ -72,12 +75,31 @@
     
   }
 
-  const onMarkerTap = (postId: number) => {
+  const onListItemTap = (e: any) => {
+    console.log(`Home.svelte: onMarkerTap ${JSON.stringify(e)}`)
+    const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
     navigate({
       page: PostDetails,
       props: { postId },
       clearHistory: false,
+      backstackVisible: false,
+      transition: {
+        name: 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
+        duration: 300,
+        curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
+      }
     })
+
+    // showModal({
+    //   target: parent,
+    //   page: PostDetails,
+    //   animated: true,
+    //   fullscreen: false,
+    //   stretched: true,
+    //   props: {
+    //     postId
+    //   },
+    // })
   }
 
   function nextStep() {
@@ -109,6 +131,7 @@
 <page bind:this={page}  on:navigatingTo={onPageLoad} actionBarHidden={true}>
   <Header id="header" onHamburger={toggleDrawer} />
   <bottomSheet
+    bind:this={bottomSheet}
     id="bottomSheet"
     {stepIndex}
     {steps}
@@ -123,7 +146,8 @@
         class="h-full w-full"
         page={pageRef}
         htmlFilePath="~/assets/leaflet.html"
-        { onMarkerTap }
+        bind:this={map}
+        on:markerTap={onListItemTap}
         { posts }
       />
     </drawer>
@@ -133,6 +157,7 @@
       prop:bottomSheet
       class="h-full w-full"
       { posts }
+      on:listItemTap={onListItemTap}
       onGripTap={nextStep}
     />
   </bottomSheet>

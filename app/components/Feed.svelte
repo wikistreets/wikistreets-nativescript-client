@@ -7,6 +7,7 @@
     ItemEventData,
     ScrollView,
   } from '@nativescript/core'
+  import { createEventDispatcher } from "svelte";
   import { Template } from 'svelte-native/components'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
@@ -16,6 +17,8 @@
   // import other pages or components
   import PostListItem from './PostListItem.svelte'
   import PostDetails from '../pages/PostDetails.svelte'
+
+  const dispatch = createEventDispatcher(); // for emitting messages to parent component
 
   export let posts: any[] = [] // prop will hold posts to put into feed and map
 
@@ -49,13 +52,9 @@
      * @param {object} e - the event arguments
      */
     const post = posts[e.index]
-    console.log(`listItemTap: ${post?.id} -> ${post?.properties.title}`)
+    const postId = post.id
+    dispatch('listItemTap', { postId })
     feedbackMessage = `Last viewed: ${post?.properties.title}`
-    navigate({
-      page: PostDetails,
-      props: { postId: post.id },
-      clearHistory: false,
-    })
   }
 </script>
 

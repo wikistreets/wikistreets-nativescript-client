@@ -1,8 +1,8 @@
-<!-- @component Wrapper around a WebView that loads the HTML code for a Leaflet map. -->
+<!-- @component Wrapper around a WebView that loads the HTML code for a Leaflet map. Emits markerTap event to parent component -->
 
 <script lang="ts">
-  import { Screen, Page, EventData, knownFolders } from '@nativescript/core'
-  import { onMount } from 'svelte'
+  import { Screen, Page, EventData, WebView, ViewBase, knownFolders } from '@nativescript/core'
+  import { onMount, createEventDispatcher } from 'svelte'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
   const webViewInterfaceModule = require('nativescript-webview-interface')
     
@@ -17,38 +17,42 @@
   export { pageRef as page }
   export let htmlFilePath: string
   export let posts: any[] = [] // will hold posts to put onto map
-  export let onMarkerTap: (postId: number) => void // when user taps a marker on the map
+  // export let onMarkerTap: (postId: number) => void // when user taps a marker on the map
 
-  let interfaceObj: any
   let isWebViewLoaded: boolean = false
+  let webViewInterface: any // for passing messages to/from webview
+  const dispatch = createEventDispatcher(); // for emitting messages to parent component
 
   // get handle on webview interface once page has loaded
-  $: webView = pageRef ? pageRef.getViewById('webview') : null
-  $: oWebViewInterface = webView
+  let webView = null
+  // $: webView = pageRef ? pageRef.getViewById('webview') : null
+  $: webView
     ? (() => {
+      // set up bi-directional webview message passing
+
         // console.log(`webView set to: ${webView}`)
-        interfaceObj = new webViewInterfaceModule.WebViewInterface(
-          webView,
+        webViewInterface = new webViewInterfaceModule.WebViewInterface(
+          webView.nativeElement, // must get native element
           htmlFilePath,
         )
-        // console.log(`webViewInterface set to: ${interfaceObj}`)
+        // console.log(`webViewInterface set to: ${webViewInterface}`)
 
-        interfaceObj.on('onload', () => {
-          console.log('Webview loaded')
+        webViewInterface.on('onload', () => {
+          // once the webview has fully loaded, we can pass it data
           isWebViewLoaded = true
-          interfaceObj.emit('messageToWebView', `foobarbazbum`) //!
+          // webViewInterface.emit('messageToWebView', `foobarbazbum`) //!
         })
 
-        interfaceObj.on('messageToNativeScript', (message: string) => {
+        webViewInterface.on('messageToNativeScript', (message: string) => {
           console.log(`From webView: ${message}`)
         })
 
-        interfaceObj.on('onMarkerTap', (postId: number) => {
-          console.log(`Marker ${postId} tapped`)
-          onMarkerTap(postId)
+        webViewInterface.on('onMarkerTap', (postId: number) =>  {       
+          // console.log(`Leaflet.svelte: onMarkerTap postId ${postId}`)
+          dispatch('markerTap', { postId })
         })
 
-        return interfaceObj
+        return webViewInterface
       })()
     : null
 
@@ -56,7 +60,7 @@
   $: (isWebViewLoaded) ? (() => {
       console.log(`Passing ${posts.length} posts to webView.`)
       posts.forEach((post) => {
-        interfaceObj.emit('makeMarker', post)
+        webViewInterface.emit('makeMarker', post)
       })
 
     })() : null
@@ -64,7 +68,7 @@
 
     const onLongPress = (e: EventData) => {
       console.log(`long press!`)
-      interfaceObj.emit('clearSelection')
+      webViewInterface.emit('clearSelection')
 
     }
 
@@ -76,5 +80,5 @@
 
 <absoluteLayout backgroundColor="red"  {...$$restProps} on:longPress={onLongPress} >
   <label top="10" left={centerX} backgroundColor="blue" text="Leaflet" class="bg-red-800 text-lg text-center m-0 p-4 z-10" />
-  <webView class="w-full h-full z-0" id="webview" src={htmlFilePath} />
+  <webView bind:this={webView} class="w-full h-full z-0" id="webview" src={htmlFilePath} />
 </absoluteLayout>
