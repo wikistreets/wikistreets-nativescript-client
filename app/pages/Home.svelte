@@ -1,18 +1,26 @@
 <!-- @component Home page showing the default map and recent activity feed. -->
 
 <script lang="ts">
-  import { Page, View, EventData, Screen } from '@nativescript/core'
+  import { Application, Frame, Page, View, EventData, Screen } from '@nativescript/core'
+  import { navigate } from 'svelte-native'
+  import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
+  import { onMount } from 'svelte'
   import { get } from 'svelte/store'
   import { GPS } from '@nativescript-community/gps'
   import { Drawer } from '@nativescript-community/ui-drawer'
   import Header from '~/components/Header.svelte'
   import HamburgerMenu from '~/components/HamburgerMenu.svelte'
   import Feed from '~/components/Feed.svelte'
+  import PostDetails from './PostDetails.svelte';
   import Leaflet from '~/components/Leaflet.svelte'
   // import Theme from '@nativescript/theme' // to detect dark mode
   // import Footer from '~/components/Footer.svelte'
   import { ViewWatcher } from '~/stores/view'
+  import { FeatureService } from '../services/FeatureService'
   import { config } from '~/config/config'
+
+  let parent: Frame | View
+  let page: NativeViewElementNode<Page>;
 
   let gps: GPS
 
@@ -27,12 +35,28 @@
   let stepIndex = config.bottomSheet.startSnap
   let steps = config.bottomSheet.snapPoints
 
-  const pageLoad = (args: EventData) => {
+  let feed: Feed
+  let posts: any[] = [] // will hold posts fetched from API
+
+  onMount(() => {
     /**
-     * This function is called when the page is navigated to.
+     * Svelte hook when page is mounted
+    */
+
+    // fetch data to put into feed and map
+    posts = FeatureService.getInstance().getFeatures() // mock data for now
+  })
+
+  const onPageLoad = (e: EventData) => {
+    /**
+     * Nativescript callback when page is loaded
      */
-    pageRef = args.object as Page // save reference to the current page
-    console.log(`screen w: ${screenWidth}, h: ${screenHeight}`)
+    pageRef = e.object as Page // save reference to the current page
+    // console.log(`onPageLoad`)
+    
+    parent = Frame.topmost() || Application.getRootView()
+    console.log(`page: ${page}, parent: ${parent}`)
+    // console.log(`screen w: ${screenWidth}, h: ${screenHeight}`)
 
     // watch for changes to the map and feed views
     const headerWatcher = new ViewWatcher(
@@ -42,8 +66,17 @@
     mapWatcher = new ViewWatcher(pageRef.getViewById('map'), 'map')
     feedWatcher = new ViewWatcher(pageRef.getViewById('feed'), 'feed')
     feedWatcher.y.subscribe(y => {
-      console.log(`feed - y: ${Math.round(y)}`)
+      console.log(`feed y: ${Math.round(y)}`)
       // mapWatcher.view.height = screenHeight - (screenHeight - y) // update map
+    })
+    
+  }
+
+  const onMarkerTap = (postId: number) => {
+    navigate({
+      page: PostDetails,
+      props: { postId },
+      clearHistory: false,
     })
   }
 
@@ -73,15 +106,16 @@
   }
 </script>
 
-<page on:navigatingTo={pageLoad}>
+<page bind:this={page}  on:navigatingTo={onPageLoad} actionBarHidden={true}>
   <Header id="header" onHamburger={toggleDrawer} />
   <bottomSheet
     id="bottomSheet"
     {stepIndex}
     {steps}
     on:stepIndexChange={onBottomSheetStepIndexChange}
-  >
-    <drawer bind:this={drawer} class="drawer h-full w-full">
+  > <!-- feed wrapper -->
+    <drawer bind:this={drawer} class="drawer h-full w-full" on:start={onOpenDrawer} on:close={onCloseDrawer} > <!-- hamburger menu wrapper-->
+
       <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
       <Leaflet
         id="map"
@@ -89,12 +123,16 @@
         class="h-full w-full"
         page={pageRef}
         htmlFilePath="~/assets/leaflet.html"
+        { onMarkerTap }
+        { posts }
       />
     </drawer>
     <Feed
       id="feed"
+      bind:this={feed}
       prop:bottomSheet
-      class="h-full w-full bg-slate-100"
+      class="h-full w-full"
+      { posts }
       onGripTap={nextStep}
     />
   </bottomSheet>

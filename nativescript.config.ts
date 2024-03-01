@@ -7,5 +7,9 @@ export default {
   android: {
     v8Flags: "--expose_gc",
     markingMode: "none",
+    // discardUncaughtJsExceptions: true, // prevent throwing javascript errors to the native side
+  },
+  ios: {
+    // discardUncaughtJsExceptions: true, // prevent throwing javascript errors to the native side
   },
 } as NativeScriptConfig;

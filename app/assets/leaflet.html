@@ -2,6 +2,22 @@
   <head>
     <meta charset="UTF-8" />
     <title>Leaflet</title>
+    <style type="text/css">
+      html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        /* prevent anything from being selected */
+        -webkit-user-select:none;
+        -moz-user-select: -moz-none;
+        -ms-user-select:none;
+        user-select:none
+      }
+      #map {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
     <link
       rel="stylesheet"
       href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
@@ -17,17 +33,77 @@
     <!-- connect to nativescript-webview-interface.js in NativeScript part of code -->
     <script src="./nativescript-webview-interface.js"></script>
     <script type="text/javascript">
+
+      // create the map
+      const createMap = () => {
+        const map = L.map('map', {
+          attributionControl: false,
+          zoomControl: true,
+        }).setView([51.505, -0.09], 5)
+
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+        }).addTo(map)
+
+        // test marker
+        L.marker([51.5, -0.09])
+        .addTo(map)
+        .on('click', function (e) {
+          nsWebViewInterface.emit('messageToNativeScript', 'Clicked on test marker!')
+        })
+        // .bindPopup('A pretty CSS popup.<br> Easily customizable.')
+        // .openPopup()
+
+        return map
+      }
+
       // interface to NativeScript app
       window.onload = () => {
+
+        const map = createMap() // initialize the leaflet map
+
         nsWebViewInterface.emit('onload') // shoot onload message to NativeScript app
 
-        // receive messages from NativeScript app
+        // receive messages from NativeScript app        
         nsWebViewInterface.on('messageToWebView', function (message) {
+          // shoot test message to NativeScript app
           nsWebViewInterface.emit(
             'messageToNativeScript',
-            `Hello from webView! Thanks for the message: '${message}'`
-          ) // shoot message to NativeScript app
-        })
+            `Received message: '${message}'`
+          ) 
+        }) // messageToWebView
+
+        // clear any selected text
+        nsWebViewInterface.on('clearSelection', e => {
+          // this is no longer necessary, thanks to CSS code that prevents selection
+          // console.log('webView: clearSelection')
+          if (window.getSelection) window.getSelection().removeAllRanges()
+          if (document.selection) document.selection.empty()
+          nsWebViewInterface.emit(
+            'messageToNativeScript',
+            `Cleared selection`
+          ) 
+        }) // clearSelection
+
+        // make a marker and place on map
+        nsWebViewInterface.on('makeMarker', post => {
+          nsWebViewInterface.emit('messageToNativeScript', `Got a post!`)
+          if (post.geometry.type === 'Point') {
+            // points in leaflet have [lat,lng] format, whereas geojson in post has [lng,lat]
+            const coords = [
+              post.geometry.coordinates[1], 
+              post.geometry.coordinates[0],
+            ]
+            L.marker(coords)
+              .addTo(map)
+              .on('click', function (e) {
+                nsWebViewInterface.emit('messageToNativeScript', `Marker tap`)
+                nsWebViewInterface.emit('onMarkerTap', post.id)
+              })
+          }
+        }) // makeMarker
+
       }
     </script>
     <style>
@@ -44,21 +120,5 @@
   </head>
   <body>
     <div id="map" class="map"></div>
-    <script>
-      var map = L.map('map', {
-        attributionControl: false,
-        zoomControl: false,
-      }).setView([51.505, -0.09], 13)
-
-      L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution:
-          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-      }).addTo(map)
-
-      L.marker([51.5, -0.09])
-        .addTo(map)
-        .bindPopup('A pretty CSS popup.<br> Easily customizable.')
-        .openPopup()
-    </script>
   </body>
 </html>

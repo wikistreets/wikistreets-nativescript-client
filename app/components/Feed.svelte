@@ -11,12 +11,13 @@
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
   import { PullToRefresh } from '@nativescript-community/ui-pulltorefresh'
-  import { FeatureService } from '../services/FeatureService'
   import { user, isAuthenticated } from '~/stores/auth'
 
   // import other pages or components
   import PostListItem from './PostListItem.svelte'
   import PostDetails from '../pages/PostDetails.svelte'
+
+  export let posts: any[] = [] // prop will hold posts to put into feed and map
 
   let pullRefresh: NativeViewElementNode<PullToRefresh>
   async function refresh() {
@@ -30,7 +31,6 @@
     }
   }
 
-  let posts = FeatureService.getInstance().getFeatures()
   let selectListItemTemplate = (item: any, index: number, items: any[]) => {
     // different list item keys for even and odd rows
     return index % 2 === 0 ? 'even' : 'odd'
@@ -67,7 +67,7 @@
   />
   <pullrefresh bind:this={pullRefresh} on:refresh={refresh}>
     <listView
-      class="list-group"
+      class="list-group  bg-slate-100"
       separatorColor="transparent"
       items={posts}
       itemTemplateSelector={selectListItemTemplate}

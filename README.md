@@ -14,13 +14,27 @@ Native mobile app developed with Nativescript, Svelte, and TailwindCSS.
 - run the app without debugging in simulator: `ns run ios` or `ns run android`
 - run the app on a physical device - [see details](https://docs.nativescript.org/guide/running#running-on-physical-devices)
 
-## Debugging
+## Testing
 
-If running on Android produces errors about `Duplicate class` in Kotlin, follow the solution mentioned [here](https://stackoverflow.com/a/77432977) and insert the following line into the `platforms/android/build.gradle` at the bottom of the `dependencies { ... }` code block:
+The project is set up to run unit tests using [jasmine](https://jasmine.github.io/).  Tests should be placed in the `app`/`tests` directory.  Run them with `ns test ios` or `ns test android`.  Optional flags include `--emulator` to launch the tests within the device emulator, `--justlaunch` to quit the emulator once tests are complete, and `--watch` to re-launch the tests automatically upon code change.
+
+## Troubleshooting
+
+If running on Android produces errors about `Duplicate class` in Kotlin, follow the solution mentioned [here](https://stackoverflow.com/a/77432977) and insert the following line into the `platforms/android/app/build.gradle` at the bottom of the `dependencies { ... }` code block:
 
 ```js
 implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 ```
+
+## Documentation
+
+Nativescript and Svelte Native are woefully underdocumented.  However, here are a few useful links:
+- [Nativescript v7 documentation](https://v7.docs.nativescript.org/), while out of date, contains the most thorough documentation of the basic concepts of Nativescript development.
+- [Nativescript v8 documentation](https://docs.nativescript.org/), while useful and up to date, does a poor job explaining some fundamental concepts.
+- [Svelte Native documentation](https://svelte-native.technology/) provides some simple notes about getting started with Svelte and Nativescript.
+- [Svelte documentation](https://svelte.dev/), while focused on web apps, is useful in understanding Svelte props, stores, and other core features.
+- [Nativescript Community Plugins](https://github.com/nativescript-community) - extensions that provide common functionality.
+
 
 ## Toolkit
 
