@@ -61,8 +61,8 @@
           // console.log(`Leaflet.svelte: onMarkerTap postId ${postId}`)
           dispatch('markerTap', { postId })
           // center map on tapped marker
-          const post = posts.find((p) => p.id === postId)
-          webViewInterface.emit('setCenter', center) // set map center
+          // const post = posts.find((p) => p.id === postId)
+          // webViewInterface.emit('setCenter', center) // set map center
         })
 
         return webViewInterface
