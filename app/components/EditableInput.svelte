@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { EventData } from '@nativescript/core'
+  import { TapGestureEventData } from "@nativescript/core/ui/gestures"
+
   export let text: string = 'Enter here...'
   export let label: string = ''
   export let onChange: Function = () => {}
@@ -20,13 +23,13 @@
 
   let editable: boolean = false
 
-  const onSubmit = () => {
+  const onSubmit = (e: EventData) => {
     editable = false
     console.log(`onSubmit: ${label} -> ${text}`) // debugging
     onChange(text)
   }
 
-  const toggleEditable = () => {
+  const toggleEditable = (e: TapGestureEventData) => {
     editable = editable ? false : true
   }
 </script>

@@ -78,12 +78,11 @@
 
     })() : null // isWebViewLoaded
 
+    // const onLongPress = (e: EventData) => {
+    //   console.log(`long press!`)
+    //   webViewInterface.emit('clearSelection')
 
-    const onLongPress = (e: EventData) => {
-      console.log(`long press!`)
-      webViewInterface.emit('clearSelection')
-
-    }
+    // }
 
     onMount(() => {
       // posts are not yet available onMount
@@ -91,7 +90,7 @@
     })
 </script>
 
-<absoluteLayout backgroundColor="red"  {...$$restProps} on:longPress={onLongPress} >
+<absoluteLayout backgroundColor="red"  {...$$restProps} on:longPress >
   <label top="10" left={centerX} backgroundColor="blue" text="Leaflet" class="bg-red-800 text-lg text-center m-0 p-4 z-10" />
   <webView bind:this={webView} class="w-full h-full z-0" id="webview" src={htmlFilePath} />
 </absoluteLayout>

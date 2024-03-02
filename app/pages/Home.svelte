@@ -1,8 +1,7 @@
 <!-- @component Home page showing the default map and recent activity feed. -->
-
 <script lang="ts">
   import { Application, Frame, Page, View, EventData, Screen, on } from '@nativescript/core'
-  import { navigate, showModal } from 'svelte-native'
+  import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount } from 'svelte'
   import { get } from 'svelte/store'
@@ -12,6 +11,7 @@
   import HamburgerMenu from '~/components/HamburgerMenu.svelte'
   import Feed from '~/components/Feed.svelte'
   import PostDetails from './PostDetails.svelte';
+  import AuthModalFrame from '~/components/AuthModalFrame.svelte';
   import Leaflet from '~/components/Leaflet.svelte'
   // import Theme from '@nativescript/theme' // to detect dark mode
   // import Footer from '~/components/Footer.svelte'
@@ -39,6 +39,7 @@
 
   let feed: View
   let map: View
+  // let mapVisibility = 'visible' // 'visible' | 'collapsed' | 'hidden'
   let mapBbox: number[]
   let mapCenter: any
   let bottomSheet: View
@@ -84,21 +85,32 @@
     // })
   }
 
-  const onListItemTap = (e: any) => {
+  const onListItemTap = (e: CustomEvent) => {
     console.log(`Home.svelte: onMarkerTap ${JSON.stringify(e)}`)
     const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
-    navigate({
-      page: PostDetails,
-      props: { postId },
-      clearHistory: false,
-      backstackVisible: false,
-      transition: {
-        name: (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
-        duration: 300,
-        curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
-      }
-    })
 
+    // navigate({
+    //   page: PostDetails,
+    //   props: { postId },
+    //   clearHistory: false,
+    //   backstackVisible: false,
+    //   transition: {
+    //     name: (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
+    //     duration: 300,
+    //     curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
+    //   }
+    // })
+
+    // drawer.close()
+    showModal({
+      page: AuthModalFrame,
+      animated: true,
+      props: {
+        postId,
+        pageName: 'PostDetails',
+        actionBarHidden: false,
+      },
+    })
     // showModal({
     //   target: parent,
     //   page: PostDetails,
@@ -107,8 +119,17 @@
     //   stretched: true,
     //   props: {
     //     postId
-    //   },
-    // })
+    //   }
+    // })    
+  }
+
+  /**
+   * Handler for a long press on the Leaflet component
+   * @param e a Svelte event, which follows the CustomEvent API standard (https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent)
+   */
+  const onMapLongPress = (e: CustomEvent) => {
+      console.log(`Long press!`)
+      // webViewInterface.emit('clearSelection')
   }
 
   function nextStep() {
@@ -137,7 +158,7 @@
   }
 </script>
 
-<page bind:this={page}  on:navigatingTo={onPageLoad} actionBarHidden={true}>
+<page bind:this={page}  on:navigatingTo={onPageLoad}>
   <Header id="header" onHamburger={toggleDrawer} />
   <bottomSheet
     bind:this={bottomSheet}
