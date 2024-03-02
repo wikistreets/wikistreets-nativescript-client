@@ -13,21 +13,18 @@
     console.log(`PostDetails.svelte: onMount()`)
   })
 
+  let closePage = (e) => {
+    // by default, assume this page is being displayed normally and we can go back
+    goBack()
+  }
+
   const onShownModally = (e) => {
-    console.log(`PostDetails.svelte: onShownModally()`)
-    const page = e.object as Page
-    const context = fromObject({
-      ...e.context,
-      onClose(args: EventData) {
-        // unclear what this is for.  see https://docs.nativescript.org/guide/navigation/modals
-        console.log(`PostDetails.svelte: onClose()`)
-        // const button = args.object as Button
-        // button.closeModal({
-        //   name: context.name, // 'John Doe - EDITED'
-        // })
-      },
-    })
-    page.bindingContext = context // what does this do, i don't know
+    // if this page is within a modal, change how we close the page
+    // console.log(`PostDetails.svelte: onShownModally()`)
+    // const page = e.object as Page
+    closePage = (e) => {
+      closeModal(e)
+    }
   }
 
 </script>
@@ -45,7 +42,7 @@
       ios.systemIcon="9"
       android.systemIcon="ic_menu_share"
       text="Cancel"
-      on:tap={() => closeModal('Login form canceled')}
+      on:tap={() => closePage('Share it... but just not now')}
     />
   </actionBar>
   <stackLayout height="100%" class="p-4">

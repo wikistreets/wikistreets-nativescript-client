@@ -17,6 +17,7 @@
   // import Footer from '~/components/Footer.svelte'
   import { ViewWatcher } from '~/stores/view'
   import { FeatureService } from '../services/FeatureService'
+  import { Feature, FeatureCollection as Collection } from '@turf/turf'
   import { config } from '~/config/config'
 
   let parent: Frame | View
@@ -30,6 +31,7 @@
   let screenWidth: number = Screen.mainScreen.widthDIPs
   let mapWatcher: ViewWatcher
   let feedWatcher: ViewWatcher
+  let headerWatcher: ViewWatcher
 
   // controls for the persistent bottom sheet
   let stepIndex = config.bottomSheet.startSnap
@@ -37,8 +39,12 @@
 
   let feed: View
   let map: View
+  let mapBbox: number[]
+  let mapCenter: any
   let bottomSheet: View
-  let posts: any[] = [] // will hold posts fetched from API
+  let posts: Feature[] = [] // will hold posts fetched from API
+  let collection: Collection // will hold a collection fetched from the API
+  const fs = FeatureService.getInstance()
 
   onMount(() => {
     /**
@@ -46,7 +52,11 @@
     */
 
     // fetch data to put into feed and map
-    posts = FeatureService.getInstance().getFeatures() // mock data for now
+    posts = fs.getFeatures() // mock data for now
+    collection = fs.getCollection() // mock data for now
+    mapBbox = fs.getBbox(collection)
+    mapCenter = fs.getCenter(collection)
+    // console.log(JSON.stringify(bbox, null, 2))
   })
 
   const onPageLoad = (e: EventData) => {
@@ -62,17 +72,16 @@
     // console.log(`screen w: ${screenWidth}, h: ${screenHeight}`)
 
     // watch for changes to the map and feed views
-    const headerWatcher = new ViewWatcher(
+    headerWatcher = headerWatcher ? headerWatcher : new ViewWatcher(
       pageRef.getViewById('header'),
       'header',
     )
-    mapWatcher = new ViewWatcher(pageRef.getViewById('map'), 'map')
-    feedWatcher = new ViewWatcher(pageRef.getViewById('feed'), 'feed')
-    feedWatcher.y.subscribe(y => {
-      console.log(`feed y: ${Math.round(y)}`)
-      // mapWatcher.view.height = screenHeight - (screenHeight - y) // update map
-    })
-    
+    mapWatcher = (mapWatcher) ? mapWatcher : new ViewWatcher(pageRef.getViewById('map'), 'map')
+    feedWatcher = feedWatcher ? feedWatcher : new ViewWatcher(pageRef.getViewById('feed'), 'feed')
+    // feedWatcher.y.subscribe(y => {
+    //   console.log(`feed y: ${Math.round(y)}`)
+    //   // mapWatcher.view.height = screenHeight - (screenHeight - y) // update map
+    // })
   }
 
   const onListItemTap = (e: any) => {
@@ -84,7 +93,7 @@
       clearHistory: false,
       backstackVisible: false,
       transition: {
-        name: 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
+        name: (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
         duration: 300,
         curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
       }
@@ -149,6 +158,8 @@
         bind:this={map}
         on:markerTap={onListItemTap}
         { posts }
+        bbox={ mapBbox }
+        center={ mapCenter }
       />
     </drawer>
     <Feed

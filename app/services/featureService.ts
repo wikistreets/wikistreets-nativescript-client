@@ -1,10 +1,12 @@
-import { Feature } from '../models/feature'
+import { bbox, center, centerOfMass, collect } from '@turf/turf'
+import { FeatureCollection as Collection, Feature} from '@turf/turf'
 
 export class FeatureService {
   private features: Feature[] = [
     {
       id: 1,
-      geometry: {
+      type: "Feature",
+			geometry: {
         coordinates: [-8.4504292, 39.4670766],
         type: 'Point',
       },
@@ -16,7 +18,8 @@ export class FeatureService {
     },
     {
       id: 2,
-      geometry: {
+      type: "Feature",
+			geometry: {
         coordinates: [123.6231723, -10.344067],
         type: 'Point',
       },
@@ -28,7 +31,8 @@ export class FeatureService {
     },
     {
       id: 3,
-      geometry: { coordinates: [169.2803499, -19.54172], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [169.2803499, -19.54172], type: 'Point' },
       properties: {
         title: 'Waterbuck, common',
         body: 'Nam nulla.',
@@ -37,7 +41,8 @@ export class FeatureService {
     },
     {
       id: 4,
-      geometry: { coordinates: [43.394005, -11.4749128], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [43.394005, -11.4749128], type: 'Point' },
       properties: {
         title: 'Koala',
         body: 'Suspendisse potenti. In eleifend quam a odio.',
@@ -46,7 +51,8 @@ export class FeatureService {
     },
     {
       id: 5,
-      geometry: { coordinates: [23.50527, -33.29717], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [23.50527, -33.29717], type: 'Point' },
       properties: {
         title: 'Buttermilk snake',
         body: 'Nunc nisl. Duis bibendum, felis sed interdum venenatis, turpis enim blandit mi, in porttitor pede justo eu massa.',
@@ -55,7 +61,8 @@ export class FeatureService {
     },
     {
       id: 6,
-      geometry: { coordinates: [124.048453, 41.821778], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [124.048453, 41.821778], type: 'Point' },
       properties: {
         title: 'Toddy cat',
         body: 'Aliquam quis turpis eget elit sodales scelerisque. Mauris sit amet eros.',
@@ -64,7 +71,8 @@ export class FeatureService {
     },
     {
       id: 7,
-      geometry: { coordinates: [101.803717, 36.599744], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [101.803717, 36.599744], type: 'Point' },
       properties: {
         title: 'Wapiti, elk,',
         body: 'Donec dapibus. Duis at velit eu est congue elementum.',
@@ -73,7 +81,8 @@ export class FeatureService {
     },
     {
       id: 8,
-      geometry: { coordinates: [101.2750531, 14.0899827], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [101.2750531, 14.0899827], type: 'Point' },
       properties: {
         title: 'Gull, southern black-backed',
         body: 'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Nulla dapibus dolor vel est.',
@@ -82,7 +91,8 @@ export class FeatureService {
     },
     {
       id: 9,
-      geometry: { coordinates: [121.1174238, 30.1787074], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [121.1174238, 30.1787074], type: 'Point' },
       properties: {
         title: 'Eurasian beaver',
         body: 'Integer ac leo.',
@@ -91,7 +101,8 @@ export class FeatureService {
     },
     {
       id: 10,
-      geometry: { coordinates: [106.8030892, -6.6409658], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [106.8030892, -6.6409658], type: 'Point' },
       properties: {
         title: 'Red-winged hawk (unidentified)',
         body: 'Mauris ullamcorper purus sit amet nulla.',
@@ -100,7 +111,8 @@ export class FeatureService {
     },
     {
       id: 11,
-      geometry: { coordinates: [106.9093, -6.334631], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [106.9093, -6.334631], type: 'Point' },
       properties: {
         title: 'Frog (unidentified)',
         body: 'In eleifend quam a odio. In hac habitasse platea dictumst.',
@@ -109,7 +121,8 @@ export class FeatureService {
     },
     {
       id: 12,
-      geometry: { coordinates: [115.299029, 28.391349], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [115.299029, 28.391349], type: 'Point' },
       properties: {
         title: 'Steenbuck',
         body: 'Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis faucibus accumsan odio.',
@@ -118,7 +131,8 @@ export class FeatureService {
     },
     {
       id: 13,
-      geometry: { coordinates: [-73.7316825, 45.5734042], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [-73.7316825, 45.5734042], type: 'Point' },
       properties: {
         title: 'Raccoon, crab-eating',
         body: 'In hac habitasse platea dictumst.',
@@ -127,7 +141,8 @@ export class FeatureService {
     },
     {
       id: 14,
-      geometry: { coordinates: [-77.3439283, 1.2296124], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [-77.3439283, 1.2296124], type: 'Point' },
       properties: {
         title: 'Sacred ibis',
         body: 'Donec ut mauris eget massa tempor convallis. Nulla neque libero, convallis eget, eleifend luctus, ultricies eu, nibh.',
@@ -136,7 +151,8 @@ export class FeatureService {
     },
     {
       id: 15,
-      geometry: { coordinates: [23.2517507, 42.6687933], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [23.2517507, 42.6687933], type: 'Point' },
       properties: {
         title: 'Rat, white-faced tree',
         body: 'Nullam porttitor lacus at turpis. Donec posuere metus vitae ipsum.',
@@ -145,7 +161,8 @@ export class FeatureService {
     },
     {
       id: 16,
-      geometry: { coordinates: [112.837815, 22.060541], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [112.837815, 22.060541], type: 'Point' },
       properties: {
         title: 'Capuchin, brown',
         body: 'Donec quis orci eget orci vehicula condimentum. Curabitur in libero ut massa volutpat convallis.',
@@ -154,7 +171,8 @@ export class FeatureService {
     },
     {
       id: 17,
-      geometry: { coordinates: [105.1171246, 20.3814569], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [105.1171246, 20.3814569], type: 'Point' },
       properties: {
         title: "Coke's hartebeest",
         body: 'Maecenas pulvinar lobortis est. Phasellus sit amet erat.',
@@ -163,7 +181,8 @@ export class FeatureService {
     },
     {
       id: 18,
-      geometry: { coordinates: [-8.2776432, 41.4821084], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [-8.2776432, 41.4821084], type: 'Point' },
       properties: {
         title: 'Duiker, common',
         body: 'Etiam justo.',
@@ -172,7 +191,8 @@ export class FeatureService {
     },
     {
       id: 19,
-      geometry: { coordinates: [105.6259, -6.7267], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [105.6259, -6.7267], type: 'Point' },
       properties: {
         title: 'Cormorant, flightless',
         body: 'Morbi ut odio. Cras mi pede, malesuada in, imperdiet et, commodo vulputate, justo.',
@@ -181,7 +201,8 @@ export class FeatureService {
     },
     {
       id: 20,
-      geometry: { coordinates: [-40.1526661, -4.3253636], type: 'Point' },
+      type: "Feature",
+			geometry: { coordinates: [-40.1526661, -4.3253636], type: 'Point' },
       properties: {
         title: 'Gecko, barking',
         body: 'Etiam pretium iaculis justo.',
@@ -189,6 +210,11 @@ export class FeatureService {
       },
     },
   ]
+
+  private collection: Collection = {
+    type: 'FeatureCollection',
+    features: this.features,
+  }
 
   static getInstance(): FeatureService {
     return FeatureService._instance
@@ -200,7 +226,19 @@ export class FeatureService {
     return this.features
   }
 
+  getCollection(): Collection {
+    return this.collection
+  }
+
   getFeatureById(id: number): Feature | undefined {
     return this.features.find(feature => feature.id === id) || undefined
+  }
+
+  getBbox(collection: Collection): any {
+    return bbox(collection)
+  }
+
+  getCenter(collection: Collection): any {
+    return centerOfMass(collection)
   }
 }

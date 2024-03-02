@@ -32,6 +32,7 @@
 
     <!-- connect to nativescript-webview-interface.js in NativeScript part of code -->
     <script src="./nativescript-webview-interface.js"></script>
+    <script src="./decycle.js"></script><!-- for removing circular references in objects -->
     <script type="text/javascript">
 
       // create the map
@@ -47,11 +48,11 @@
         }).addTo(map)
 
         // test marker
-        L.marker([51.5, -0.09])
-        .addTo(map)
-        .on('click', function (e) {
-          nsWebViewInterface.emit('messageToNativeScript', 'Tapped test marker!')
-        })
+        // L.marker([51.5, -0.09])
+        // .addTo(map)
+        // .on('click', function (e) {
+        //   nsWebViewInterface.emit('messageToNativeScript', 'Tapped test marker!')
+        // })
         // .bindPopup('A pretty CSS popup.<br> Easily customizable.')
         // .openPopup()
 
@@ -63,47 +64,72 @@
 
         const map = createMap() // initialize the leaflet map
 
-        nsWebViewInterface.emit('onload') // shoot onload message to NativeScript app
+        try {
 
-        // receive messages from NativeScript app        
-        nsWebViewInterface.on('messageToWebView', function (message) {
-          // shoot test message to NativeScript app
-          nsWebViewInterface.emit(
-            'messageToNativeScript',
-            `Received message: '${message}'`
-          ) 
-        }) // messageToWebView
+          nsWebViewInterface.emit('onload') // shoot onload message to NativeScript app
+          // nsWebViewInterface.emit('takeThisMap', decycle(map)) // shoot onload message to NativeScript app
 
-        // clear any selected text
-        nsWebViewInterface.on('clearSelection', e => {
-          // this is no longer necessary, thanks to CSS code that prevents selection
-          // console.log('webView: clearSelection')
-          if (window.getSelection) window.getSelection().removeAllRanges()
-          if (document.selection) document.selection.empty()
-          nsWebViewInterface.emit(
-            'messageToNativeScript',
-            `Cleared selection`
-          ) 
-        }) // clearSelection
+          // receive messages from NativeScript app        
+          nsWebViewInterface.on('messageToWebView', function (message) {
+            // shoot test message to NativeScript app
+            nsWebViewInterface.emit(
+              'messageToNativeScript',
+              `Received message: '${message}'`
+            ) 
+          }) // messageToWebView
 
-        // make a marker and place on map
-        nsWebViewInterface.on('makeMarker', post => {
-          nsWebViewInterface.emit('messageToNativeScript', `Got a post!`)
-          if (post.geometry.type === 'Point') {
-            // points in leaflet have [lat,lng] format, whereas geojson in post has [lng,lat]
-            const coords = [
-              post.geometry.coordinates[1], 
-              post.geometry.coordinates[0],
-            ]
-            L.marker(coords)
-              .addTo(map)
-              .on('click', function (e) {
-                // nsWebViewInterface.emit('messageToNativeScript', `Marker tap`)
-                nsWebViewInterface.emit('onMarkerTap', post.id)
-              })
-          }
-        }) // makeMarker
+          // clear any selected text
+          nsWebViewInterface.on('clearSelection', e => {
+            // this is no longer necessary, thanks to CSS code that prevents selection
+            // console.log('webView: clearSelection')
+            if (window.getSelection) window.getSelection().removeAllRanges()
+            if (document.selection) document.selection.empty()
+            nsWebViewInterface.emit(
+              'messageToNativeScript',
+              `Cleared selection`
+            ) 
+          }) // clearSelection
 
+          // set the bounding box of the map
+          nsWebViewInterface.on('setBounds', bbox => {
+            nsWebViewInterface.emit('messageToNativeScript', `Got bbox: ${bbox}!`)
+            // console.log('webView: setBounds', bounds)
+            // turfjs provides a four value array for bounds... conver to leaflet 2x two value arrays
+            map.fitBounds([
+              [bbox[1], bbox[0]], // [min lat, min lng]
+              [bbox[3], bbox[2]], // [max lat, maxlng]
+            ])
+          }) // setBounds
+
+          // set the center and zoom of the map
+          nsWebViewInterface.on('setCenter', center => {
+            const [lng, lat] = center.geometry.coordinates
+            const zoom = 4
+            nsWebViewInterface.emit('messageToNativeScript', `Got center: [${lat}, ${lng}] from ${JSON.stringify(center)}!`)
+            map.setView([lat, lng], zoom)
+          }) // setCenter
+
+          // make a marker and place on map
+          nsWebViewInterface.on('makeMarker', post => {
+            nsWebViewInterface.emit('messageToNativeScript', `Got a post!`)
+            if (post.geometry.type === 'Point') {
+              // points in leaflet have [lat,lng] format, whereas geojson in post has [lng,lat]
+              const coords = [
+                post.geometry.coordinates[1], 
+                post.geometry.coordinates[0],
+              ]
+              L.marker(coords)
+                .addTo(map)
+                .on('click', function (e) {
+                  // nsWebViewInterface.emit('messageToNativeScript', `Marker tap`)
+                  nsWebViewInterface.emit('onMarkerTap', post.id)
+                })
+            }
+          }) // makeMarker
+          
+        } catch (error) {
+          nsWebViewInterface.emit('messageToNativeScript', `webView error: ${error}`)
+        }
       }
     </script>
     <style>

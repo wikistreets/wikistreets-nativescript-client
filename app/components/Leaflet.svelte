@@ -17,6 +17,8 @@
   export { pageRef as page }
   export let htmlFilePath: string
   export let posts: any[] = [] // will hold posts to put onto map
+  export let bbox: number[] // will hold the bounding box of the map
+  export let center: any // will hold the center of the map
   // export let onMarkerTap: (postId: number) => void // when user taps a marker on the map
 
   let isWebViewLoaded: boolean = false
@@ -25,6 +27,8 @@
 
   // get handle on webview interface once page has loaded
   let webView = null
+  let map: any // will hold map passed to use from webView
+
   // $: webView = pageRef ? pageRef.getViewById('webview') : null
   $: webView
     ? (() => {
@@ -40,7 +44,13 @@
         webViewInterface.on('onload', () => {
           // once the webview has fully loaded, we can pass it data
           isWebViewLoaded = true
+          console.log(`Leaflet.svelte: webView loaded.`)
           // webViewInterface.emit('messageToWebView', `foobarbazbum`) //!
+          // adjust viewport of the map to fit the markers
+          // console.log(`Leaflet.svelte: bbox -> ${bbox}, center -> ${JSON.stringify(center, null, 2)}`)
+          // if (bbox.length) webViewInterface.emit('setBounds', bbox) // set map bbox
+          // console.log(`Leaflet.svelte: center -> ${JSON.stringify(center, null, 2)}`)
+          if (center) webViewInterface.emit('setCenter', center) // set map center
         })
 
         webViewInterface.on('messageToNativeScript', (message: string) => {
@@ -50,6 +60,9 @@
         webViewInterface.on('onMarkerTap', (postId: number) =>  {       
           // console.log(`Leaflet.svelte: onMarkerTap postId ${postId}`)
           dispatch('markerTap', { postId })
+          // center map on tapped marker
+          const post = posts.find((p) => p.id === postId)
+          webViewInterface.emit('setCenter', center) // set map center
         })
 
         return webViewInterface
@@ -60,10 +73,10 @@
   $: (isWebViewLoaded) ? (() => {
       console.log(`Passing ${posts.length} posts to webView.`)
       posts.forEach((post) => {
-        webViewInterface.emit('makeMarker', post)
+        webViewInterface.emit('makeMarker', post) // place markers on map
       })
 
-    })() : null
+    })() : null // isWebViewLoaded
 
 
     const onLongPress = (e: EventData) => {
