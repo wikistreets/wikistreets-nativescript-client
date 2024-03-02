@@ -20,6 +20,7 @@
   import { Feature, FeatureCollection as Collection } from '@turf/turf'
   import { config } from '~/config/config'
 
+
   let parent: Frame | View
   let page: NativeViewElementNode<Page>; // bound to page
   let pageRef: Page // reference to the current page
@@ -29,9 +30,9 @@
   // about the screen
   let screenHeight: number = Screen.mainScreen.heightDIPs
   let screenWidth: number = Screen.mainScreen.widthDIPs
-  let mapWatcher: ViewWatcher
+  // let mapWatcher: ViewWatcher
   let feedWatcher: ViewWatcher
-  let headerWatcher: ViewWatcher
+  // let headerWatcher: ViewWatcher
 
   // controls for the persistent bottom sheet
   let stepIndex = config.bottomSheet.startSnap
@@ -73,11 +74,11 @@
     // console.log(`screen w: ${screenWidth}, h: ${screenHeight}`)
 
     // watch for changes to the map and feed views
-    headerWatcher = headerWatcher ? headerWatcher : new ViewWatcher(
-      pageRef.getViewById('header'),
-      'header',
-    )
-    mapWatcher = (mapWatcher) ? mapWatcher : new ViewWatcher(pageRef.getViewById('map'), 'map')
+    // headerWatcher = headerWatcher ? headerWatcher : new ViewWatcher(
+    //   pageRef.getViewById('header'),
+    //   'header',
+    // )
+    // mapWatcher = (mapWatcher) ? mapWatcher : new ViewWatcher(pageRef.getViewById('map'), 'map')
     feedWatcher = feedWatcher ? feedWatcher : new ViewWatcher(pageRef.getViewById('feed'), 'feed')
     // feedWatcher.y.subscribe(y => {
     //   console.log(`feed y: ${Math.round(y)}`)
@@ -86,7 +87,7 @@
   }
 
   const onListItemTap = (e: CustomEvent) => {
-    console.log(`Home.svelte: onMarkerTap ${JSON.stringify(e)}`)
+    // console.log(`Home.svelte: onMarkerTap ${JSON.stringify(e)}`)
     const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
 
     // navigate({
@@ -156,10 +157,23 @@
   function toggleDrawer() {
     drawer.toggle()
   }
+
+    // not using the below... but here for reference
+    // const oldOnHambuerger = () => {
+    //   $: {
+    //       if (isModal) {
+    //           menuIcon = 'mdi-close';
+    //       } else {
+    //           menuIcon = canGoBack ? (__IOS__ ? 'mdi-chevron-left' : 'mdi-arrow-left') : 'mdi-menu';
+    //       }
+    //   }
+    //   $: menuIconVisible = ((canGoBack || isModal) && !disableBackButton) || showMenuIcon;
+    //   $: menuIconVisibility = menuIconVisible ? 'visible' : 'collapse';
+    // }
 </script>
 
 <page bind:this={page}  on:navigatingTo={onPageLoad}>
-  <Header id="header" onHamburger={toggleDrawer} />
+  <!-- <Header id="header" on:hamburger={toggleDrawer} /> -->
   <bottomSheet
     bind:this={bottomSheet}
     id="bottomSheet"
@@ -170,18 +184,21 @@
     <drawer bind:this={drawer} class="drawer h-full w-full" on:start={onOpenDrawer} on:close={onCloseDrawer} > <!-- hamburger menu wrapper-->
 
       <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
-      <Leaflet
-        id="map"
-        prop:mainContent
-        class="h-full w-full"
-        page={pageRef}
-        htmlFilePath="~/assets/leaflet.html"
-        bind:this={map}
-        on:markerTap={onListItemTap}
-        { posts }
-        bbox={ mapBbox }
-        center={ mapCenter }
-      />
+      <absoluteLayout prop:mainContent backgroundColor="red" class="w-full h-full" on:longPress >
+        <!-- <label top="10" left={centerX} backgroundColor="blue" text="Leaflet" class="bg-red-800 text-lg text-center m-0 p-4 z-10" /> -->
+        <Leaflet
+          id="map"
+          class="h-full w-full z-1"
+          page={pageRef}
+          htmlFilePath="~/assets/leaflet.html"
+          bind:this={map}
+          on:markerTap={onListItemTap}
+          { posts }
+          bbox={ mapBbox }
+          center={ mapCenter }
+        />
+        <Header id="header" class="w-full m-2" on:hamburger={toggleDrawer} />
+      </absoluteLayout>
     </drawer>
     <Feed
       id="feed"

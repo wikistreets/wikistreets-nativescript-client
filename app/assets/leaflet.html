@@ -39,7 +39,7 @@
       const createMap = () => {
         const map = L.map('map', {
           attributionControl: false,
-          zoomControl: true,
+          zoomControl: false,
         }).setView([51.505, -0.09], 5)
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {

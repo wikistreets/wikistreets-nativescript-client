@@ -8,6 +8,8 @@
 
   export let onComplete: Function = () => {}
   export let postId: number
+  export let editable: boolean = true
+
   const post = FeatureService.getInstance().getFeatureById(postId)
 
   onMount(() => {
@@ -60,6 +62,14 @@
       text="Cancel"
       on:tap={e => { onComplete('PostDetail.svelte canceling') }}
     />
+    {#if editable}
+      <actionItem
+        ios.position="right"
+        android.position="actionBar"
+        text="Edit"
+        on:tap={e => { onComplete('PostDetail.svelte editing') }}
+      />
+    {/if}
     <actionItem
       ios.position="right"
       android.position="actionBar"

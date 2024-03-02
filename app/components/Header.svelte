@@ -6,7 +6,9 @@
   import { icons } from '../utils/icons'
   // import { user, isAuthenticated } from '~/stores/auth'
   import { closeModal, goBack } from 'svelte-native'
-  import { onMount } from 'svelte'
+  import { onMount, createEventDispatcher } from 'svelte'
+
+  const dispatch = createEventDispatcher(); // for emitting messages to parent component
 
   // BEGIN - these props and state variables may be useful to make header more dynamic, but not in use yet
   export let title: string = '';
@@ -58,57 +60,29 @@
   let searchQuery: string
 
   const onShowMenu = (e: EventData) => {
-    if (onHamburger) {
-      // if we know what to do, do it
-      onHamburger()
-    }
-    else if (isModal) {
-      // if we're in a modal, close it
-      closeModal(undefined);
-    }
-    else {
-      const frame = Frame.topmost();
-      if (frame['_executingContext']) {
-        // this means the frame is animating
-        // doing goBack would mean boing back up 2 levels because
-        // the animating context is not yet in the backStack
-        return;
-      }
-      // simply go back if regular page
-      goBack();
-    }
-
-    // not using the below... yet
-    $: {
-        if (isModal) {
-            menuIcon = 'mdi-close';
-        } else {
-            menuIcon = canGoBack ? (__IOS__ ? 'mdi-chevron-left' : 'mdi-arrow-left') : 'mdi-menu';
-        }
-    }
-    $: menuIconVisible = ((canGoBack || isModal) && !disableBackButton) || showMenuIcon;
-    $: menuIconVisibility = menuIconVisible ? 'visible' : 'collapse';
-
+    dispatch('hamburger') // emit a message to parent component
   }
 
   // let onSubmit: (e: any) => {}
 </script>
 
-<actionBar on:tap={clearClutter} {...$$restProps} backgroundColor="transparent">
+<!-- <actionBar on:tap={clearClutter} {...$$restProps} backgroundColor="transparent"> -->
   <gridLayout
     columns="auto, *"
     rows="*"
+    {...$$restProps} 
     horizontalAlignment="left"
-    class="pr-2 pb-2"
+    backgroundColor="transparent"
+    on:tap={clearClutter} 
     on:load={onSearchLayoutLoaded}
   >
     <label
       row="0"
       col="0"
       text={icons.menu}
-      class="text-xl icon"
+      class="text-xl icon bg-white dark:bg-black px-4 h-12 mx-2"
       on:tap={onShowMenu}
     />
-    <searchBar id="searchbar" row="0" col="1" class="text-lg" hint="Search" on:load={onSearchBarLoaded} />
+    <searchBar id="searchbar" row="0" col="1" class="bg-none text-lg ml-2 mr-6" hint="Search" on:load={onSearchBarLoaded} />
   </gridLayout>
-</actionBar>
+<!-- </actionBar> -->

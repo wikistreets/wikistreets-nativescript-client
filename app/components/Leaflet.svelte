@@ -5,6 +5,7 @@
   import { onMount, createEventDispatcher } from 'svelte'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
   const webViewInterfaceModule = require('nativescript-webview-interface')
+  import Header from './Header.svelte'
     
   // for positioning elements
   let screenHeight: number = Screen.mainScreen.heightDIPs
@@ -90,7 +91,4 @@
     })
 </script>
 
-<absoluteLayout backgroundColor="red"  {...$$restProps} on:longPress >
-  <label top="10" left={centerX} backgroundColor="blue" text="Leaflet" class="bg-red-800 text-lg text-center m-0 p-4 z-10" />
-  <webView bind:this={webView} class="w-full h-full z-0" id="webview" src={htmlFilePath} />
-</absoluteLayout>
+<webView bind:this={webView} id="webview" src={htmlFilePath} {...$$restProps}/>
