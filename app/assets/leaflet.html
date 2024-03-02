@@ -111,7 +111,7 @@
 
           // make a marker and place on map
           nsWebViewInterface.on('makeMarker', post => {
-            nsWebViewInterface.emit('messageToNativeScript', `Got a post!`)
+            // nsWebViewInterface.emit('messageToNativeScript', `Got a post!`)
             if (post.geometry.type === 'Point') {
               // points in leaflet have [lat,lng] format, whereas geojson in post has [lng,lat]
               const coords = [

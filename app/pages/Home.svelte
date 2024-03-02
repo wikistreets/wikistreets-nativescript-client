@@ -172,7 +172,7 @@
     // }
 </script>
 
-<page bind:this={page}  on:navigatingTo={onPageLoad}>
+<page bind:this={page}  on:navigatingTo={onPageLoad} actionBarHidden={true}>
   <!-- <Header id="header" on:hamburger={toggleDrawer} /> -->
   <bottomSheet
     bind:this={bottomSheet}

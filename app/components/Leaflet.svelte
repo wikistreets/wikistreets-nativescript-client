@@ -76,6 +76,8 @@
       posts.forEach((post) => {
         webViewInterface.emit('makeMarker', post) // place markers on map
       })
+      // center on the first post
+      if (posts.length) webViewInterface.emit('setCenter', posts[posts[0]]) // place markers on map      
 
     })() : null // isWebViewLoaded
 
