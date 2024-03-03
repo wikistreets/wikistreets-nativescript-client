@@ -56,15 +56,23 @@
 </script>
 
 <page {...$$restProps}>
-  <actionBar title="">
+  <actionBar title="" flat="true">
+    {#if __ANDROID__}
+      <navigationButton
+        android.systemIcon="ic_menu_close_clear_cancel"
+        text="Cancel"
+        on:tap={e => { onComplete('Login canceling') }}
+      />
+    {:else }
     <actionItem
       ios.position="left"
       android.position="actionBar"
       ios.systemIcon="24"
       android.systemIcon="ic_menu_close_clear_cancel"
       text="Cancel"
-      on:tap={() => onComplete('Login form canceled')}
+      on:tap={e => { onComplete('Login canceling') }}
     />
+    {/if}
     <actionItem
       ios.position="right"
       android.position="actionBar"

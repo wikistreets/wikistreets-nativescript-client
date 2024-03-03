@@ -39,13 +39,17 @@
       const southWest = L.latLng(-89.98155760646617, -180)
       const northEast = L.latLng(89.99346179538875, 180);
       const bounds = L.latLngBounds(southWest, northEast); // bounds of the world map
+      const mapEl = document.getElementById("map");
+
       const createMap = () => {
         const map = L.map('map', {
           attributionControl: false,
           zoomControl: false,
           worldCopyJump: true,
-          maxBounds: bounds // prevent panning outside world map
+          maxBounds: bounds, // prevent panning outside world map
+          minZoom: 2
         }).setView([51.505, -0.09], 5).fitWorld()
+        // map.setMinZoom( map.getBoundsZoom( map.options.maxBounds ) ) // another way to prevent zoom out of bounds
         map.on('drag', function() {
           // do not allow dragging off edge of world map
          map.panInsideBounds(bounds, { animate: false });
