@@ -1,6 +1,6 @@
 <!-- @component Home page showing the default map and recent activity feed. -->
 <script lang="ts">
-  import { Screen, Application, Frame, Page, View, EventData, on } from '@nativescript/core'
+  import { Screen, Application, Frame, Page, View, EventData, Utils, on } from '@nativescript/core'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount } from 'svelte'
@@ -82,6 +82,12 @@
     parent = Frame.topmost() || Application.getRootView()
     // console.log(`page: ${page}, parent: ${parent}`)
     // console.log(`screen w: ${screenWidth}, h: ${screenHeight}`)
+
+    // get rid of any keyboard
+    setTimeout(() => {
+      Utils.dismissKeyboard()
+      Utils.dismissSoftInput()
+    }, 1000)
 
     // watch for changes to the map and feed views
     // headerWatcher = headerWatcher ? headerWatcher : new ViewWatcher(

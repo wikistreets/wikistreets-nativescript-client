@@ -56,7 +56,7 @@
 </script>
 
 <page {...$$restProps}>
-  <actionBar>
+  <actionBar title="Sign in">
     <actionItem
       ios.position="left"
       android.position="actionBar"

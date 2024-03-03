@@ -61,7 +61,7 @@
 </script>
 
 <page {...$$restProps}>
-  <actionBar>
+  <actionBar title="Settings">
     <actionItem
       ios.position="left"
       android.position="actionBar"

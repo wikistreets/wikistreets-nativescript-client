@@ -51,7 +51,7 @@
             console.log(`Image taken: ${image.src}`)
         } catch (err) {
             console.error(err)
-            cameraLabelVisibility = 'visible'
+            // cameraLabelVisibility = 'visible'
         }
     }
   
@@ -88,7 +88,7 @@
   </script>
   
   <page {...$$restProps}>
-    <actionBar>
+    <actionBar title="Create a post">
       <actionItem
         ios.position="left"
         android.position="actionBar"
@@ -107,58 +107,56 @@
   
     <scrollView orientation="vertical" scrollBarIndicatorVisible={false}>
 
-        <stackLayout
-        orientation="vertical"
-        horizontalAlignment="center"
-        class="w-full"
-        >
+        <stackLayout orientation="vertical" horizontalAlignment="center" class="w-full" >
 
-        <gridLayout rows="*" columns="*" height="300" width="300" class="mx-auto align-middle text-center mt-8" on:tap={onCameraButtonTap}>
-            <image bind:this={image} row={1} col={1} class="bg-slate-200" />
-            <label visibility="{cameraLabelVisibility}" row={1} col={1} text="{icons.camera}" class="text-5xl icon text-center align-middle text-lg text-slate-500" />
-        </gridLayout>
-    
-        <textView editable={false} class="m-4 h-8 text-center">
-            <span class="w-full text-center text-lg my-0 p-4">
-            {#if !error}
-                Create a new post
-            {:else}
-                {error}
-            {/if}
-            </span>
-        </textView>
-    
-        <textField
-            hint="title"
-            bind:text={title}
-            autocapitalizationType="none"
-            autocorrect="false"
-            class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
-        />
-        <textView
-            hint="body"
-            bind:text={body}
-            autocapitalizationType="sentences"
-            autocorrect="true"
-            editable="true"
-            class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
-        />
-    
-        <label
-            class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
-            text="Save"
-            on:tap={onSubmit}
-        />
-    
-        <textView
-            editable={false}
-            class="m-4 text-center"
-            on:tap={() => onComplete('Create post form canceled')}
-        >
-            <span class="text-md p-4 text-black dark:text-white">
-            Cancel
-            </span>
-        </textView>
+            <!-- photo box -->
+            <gridLayout rows="*" columns="*" height="300" width="300" class="mx-auto align-middle text-center mt-8" on:tap={onCameraButtonTap}>
+                <image bind:this={image} row={1} col={1} class="bg-slate-200" />
+                <label visibility="{cameraLabelVisibility}" row={1} col={1} text="{icons.camera}" class="text-5xl icon text-center align-middle text-lg text-slate-500" />
+            </gridLayout>
+        
+            <!-- form fields -->
+            <textView editable={false} class="m-4 h-8 text-center">
+                <span class="w-full text-center text-lg my-0 p-4">
+                {#if !error}
+                    Create a new post
+                {:else}
+                    {error}
+                {/if}
+                </span>
+            </textView>
+        
+            <textField
+                hint="Title"
+                bind:text={title}
+                autocapitalizationType="sentences"
+                autocorrect="true"
+                class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
+            />
+            <textView
+                hint="Body"
+                bind:text={body}
+                autocapitalizationType="sentences"
+                autocorrect="true"
+                editable="true"
+                class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
+            />
+        
+            <label
+                class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
+                text="Save"
+                on:tap={onSubmit}
+            />
+        
+            <textView
+                editable={false}
+                class="m-4 text-center"
+                on:tap={() => onComplete('Create post form canceled')}
+            >
+                <span class="text-md p-4 text-black dark:text-white">
+                Cancel
+                </span>
+            </textView>
         </stackLayout>
     </scrollView>
 
