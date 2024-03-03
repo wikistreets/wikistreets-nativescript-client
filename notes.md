@@ -27,7 +27,7 @@ On iOS a frame always spans the full height of it's parent container, so it's no
 ```
 
 ## Page
-There are three ways to get access programmatically to a given `page`.
+There are a few ways to get access programmatically to a given `page`.
 
 ### Bind page to a variable
 Bind the `page` component to a variable - notice that its data type is a `NativeViewElement`, not directly a `Page`.
@@ -80,6 +80,43 @@ const onLabelTap = (e: EventData) {
 </page>
 ```
 
+## Frame
+There are a few ways to get access to a `frame`.
+
+### Topmost frame
+
+To access the topmost `frame` of the app from anywhere, use the `topmost()` method.
+
+```js
+import { Frame }  from '@nativescript/core'
+
+const frame: Frame = Frame.topmost()
+```
+
+### Determine frame from page
+
+If you already have a reference to a `page`, you can access the `frame` within which it resides:
+```js
+const frame: Frame = page.frame
+```
+
+### Determine frame from component
+
+It is possible to determine the frame within which a given component resides through an event triggered by the component.
+
+```jsx
+import { EventData, Label } from '@nativescript/core'
+
+const onLabelTap = (e: EventData) => {
+    const label: Label = e.object as Label
+    const frame: Frame = label.page.frame // get frame from component
+}
+
+// ...
+
+<label on:tap={onLabelTap} text='hi!' />
+```
+
 
 ## Events
 
@@ -92,14 +129,14 @@ User interface components in NativeScript have standard tap and gesture events t
 const onStackLayoutSwipe = (e: EventData) => {
     // do something
 }
-const on LabelTap = (e: EventData) => {
+const onLabelTap = (e: EventData) => {
     // do something else
 }
 
 // ...
 
 <stackLayout on:swipe={onStackLayoutSwipe}>
-    <label on:tap={onLabelTap} text='hi!'>
+    <label on:tap={onLabelTap} text='hi!' />
 </stackLayout>
 ```
 
