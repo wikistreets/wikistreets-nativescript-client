@@ -48,7 +48,7 @@
   let map: View
   // let mapVisibility = 'visible' // 'visible' | 'collapsed' | 'hidden'
   let mapBbox: number[]
-  let mapCenter: any
+  let mapCenterPoint: any
   let bottomSheet: View
   let posts: Feature[] = [] // will hold posts fetched from API
   let collection: Collection // will hold a collection fetched from the API
@@ -63,7 +63,7 @@
     posts = fs.getFeatures() // mock data for now
     collection = fs.getCollection() // mock data for now
     mapBbox = fs.getBbox(collection)
-    mapCenter = fs.getCenter(collection)
+    mapCenterPoint = fs.getCenter(collection)
     // console.log(JSON.stringify(bbox, null, 2))
   })
 
@@ -231,7 +231,7 @@
           on:longPress={onMapLongPress} 
           { posts }
           bbox={ mapBbox }
-          center={ mapCenter }
+          centerPoint={ mapCenterPoint }
         />
         <Header id="header" class="w-full m-2" on:hamburger={toggleDrawer} />
 
