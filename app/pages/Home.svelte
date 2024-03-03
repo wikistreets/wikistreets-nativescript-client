@@ -1,6 +1,6 @@
 <!-- @component Home page showing the default map and recent activity feed. -->
 <script lang="ts">
-  import { Application, Frame, Page, View, EventData, Screen, on } from '@nativescript/core'
+  import { Screen, Application, Frame, Page, View, EventData, on } from '@nativescript/core'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount } from 'svelte'
@@ -18,6 +18,7 @@
   import { ViewWatcher } from '~/stores/view'
   import { FeatureService } from '../services/FeatureService'
   import { Feature, FeatureCollection as Collection } from '@turf/turf'
+  import { icons } from '../utils/icons'
   import { config } from '~/config/config'
 
 
@@ -27,9 +28,14 @@
 
   let gps: GPS
 
-  // about the screen
+  // screen dimensions
   let screenHeight: number = Screen.mainScreen.heightDIPs
   let screenWidth: number = Screen.mainScreen.widthDIPs
+  let centerX: number
+  let centerY: number
+  $: centerX = screenWidth / 2
+  $: centerY = screenHeight / 2
+
   // let mapWatcher: ViewWatcher
   let feedWatcher: ViewWatcher
   // let headerWatcher: ViewWatcher
@@ -61,6 +67,10 @@
     // console.log(JSON.stringify(bbox, null, 2))
   })
 
+  /**
+   * Handler for page load event
+   * @param e
+   */
   const onPageLoad = (e: EventData) => {
     /**
      * Nativescript callback when page is loaded
@@ -70,7 +80,7 @@
     // console.log(`onPageLoad`)
     
     parent = Frame.topmost() || Application.getRootView()
-    console.log(`page: ${page}, parent: ${parent}`)
+    // console.log(`page: ${page}, parent: ${parent}`)
     // console.log(`screen w: ${screenWidth}, h: ${screenHeight}`)
 
     // watch for changes to the map and feed views
@@ -84,6 +94,22 @@
     //   console.log(`feed y: ${Math.round(y)}`)
     //   // mapWatcher.view.height = screenHeight - (screenHeight - y) // update map
     // })
+  }
+
+  /**
+   * Handler for when user clicks the icon to create a new post
+   * @param e
+   */
+  const onCreatePost = (e: EventData) => {
+    console.log(`Create post!`)
+    showModal({
+      page: AuthModalFrame,
+      animated: true,
+      props: {
+        pageName: 'CreatePost',
+        actionBarHidden: false,
+      },
+    })
   }
 
   const onListItemTap = (e: CustomEvent) => {
@@ -172,7 +198,7 @@
     // }
 </script>
 
-<page bind:this={page}  on:navigatingTo={onPageLoad} actionBarHidden={true}>
+<page bind:this={page} on:navigatingTo={onPageLoad} actionBarHidden={true} >
   <!-- <Header id="header" on:hamburger={toggleDrawer} /> -->
   <bottomSheet
     bind:this={bottomSheet}
@@ -198,6 +224,10 @@
           center={ mapCenter }
         />
         <Header id="header" class="w-full m-2" on:hamburger={toggleDrawer} />
+
+        <!-- eventually replace + sign with real icon-->
+        <label top={screenHeight-160} left={centerX-25} text="+" class="w-15 h-15 p-5 text-center text-xl icon text-white bg-black z-10" on:tap={onCreatePost}/>
+
       </absoluteLayout>
     </drawer>
     <Feed

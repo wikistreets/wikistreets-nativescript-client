@@ -4,6 +4,7 @@
   import Register from '~/pages/Register.svelte'
   import Settings from '~/pages/Settings.svelte'
   import PostDetails from '~/pages/PostDetails.svelte'
+  import CreatePost from '~/pages/CreatePost.svelte'
 
   export let pageName: string = 'Login'
 
@@ -22,5 +23,7 @@
     <Settings {...$$restProps} {onComplete} />
   {:else if pageName === 'PostDetails'}
     <PostDetails {...$$restProps} {onComplete} />
+  {:else if pageName === 'CreatePost'}
+    <CreatePost {...$$restProps} {onComplete} />
   {/if}
 </frame>

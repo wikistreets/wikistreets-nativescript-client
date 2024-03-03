@@ -14,6 +14,12 @@ Native mobile app developed with Nativescript, Svelte, and TailwindCSS.
 - run the app without debugging in simulator: `ns run ios` or `ns run android`
 - run the app on a physical device - [see details](https://docs.nativescript.org/guide/running#running-on-physical-devices)
 
+### Camera permissions
+The app uses the [camera](https://docs.nativescript.org/plugins/camera) plugin - follow the setup instructions there to grant permissions to the camera on both Android and iOS.
+
+### GPS permissions
+It may be necessary to grant permission to use the device's GPS.  I haven't thoroughly tested this yet.
+
 ## Testing
 
 The project is set up to run unit tests using [jasmine](https://jasmine.github.io/).  Tests should be placed in the `app`/`tests` directory.  Run them with `ns test ios` or `ns test android`.  Optional flags include `--emulator` to launch the tests within the device emulator, `--justlaunch` to quit the emulator once tests are complete, and `--watch` to re-launch the tests automatically upon code change.
