@@ -83,11 +83,13 @@
     // console.log(`page: ${page}, parent: ${parent}`)
     // console.log(`screen w: ${screenWidth}, h: ${screenHeight}`)
 
-    // get rid of any keyboard
-    setTimeout(() => {
-      Utils.dismissKeyboard()
-      Utils.dismissSoftInput()
-    }, 1000)
+    // get rid of any keyboard... this may cause bugs on android... not sure
+    if (__ANDROID__) {
+      setTimeout(() => {
+        Utils.dismissKeyboard()
+        Utils.dismissSoftInput()
+      }, 100)
+  }
 
     // watch for changes to the map and feed views
     // headerWatcher = headerWatcher ? headerWatcher : new ViewWatcher(

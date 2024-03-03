@@ -88,7 +88,7 @@
   </script>
   
   <page {...$$restProps}>
-    <actionBar title="Create a post">
+    <actionBar title="">
       <actionItem
         ios.position="left"
         android.position="actionBar"
