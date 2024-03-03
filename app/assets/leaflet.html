@@ -36,11 +36,20 @@
     <script type="text/javascript">
 
       // create the map
+      const southWest = L.latLng(-89.98155760646617, -180)
+      const northEast = L.latLng(89.99346179538875, 180);
+      const bounds = L.latLngBounds(southWest, northEast); // bounds of the world map
       const createMap = () => {
         const map = L.map('map', {
           attributionControl: false,
           zoomControl: false,
-        }).setView([51.505, -0.09], 5)
+          worldCopyJump: true,
+          maxBounds: bounds // prevent panning outside world map
+        }).setView([51.505, -0.09], 5).fitWorld()
+        map.on('drag', function() {
+          // do not allow dragging off edge of world map
+         map.panInsideBounds(bounds, { animate: false });
+        })
 
         L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution:
@@ -63,6 +72,9 @@
       window.onload = () => {
 
         const map = createMap() // initialize the leaflet map
+        map.on('click', function (e) {
+          nsWebViewInterface.emit('mapClick', {lng: e.latlng.lng, lat: e.latlng.lat})
+        })
 
         try {
 
@@ -92,6 +104,7 @@
 
           // set the bounding box of the map
           nsWebViewInterface.on('setBounds', bbox => {
+            // expects a four value array as argument: [minX, minY, maxX, maxY]
             nsWebViewInterface.emit('messageToNativeScript', `Got bbox: ${bbox}!`)
             // console.log('webView: setBounds', bounds)
             // turfjs provides a four value array for bounds... conver to leaflet 2x two value arrays
@@ -102,11 +115,19 @@
           }) // setBounds
 
           // set the center and zoom of the map
-          nsWebViewInterface.on('setCenter', center => {
-            const [lng, lat] = center.geometry.coordinates
+          nsWebViewInterface.on('setCenter', point => {
+            // expects a GeoJSON Point object as argument
+            const [lng, lat] = point.geometry.coordinates
             const zoom = 4
-            nsWebViewInterface.emit('messageToNativeScript', `Got center: [${lat}, ${lng}] from ${JSON.stringify(center)}!`)
             map.setView([lat, lng], zoom)
+          }) // setCenter
+
+
+          // set the center and zoom of the map
+          nsWebViewInterface.on('panTo', point => {
+            // expects a GeoJSON Point object as argument
+            const [lng, lat] = point.geometry.coordinates
+            map.panTo([lat, lng])
           }) // setCenter
 
           // make a marker and place on map

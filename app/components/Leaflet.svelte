@@ -4,6 +4,7 @@
   import { Screen, Page, EventData, WebView, ViewBase, knownFolders } from '@nativescript/core'
   import { onMount, createEventDispatcher } from 'svelte'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
+  import { Feature} from '@turf/turf'
   const webViewInterfaceModule = require('nativescript-webview-interface')
   import Header from './Header.svelte'
     
@@ -19,7 +20,9 @@
   export let htmlFilePath: string
   export let posts: any[] = [] // will hold posts to put onto map
   export let bbox: number[] // will hold the bounding box of the map
-  export let center: any // will hold the center of the map
+  export let centerPoint: any // will hold the center of the map
+  export let panToTappedMarker: boolean = true // whether to pan to a tapped marker
+  export let panToMapTapPoint: boolean = true // whether to pan to a tapped point on the map
   // export let onMarkerTap: (postId: number) => void // when user taps a marker on the map
 
   let isWebViewLoaded: boolean = false
@@ -29,6 +32,7 @@
   // get handle on webview interface once page has loaded
   let webView = null
   let map: any // will hold map passed to use from webView
+
 
   // $: webView = pageRef ? pageRef.getViewById('webview') : null
   $: webView
@@ -51,8 +55,17 @@
           // console.log(`Leaflet.svelte: bbox -> ${bbox}, center -> ${JSON.stringify(center, null, 2)}`)
           // if (bbox.length) webViewInterface.emit('setBounds', bbox) // set map bbox
           // console.log(`Leaflet.svelte: center -> ${JSON.stringify(center, null, 2)}`)
-          if (center) webViewInterface.emit('setCenter', center) // set map center
+          console.log(`Centering on center: ${centerPoint}`)
+          if (centerPoint) webViewInterface.emit('setCenter', centerPoint) // set map center
         })
+
+        webViewInterface.on('mapClick', (e: any) => {
+          // center map on clicked point
+          if (!panToMapTapPoint) return // abort, if not desired
+          const geoJSONObj: Feature = {type: 'Feature', properties: { }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] }}
+          console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
+          webViewInterface.emit('panTo', geoJSONObj)
+         })
 
         webViewInterface.on('messageToNativeScript', (message: string) => {
           console.log(`From webView: ${message}`)
@@ -62,8 +75,10 @@
           // console.log(`Leaflet.svelte: onMarkerTap postId ${postId}`)
           dispatch('markerTap', { postId })
           // center map on tapped marker
-          // const post = posts.find((p) => p.id === postId)
-          // webViewInterface.emit('setCenter', center) // set map center
+          if (!panToTappedMarker) return // abort, if not desired
+          const geoJSONObj = posts.find((p) => p.id === postId)
+          console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
+          webViewInterface.emit('panTo', geoJSONObj)
         })
 
         return webViewInterface
@@ -77,7 +92,8 @@
         webViewInterface.emit('makeMarker', post) // place markers on map
       })
       // center on the first post
-      if (posts.length) webViewInterface.emit('setCenter', posts[posts[0]]) // place markers on map      
+      // console.log(`Centering on post: ${JSON.stringify(posts[posts[0]])}`)
+      // if (posts.length) webViewInterface.emit('setCenter', posts[posts[0]]) // place markers on map      
 
     })() : null // isWebViewLoaded
 
