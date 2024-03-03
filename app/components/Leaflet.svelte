@@ -1,10 +1,10 @@
 <!-- @component Wrapper around a WebView that loads the HTML code for a Leaflet map. Emits markerTap event to parent component -->
 
 <script lang="ts">
-  import { Screen, Page, EventData, WebView, ViewBase, knownFolders } from '@nativescript/core'
+  import { Screen, Page, EventData, WebView, ViewBase, knownFolders, SwipeGestureEventData } from '@nativescript/core'
   import { onMount, createEventDispatcher } from 'svelte'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
-  import { Feature} from '@turf/turf'
+  import { Feature, center} from '@turf/turf'
   const webViewInterfaceModule = require('nativescript-webview-interface')
   import Header from './Header.svelte'
     
@@ -33,7 +33,26 @@
   let webView = null
   let map: any // will hold map passed to use from webView
 
-
+  const onSwipe = (e: SwipeGestureEventData) => {
+    switch (e.direction) {
+      case 1: // left
+        console.log('swipe left')
+        break
+      case 2: // right
+        console.log('swipe right')
+        break
+      case 3: // not up, but should be!
+      case 8: // up
+        console.log('swipe up')
+        break
+      case 4: // down
+        console.log('swipe down')
+        break
+      default:
+        console.log(`unknown swipe direction: ${e.direction}`)
+    }
+  }
+  
   // $: webView = pageRef ? pageRef.getViewById('webview') : null
   $: webView
     ? (() => {
@@ -47,7 +66,7 @@
         // console.log(`webViewInterface set to: ${webViewInterface}`)
 
         webViewInterface.on('onload', () => {
-          // once the webview has fully loaded, we can pass it data
+          // once the webview has fully loaded and sent us the 'onload' message, we can pass it data
           isWebViewLoaded = true
           console.log(`Leaflet.svelte: webView loaded.`)
           // webViewInterface.emit('messageToWebView', `foobarbazbum`) //!
@@ -65,6 +84,7 @@
           const geoJSONObj: Feature = {type: 'Feature', properties: { }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] }}
           console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
           webViewInterface.emit('panTo', geoJSONObj)
+          centerPoint = geoJSONObj
          })
 
         webViewInterface.on('messageToNativeScript', (message: string) => {
@@ -79,6 +99,7 @@
           const geoJSONObj = posts.find((p) => p.id === postId)
           console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
           webViewInterface.emit('panTo', geoJSONObj)
+          centerPoint = geoJSONObj
         })
 
         return webViewInterface
@@ -91,10 +112,6 @@
       posts.forEach((post) => {
         webViewInterface.emit('makeMarker', post) // place markers on map
       })
-      // center on the first post
-      // console.log(`Centering on post: ${JSON.stringify(posts[posts[0]])}`)
-      // if (posts.length) webViewInterface.emit('setCenter', posts[posts[0]]) // place markers on map      
-
     })() : null // isWebViewLoaded
 
     // const onLongPress = (e: EventData) => {
@@ -109,4 +126,4 @@
     })
 </script>
 
-<webView bind:this={webView} id="webview" src={htmlFilePath} {...$$restProps} on:longPress />
+<webView bind:this={webView} id="webview" src={htmlFilePath} {...$$restProps} on:longPress on:swipe={onSwipe} />

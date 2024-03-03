@@ -39,7 +39,8 @@
       case 2: // right
         console.log('swipe right')
         break
-      case 3: // up
+      case 3: // not up, but should be
+      case 8: // up
         console.log('swipe up')
         break
       case 4: // down
