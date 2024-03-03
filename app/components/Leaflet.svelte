@@ -21,7 +21,7 @@
   export let posts: any[] = [] // will hold posts to put onto map
   export let bbox: number[] // will hold the bounding box of the map
   export let centerPoint: any // will hold the center of the map
-  export let panToTappedMarker: boolean = true // whether to pan to a tapped marker
+  export let panToTappedMarker: boolean = false // whether to pan to a tapped marker
   export let panToMapTapPoint: boolean = true // whether to pan to a tapped point on the map
   // export let onMarkerTap: (postId: number) => void // when user taps a marker on the map
 
