@@ -219,7 +219,7 @@
     <drawer bind:this={drawer} class="drawer h-full w-full" on:start={onOpenDrawer} on:close={onCloseDrawer} > <!-- hamburger menu wrapper-->
 
       <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
-      <absoluteLayout prop:mainContent backgroundColor="red" class="w-full h-full" on:longPress >
+      <absoluteLayout prop:mainContent backgroundColor="red" class="w-full h-full">
         <!-- <label top="10" left={centerX} backgroundColor="blue" text="Leaflet" class="bg-red-800 text-lg text-center m-0 p-4 z-10" /> -->
         <Leaflet
           id="map"
@@ -228,6 +228,7 @@
           htmlFilePath="~/assets/leaflet.html"
           bind:this={map}
           on:markerTap={onListItemTap}
+          on:longPress={onMapLongPress} 
           { posts }
           bbox={ mapBbox }
           center={ mapCenter }
