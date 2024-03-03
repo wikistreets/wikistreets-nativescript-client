@@ -1,6 +1,6 @@
 <!-- @component Home page showing the default map and recent activity feed. -->
 <script lang="ts">
-  import { Screen, Application, Frame, Page, View, EventData, Utils, on } from '@nativescript/core'
+  import { Screen, Application, Frame, Page, View, EventData, Utils, on, Label } from '@nativescript/core'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount } from 'svelte'
@@ -237,6 +237,9 @@
 
         <!-- eventually replace + sign with real icon-->
         <label top={screenHeight-160} left={centerX-25} text="+" class="w-15 h-15 p-5 text-center text-xl icon text-white bg-black z-10" on:tap={onCreatePost}/>
+
+        <!-- trying out a listPicker -->
+        <!-- <listPicker items={['one', 'two', 'three', 'four', 'five', 'six', 'seven']} class="text-black bg-white w-full" left="0" top={screenHeight - 300} /> -->
 
       </absoluteLayout>
     </drawer>
