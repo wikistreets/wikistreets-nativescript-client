@@ -93,4 +93,4 @@
     })
 </script>
 
-<webView bind:this={webView} id="webview" src={htmlFilePath} {...$$restProps}/>
+<webView bind:this={webView} id="webview" src={htmlFilePath} {...$$restProps} on:longPress />
