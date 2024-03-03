@@ -108,7 +108,7 @@
    * Handler for when user clicks the icon to create a new post
    * @param e
    */
-  const onCreatePost = (e: EventData) => {
+  const onCreatePost = (e?: EventData) => {
     console.log(`Create post!`)
     showModal({
       page: AuthModalFrame,
@@ -164,6 +164,7 @@
    */
   const onMapLongPress = (e: CustomEvent) => {
       console.log(`Long press!`)
+      onCreatePost()
       // webViewInterface.emit('clearSelection')
   }
 
