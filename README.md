@@ -26,6 +26,7 @@ The project is set up to run unit tests using [jasmine](https://jasmine.github.i
 
 ## Troubleshooting
 
+### Android
 If running on Android produces errors about `Duplicate class` in Kotlin, follow the solution mentioned [here](https://stackoverflow.com/a/77432977) and insert the following line into the `platforms/android/app/build.gradle` at the bottom of the `dependencies { ... }` code block:
 
 ```js
@@ -35,6 +36,7 @@ implementation(platform("org.jetbrains.kotlin:kotlin-bom:1.8.0"))
 ## Documentation
 
 Nativescript and Svelte Native are woefully underdocumented.  However, here are a few useful links:
+- [My own notes](./notes.md) on using Svelte and Nativescript.
 - [Nativescript v7 documentation](https://v7.docs.nativescript.org/), while out of date, contains the most thorough documentation of the basic concepts of Nativescript development.
 - [Nativescript v8 documentation](https://docs.nativescript.org/), while useful and up to date, does a poor job explaining some fundamental concepts.
 - [Svelte Native documentation](https://svelte-native.technology/) provides some simple notes about getting started with Svelte and Nativescript.

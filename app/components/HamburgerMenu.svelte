@@ -6,7 +6,7 @@
   import { Page, Frame } from '@nativescript/core'
   import { user, isAuthenticated, logout } from '~/stores/auth'
   import AuthModalFrame from '~/components/AuthModalFrame.svelte'
-  import Home from '~/pages/Home.svelte'
+  import Map from '~/pages/Map.svelte'
 
   const cleanNavigateTo = (pageRef: Page | null): void => {
     /**
@@ -63,11 +63,11 @@
     {/if}
     <stacklayout class="p-12 pb-24 align-middle text-center">
       <button
-        text="Home"
+        text="Map"
         color="black"
         backgroundColor="white"
         on:tap={() => {
-          cleanNavigateTo(Home)
+          cleanNavigateTo(Map)
         }}
       />
       {#if $isAuthenticated}

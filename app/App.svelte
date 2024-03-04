@@ -1,10 +1,13 @@
 <!-- @component Top-most component that first loads. -->
 
 <script lang="ts">
+  import { onMount, onDestroy } from 'svelte'
+  import { navigate } from 'svelte-native'
+  import { Frame, Page, EventData } from '@nativescript/core'
   import * as geolocation from '@nativescript/geolocation'
   import { GeolocationService as GeoService } from './services/GeolocationService'
-  import Home from './pages/Home.svelte'
-  import { onDestroy } from 'svelte'
+  import Map from './pages/Map.svelte'
+  import BottomNavigation from '~/components/BottomNavigation.svelte'
   import { geoStore } from './stores/geo'
 
   // subscribe to gps location in data store
@@ -27,8 +30,27 @@
       })
     },
   )
+
 </script>
 
+<!-- 
 <frame>
-  <Home />
+  <Map />
+</frame>
+ -->
+<frame>
+  <page actionBarHidden={true} >
+    <gridLayout rows="*, 60" class="w-full h-full">
+        <contentView row="0">
+          <frame id="mainFrame">
+            <Map />
+          </frame>
+        </contentView>
+        <contentView row="1">
+          <frame id="navFrame">
+            <BottomNavigation />
+          </frame>
+        </contentView>
+    </gridLayout>
+  </page>
 </frame>

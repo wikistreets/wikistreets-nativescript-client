@@ -55,7 +55,7 @@
 
 <page on:shownModally={onShownModally} {...$$restProps} on:swipe={onSwipe}>
   <actionBar title="" flat="true">
-    {#if __ANDROID__}
+    <!-- {#if __ANDROID__}
       <navigationButton
         android.systemIcon="ic_menu_close_clear_cancel"
         text="Cancel"
@@ -70,7 +70,7 @@
       text="Cancel"
       on:tap={e => { onComplete('PostDetail canceling') }}
     />
-    {/if}
+    {/if} -->
     {#if editable}
       <actionItem
         ios.position="right"

@@ -62,7 +62,7 @@
 
 <page {...$$restProps}>
   <actionBar title="Settings" flat="true">
-    {#if __ANDROID__}
+    <!-- {#if __ANDROID__}
       <navigationButton
         android.systemIcon="ic_menu_close_clear_cancel"
         text="Cancel"
@@ -77,14 +77,15 @@
       text="Cancel"
       on:tap={e => { onComplete('Settings canceling') }}
     />
-    {/if}    <actionItem
+    {/if}     -->
+    <!-- <actionItem
       ios.position="right"
       android.position="actionBar"
       text="Done"
       on:tap={() => {
         onComplete('Settings updated')
       }}
-    />
+    /> -->
   </actionBar>
 
   <stackLayout

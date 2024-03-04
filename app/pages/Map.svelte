@@ -1,4 +1,4 @@
-<!-- @component Home page showing the default map and recent activity feed. -->
+<!-- @component Map page showing the leaflet map. -->
 <script lang="ts">
   import { Screen, Application, Frame, Page, View, EventData, Utils, on, Label } from '@nativescript/core'
   import { navigate, showModal, closeModal } from 'svelte-native'
@@ -121,31 +121,32 @@
   }
 
   const onListItemTap = (e: CustomEvent) => {
-    // console.log(`Home.svelte: onMarkerTap ${JSON.stringify(e)}`)
+    // console.log(`Map.svelte: onMarkerTap ${JSON.stringify(e)}`)
     const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
 
-    // navigate({
-    //   page: PostDetails,
-    //   props: { postId },
-    //   clearHistory: false,
-    //   backstackVisible: false,
-    //   transition: {
-    //     name: (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
-    //     duration: 300,
-    //     curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
-    //   }
-    // })
+    navigate({
+      page: PostDetails,
+      props: { postId },
+      clearHistory: false,
+      backstackVisible: false,
+      transition: {
+        name: (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
+        duration: 300,
+        curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
+      }
+    })
 
     // drawer.close()
-    showModal({
-      page: AuthModalFrame,
-      animated: true,
-      props: {
-        postId,
-        pageName: 'PostDetails',
-        actionBarHidden: false,
-      },
-    })
+    // showModal({
+    //   page: AuthModalFrame,
+    //   animated: true,
+    //   props: {
+    //     postId,
+    //     pageName: 'PostDetails',
+    //     actionBarHidden: false,
+    //   },
+    // })
+
     // showModal({
     //   target: parent,
     //   page: PostDetails,
@@ -207,8 +208,22 @@
     // }
 </script>
 
-<page bind:this={page} on:navigatingTo={onPageLoad} actionBarHidden={true} >
-  <!-- <Header id="header" on:hamburger={toggleDrawer} /> -->
+<page bind:this={page} on:navigatingTo={onPageLoad} actionBarHidden={false} >
+  <actionBar title="Map" flat="true">
+    <flexboxLayout class="w-full h-full" flexDirection="row" justifyContent="space-between">
+      <label
+        text=""
+        class="text-2xl icon text-left w-1/3"
+        on:tap={e => { console.log('nothing button click')}}
+        />
+      <label text='Map' class="text-center text-lg w-1/3" />
+      <label
+        text="{icons.camera}"
+        class="text-2xl icon text-right w-1/3"
+        on:tap={e => { console.log('camera button click')}}
+        />
+    </flexboxLayout>
+  </actionBar>
   <bottomSheet
     bind:this={bottomSheet}
     id="bottomSheet"
@@ -233,10 +248,10 @@
           bbox={ mapBbox }
           centerPoint={ mapCenterPoint }
         />
-        <Header id="header" class="w-full m-2" on:hamburger={toggleDrawer} />
+        <!-- <Header id="header" class="w-full m-2" on:hamburger={toggleDrawer} /> -->
 
         <!-- eventually replace + sign with real icon-->
-        <label top={screenHeight-160} left={centerX-25} text="+" class="w-15 h-15 p-5 text-center text-xl icon text-white bg-black z-10" on:tap={onCreatePost}/>
+        <!-- <label top={screenHeight-160} left={centerX-25} text="+" class="w-15 h-15 p-5 text-center text-xl icon text-white bg-black z-10" on:tap={onCreatePost}/> -->
 
         <!-- trying out a listPicker -->
         <!-- <listPicker items={['one', 'two', 'three', 'four', 'five', 'six', 'seven']} class="text-black bg-white w-full" left="0" top={screenHeight - 300} /> -->

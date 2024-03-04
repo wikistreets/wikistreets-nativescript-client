@@ -87,9 +87,9 @@
     }
   </script>
   
-  <page {...$$restProps}>
+  <page {...$$restProps} >
     <actionBar title="" flat="true">
-      {#if __ANDROID__}
+      <!-- {#if __ANDROID__}
         <navigationButton
           android.systemIcon="ic_menu_close_clear_cancel"
           text="Cancel"
@@ -104,7 +104,8 @@
         text="Cancel"
         on:tap={e => { onComplete('CreatePost canceling') }}
       />
-      {/if}      <actionItem
+      {/if} -->
+      <actionItem
         ios.position="right"
         android.position="actionBar"
         text="Save"
@@ -149,13 +150,13 @@
                 class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
             />
         
-            <label
+            <!-- <label
                 class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
                 text="Save"
                 on:tap={onSubmit}
-            />
+            /> -->
         
-            <textView
+            <!-- <textView
                 editable={false}
                 class="m-4 text-center"
                 on:tap={() => onComplete('Create post form canceled')}
@@ -163,7 +164,7 @@
                 <span class="text-md p-4 text-black dark:text-white">
                 Cancel
                 </span>
-            </textView>
+            </textView> -->
         </stackLayout>
     </scrollView>
 
