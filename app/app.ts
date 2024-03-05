@@ -7,6 +7,7 @@ purpose of the file is to pass control to the app’s first page.
 import { Utils, Device, Screen, Application, ApplicationSettings, ApplicationEventData, OrientationChangedEventData, SystemAppearanceChangedEventData } from '@nativescript/core'
 import { svelteNativeNoFrame } from 'svelte-native'
 import { install as installDrawer } from '@nativescript-community/ui-drawer'
+import CollectionViewElement from '@nativescript-community/ui-collectionview/svelte';
 import DrawerElement from '@nativescript-community/ui-drawer/svelte'
 import { install as installBottomSheet } from '@nativescript-community/ui-persistent-bottomsheet'
 import BottomSheetElement from '@nativescript-community/ui-persistent-bottomsheet/svelte'
@@ -24,6 +25,9 @@ try {
   // necessary ui-drawer setup: https://github.com/nativescript-community/ui-persistent-bottomsheet
   installBottomSheet()
   BottomSheetElement.register()
+
+  // necessary for ui-collection-view setup: https://github.com/nativescript-community/ui-collectionview/tree/master
+  CollectionViewElement.register();
 
   // pull to refresh
   registerNativeViewElement(

@@ -2,36 +2,36 @@
     import { onMount, onDestroy } from 'svelte'
     import { EventData } from '@nativescript/core';
     import { Feature } from '@turf/turf'
-    export let post: Feature
+    export let item: Feature
 
     // debugging
-    // $: console.log(`PostMapPreview: post: ${JSON.stringify(post)}`)
+    // $: console.log(`PostPreview: post: ${JSON.stringify(post)}`)
 
     onMount(() => {
-        console.log(`PostMapPreview: onMount`)
+        console.log(`PostPreview: onMount`)
     })
     onDestroy(() => {
-        console.log(`PostMapPreview: onDestroy`)
+        console.log(`PostPreview: onDestroy`)
     })
 
     const onComponentLoaded = (e: EventData) => {
-        console.log(`PostMapPreview: onComponentLoaded`)
+        // console.log(`PostPreview: onComponentLoaded`)
     }
 
     const onComponentUnloaded = (e: EventData) => {
-        console.log(`PostMapPreview: onComponentLoaded`)
+        // console.log(`PostPreview: onComponentLoaded`)
     }
 
 </script>
 
 <flexboxLayout flexDirection="row" justifyContent="flex-start" {...$$restProps} on:tap on:swipe on:loaded={onComponentLoaded}>
-{#if post}
+{#if item}
     <stackLayout class="w-1/3 mr-4">
-      <image src="https://source.unsplash.com/random?id={post.id}" stretch="aspectFill" />
+      <image class="h-full" src="https://source.unsplash.com/random?id={item.id}" stretch="aspectFill" />
     </stackLayout>
     <stackLayout class="w-2/3" horizontalAlignment="left" verticalAlignment="middle">
-      <label text="{post.properties.title}" class="text-left text-lg w-full" />
-      <label text="{post.properties.address}" class="text-left text-md w-full" />
+      <label text="{item.properties.title}" class="text-left text-lg w-full" />
+      <label text="{item.properties.address}" class="text-left text-md w-full" />
     </stackLayout>
 {/if}
 </flexboxLayout>

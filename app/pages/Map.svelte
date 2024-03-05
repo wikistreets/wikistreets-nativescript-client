@@ -3,14 +3,14 @@
   import { Screen, Application, Frame, Page, View, EventData, SwipeGestureEventData, Utils, on, Label } from '@nativescript/core'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
-  import { onMount } from 'svelte'
+  import { onMount, onDestroy } from 'svelte'
   import { get } from 'svelte/store'
   import { GPS } from '@nativescript-community/gps'
   import { Drawer } from '@nativescript-community/ui-drawer'
   import Header from '~/components/Header.svelte'
   import HamburgerMenu from '~/components/HamburgerMenu.svelte'
   import PostListItem from '~/components/PostListItem.svelte'
-  import Feed from '~/components/Feed.svelte'
+  // import Feed from '~/components/Feed.svelte'
   import PostDetails from './PostDetails.svelte';
   import AuthModalFrame from '~/components/AuthModalFrame.svelte';
   import Leaflet from '~/components/Leaflet.svelte'
@@ -19,7 +19,7 @@
   import { ViewWatcher } from '~/stores/view'
   import { FeatureService } from '../services/FeatureService'
   import { Feature, FeatureCollection as Collection } from '@turf/turf'
-  import PostMapPreview from '~/components/PostMapPreview.svelte'
+  import PostPreview from '~/components/PostPreview.svelte'
   import { icons } from '../utils/icons'
   import { config } from '~/config/config'
 
@@ -31,25 +31,25 @@
   let gps: GPS
 
   // screen dimensions
-  let screenHeight: number = Screen.mainScreen.heightDIPs
-  let screenWidth: number = Screen.mainScreen.widthDIPs
-  let centerX: number
-  let centerY: number
-  $: centerX = screenWidth / 2
-  $: centerY = screenHeight / 2
+  // let screenHeight: number = Screen.mainScreen.heightDIPs
+  // let screenWidth: number = Screen.mainScreen.widthDIPs
+  // let centerX: number
+  // let centerY: number
+  // $: centerX = screenWidth / 2
+  // $: centerY = screenHeight / 2
 
   // let mapWatcher: ViewWatcher
-  let feedWatcher: ViewWatcher
+  // let feedWatcher: ViewWatcher
   // let headerWatcher: ViewWatcher
 
   // controls for the persistent bottom sheet
-  let stepIndex = config.bottomSheet.startSnap
-  let steps = config.bottomSheet.snapPoints
+  // let stepIndex = config.bottomSheet.startSnap
+  // let steps = config.bottomSheet.snapPoints
 
-  let feed: View
+  // let feed: View
   let mapBbox: number[]
   let mapCenterPoint: Feature
-  let bottomSheet: View
+  // let bottomSheet: View
   let posts: Feature[] = [] // will hold posts fetched from API
   let collection: Collection // will hold a collection fetched from the API
   const fs = FeatureService.getInstance()
@@ -69,6 +69,9 @@
     mapCenterPoint = fs.getCenter(collection)
     // console.log(JSON.stringify(bbox, null, 2))
   })
+  onDestroy(() => {
+    console.log(`Map: onDestroy`)
+  })
 
   /**
    * Handler for page load event
@@ -78,10 +81,8 @@
     /**
      * Nativescript callback when page is loaded
      */
-     console.log(`Map: onPageLoad`)
+    console.log(`Map: onPageLoad`)
     pageRef = e.object as Page // save reference to the current page
-    // pageRef = page.nativeElement
-    // console.log(`onPageLoad`)
     
     parent = Frame.topmost() || Application.getRootView()
     // console.log(`page: ${page}, parent: ${parent}`)
@@ -100,8 +101,8 @@
     //   pageRef.getViewById('header'),
     //   'header',
     // )
-    // mapWatcher = (mapWatcher) ? mapWatcher : new ViewWatcher(pageRef.getViewById('map'), 'map')
-    feedWatcher = feedWatcher ? feedWatcher : new ViewWatcher(pageRef.getViewById('feed'), 'feed')
+    // mapWatcher = (mapWatcher) ? mapWatcher : new ViewWatcher(page.getViewById('map'), 'map')
+    // feedWatcher = feedWatcher ? feedWatcher : new ViewWatcher(page.getViewById('feed'), 'feed')
     // feedWatcher.y.subscribe(y => {
     //   console.log(`feed y: ${Math.round(y)}`)
     //   // mapWatcher.view.height = screenHeight - (screenHeight - y) // update map
@@ -201,7 +202,6 @@
         curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
       }
     })
-
   }
 
   /**
@@ -214,18 +214,18 @@
       // webViewInterface.emit('clearSelection')
   }
 
-  function nextStep() {
-    // increment step index but return to zero if at end
-    stepIndex = stepIndex === steps.length - 1 ? 0 : stepIndex + 1
-    console.log(`step: ${stepIndex} -> ${steps[stepIndex]}`)
-  }
+  // function nextStep() {
+  //   // increment step index but return to zero if at end
+  //   stepIndex = stepIndex === steps.length - 1 ? 0 : stepIndex + 1
+  //   console.log(`step: ${stepIndex} -> ${steps[stepIndex]}`)
+  // }
 
-  function onBottomSheetStepIndexChange(e) {
-    stepIndex = e.value
-    // console.log(`bottomSheet stepIndex: ${stepIndex}`)
-    const feed = pageRef.getViewById('feed') as View
-    feedWatcher.y.set(feed.getLocationOnScreen().y) // update the feedWatcher
-  }
+  // function onBottomSheetStepIndexChange(e) {
+  //   stepIndex = e.value
+  //   // console.log(`bottomSheet stepIndex: ${stepIndex}`)
+  //   const feed = pageRef.getViewById('feed') as View
+  //   feedWatcher.y.set(feed.getLocationOnScreen().y) // update the feedWatcher
+  // }
 
   let drawer: Drawer
 
@@ -253,7 +253,7 @@
     // }
 </script>
 
-<page bind:this={page} on:navigatingTo={onPageLoad} actionBarHidden={false} >
+<page on:navigatingTo={onPageLoad} actionBarHidden={false} >
   <actionBar title="Map" flat="true">
     <flexboxLayout class="w-full h-full" flexDirection="row" justifyContent="space-between">
       <label
@@ -269,13 +269,13 @@
         />
     </flexboxLayout>
   </actionBar>
-  <bottomSheet
+  <!-- <bottomSheet
     bind:this={bottomSheet}
     id="bottomSheet"
     {stepIndex}
     {steps}
     on:stepIndexChange={onBottomSheetStepIndexChange}
-  >
+  > -->
     <drawer bind:this={drawer} class="drawer h-full w-full" on:start={onOpenDrawer} on:close={onCloseDrawer} > <!-- hamburger menu wrapper-->
 
       <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
@@ -297,10 +297,10 @@
           centerPoint={ mapCenterPoint }
         />
         <label text="{icons['gps-dot']}" class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />
-        <PostMapPreview visibility={previewPost ? 'visible' : 'hidden'} on:tap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} post={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:text-slate-200"  />
+        <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:tap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
       </gridLayout>
     </drawer>
-    <Feed
+    <!-- <Feed
       id="feed"
       bind:this={feed}
       prop:bottomSheet
@@ -308,8 +308,8 @@
       { posts }
       on:listItemTap={onListItemTap}
       onGripTap={nextStep}
-    />
-  </bottomSheet>
+    /> -->
+  <!-- </bottomSheet> -->
 </page>
 
 <style>
