@@ -9,7 +9,6 @@
   import { Drawer } from '@nativescript-community/ui-drawer'
   import Header from '~/components/Header.svelte'
   import HamburgerMenu from '~/components/HamburgerMenu.svelte'
-  import PostListItem from '~/components/PostListItem.svelte'
   // import Feed from '~/components/Feed.svelte'
   import PostDetails from './PostDetails.svelte';
   import AuthModalFrame from '~/components/AuthModalFrame.svelte';
