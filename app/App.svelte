@@ -33,11 +33,6 @@
 
 </script>
 
-<!-- 
-<frame>
-  <Map />
-</frame>
- -->
 <frame>
   <page actionBarHidden={true} >
     <gridLayout rows="*, 60" class="w-full h-full">

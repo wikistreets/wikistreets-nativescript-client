@@ -4,7 +4,7 @@
   import { Screen, Page, EventData, WebView, ViewBase, knownFolders, SwipeGestureEventData } from '@nativescript/core'
   import { onMount, createEventDispatcher } from 'svelte'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
-  import { Feature, center} from '@turf/turf'
+  import { Feature, center, geojsonType} from '@turf/turf'
   const webViewInterfaceModule = require('nativescript-webview-interface')
   import Header from './Header.svelte'
     
@@ -33,6 +33,69 @@
   let webView = null
   let map: any // will hold map passed to use from webView
 
+  $: if (isWebViewLoaded) webViewInterface.emit('panTo', centerPoint) // set map center on change
+
+  /**
+   * Handle on:loaded event for the webView component
+   * @param e
+   */
+  const onWebViewLoaded = (e: EventData) => {
+    console.log(`Leaflet: onWebViewLoaded`)
+    webView = e.object as WebView
+
+    // set up bi-directional communications with webView
+
+    // console.log(`webView set to: ${webView}`)
+    webViewInterface = new webViewInterfaceModule.WebViewInterface(
+      webView,// .nativeElement, // must get native element
+      htmlFilePath,
+    )
+
+    webViewInterface.on('onload', () => {
+      // once the webview has fully loaded and sent us the 'onload' message, we can pass it data
+      isWebViewLoaded = true
+      console.log(`Leaflet: webView loaded.`)
+      if (centerPoint) webViewInterface.emit('setCenter', centerPoint) // set map center
+
+      // pass data to webview
+      console.log(`Passing ${posts.length} posts to webView.`)
+      posts.forEach((post) => {
+        webViewInterface.emit('makeMarker', post) // place markers on map
+      })
+
+    })
+
+    webViewInterface.on('mapClick', (e: any) => {
+      // center map on clicked point
+      if (!panToMapTapPoint) return // abort, if not desired
+      const geoJSONObj: Feature = {type: 'Feature', properties: { }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] }}
+      // console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
+      webViewInterface.emit('panTo', geoJSONObj)
+      centerPoint = geoJSONObj
+      dispatch('mapTap', {centerPoint}) // let parent know where tap happened
+    })
+
+    // receive debubbing messages from webView
+    webViewInterface.on('debug', (message: string) => {
+      console.log(`webView debug: ${message}`)
+    })
+
+    webViewInterface.on('onMarkerTap', (postId: number) =>  { 
+      if (!postId) return
+      console.log(`Leaflet: onMarkerTap: postId ${postId}`)
+      dispatch('markerTap', { postId })
+      // center map on tapped marker
+      if (!panToTappedMarker) return // abort, if not desired
+      const geoJSONObj = posts.find((p) => p.id === postId)
+      // console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
+      webViewInterface.emit('panTo', geoJSONObj)
+      centerPoint = geoJSONObj
+    })
+
+    return webViewInterface
+
+  }
+
   const onSwipe = (e: SwipeGestureEventData) => {
     switch (e.direction) {
       case 1: // left
@@ -53,77 +116,10 @@
     }
   }
   
-  // $: webView = pageRef ? pageRef.getViewById('webview') : null
-  $: webView
-    ? (() => {
-      // set up bi-directional webview message passing
-
-        // console.log(`webView set to: ${webView}`)
-        webViewInterface = new webViewInterfaceModule.WebViewInterface(
-          webView.nativeElement, // must get native element
-          htmlFilePath,
-        )
-        // console.log(`webViewInterface set to: ${webViewInterface}`)
-
-        webViewInterface.on('onload', () => {
-          // once the webview has fully loaded and sent us the 'onload' message, we can pass it data
-          isWebViewLoaded = true
-          console.log(`Leaflet.svelte: webView loaded.`)
-          // webViewInterface.emit('messageToWebView', `foobarbazbum`) //!
-          // adjust viewport of the map to fit the markers
-          // console.log(`Leaflet.svelte: bbox -> ${bbox}, center -> ${JSON.stringify(center, null, 2)}`)
-          // if (bbox.length) webViewInterface.emit('setBounds', bbox) // set map bbox
-          // console.log(`Leaflet.svelte: center -> ${JSON.stringify(center, null, 2)}`)
-          console.log(`Centering on center: ${centerPoint}`)
-          if (centerPoint) webViewInterface.emit('setCenter', centerPoint) // set map center
-        })
-
-        webViewInterface.on('mapClick', (e: any) => {
-          // center map on clicked point
-          if (!panToMapTapPoint) return // abort, if not desired
-          const geoJSONObj: Feature = {type: 'Feature', properties: { }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] }}
-          console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
-          webViewInterface.emit('panTo', geoJSONObj)
-          centerPoint = geoJSONObj
-         })
-
-        webViewInterface.on('messageToNativeScript', (message: string) => {
-          console.log(`From webView: ${message}`)
-        })
-
-        webViewInterface.on('onMarkerTap', (postId: number) =>  {       
-          // console.log(`Leaflet.svelte: onMarkerTap postId ${postId}`)
-          dispatch('markerTap', { postId })
-          // center map on tapped marker
-          if (!panToTappedMarker) return // abort, if not desired
-          const geoJSONObj = posts.find((p) => p.id === postId)
-          console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
-          webViewInterface.emit('panTo', geoJSONObj)
-          centerPoint = geoJSONObj
-        })
-
-        return webViewInterface
-      })()
-    : null
-
-  // wait for posts to be passed and then pass them to webview to place on map
-  $: (isWebViewLoaded) ? (() => {
-      console.log(`Passing ${posts.length} posts to webView.`)
-      posts.forEach((post) => {
-        webViewInterface.emit('makeMarker', post) // place markers on map
-      })
-    })() : null // isWebViewLoaded
-
-    // const onLongPress = (e: EventData) => {
-    //   console.log(`long press!`)
-    //   webViewInterface.emit('clearSelection')
-
-    // }
-
     onMount(() => {
       // posts are not yet available onMount
-      console.log(`Leaflet mounted with ${posts.length} posts.`)
+      console.log(`Leaflet: onMount w/ ${posts.length} posts.`)
     })
 </script>
 
-<webView bind:this={webView} id="webview" src={htmlFilePath} {...$$restProps} on:longPress on:swipe={onSwipe} />
+<webView id="webview" src={htmlFilePath} {...$$restProps} on:loaded={onWebViewLoaded} on:longPress on:swipe={onSwipe} />

@@ -1,6 +1,6 @@
 <!-- @component Map page showing the leaflet map. -->
 <script lang="ts">
-  import { Screen, Application, Frame, Page, View, EventData, Utils, on, Label } from '@nativescript/core'
+  import { Screen, Application, Frame, Page, View, EventData, SwipeGestureEventData, Utils, on, Label } from '@nativescript/core'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount } from 'svelte'
@@ -9,6 +9,7 @@
   import { Drawer } from '@nativescript-community/ui-drawer'
   import Header from '~/components/Header.svelte'
   import HamburgerMenu from '~/components/HamburgerMenu.svelte'
+  import PostListItem from '~/components/PostListItem.svelte'
   import Feed from '~/components/Feed.svelte'
   import PostDetails from './PostDetails.svelte';
   import AuthModalFrame from '~/components/AuthModalFrame.svelte';
@@ -18,6 +19,7 @@
   import { ViewWatcher } from '~/stores/view'
   import { FeatureService } from '../services/FeatureService'
   import { Feature, FeatureCollection as Collection } from '@turf/turf'
+  import PostMapPreview from '~/components/PostMapPreview.svelte'
   import { icons } from '../utils/icons'
   import { config } from '~/config/config'
 
@@ -45,20 +47,21 @@
   let steps = config.bottomSheet.snapPoints
 
   let feed: View
-  let map: View
-  // let mapVisibility = 'visible' // 'visible' | 'collapsed' | 'hidden'
   let mapBbox: number[]
-  let mapCenterPoint: any
+  let mapCenterPoint: Feature
   let bottomSheet: View
   let posts: Feature[] = [] // will hold posts fetched from API
   let collection: Collection // will hold a collection fetched from the API
   const fs = FeatureService.getInstance()
+
+  let previewPost: Feature // a post the user has tapped on that we want to show preview of
 
   onMount(() => {
     /**
      * Svelte hook when page is mounted
     */
 
+    console.log(`Map: onMount`)
     // fetch data to put into feed and map
     posts = fs.getFeatures() // mock data for now
     collection = fs.getCollection() // mock data for now
@@ -75,6 +78,7 @@
     /**
      * Nativescript callback when page is loaded
      */
+     console.log(`Map: onPageLoad`)
     pageRef = e.object as Page // save reference to the current page
     // pageRef = page.nativeElement
     // console.log(`onPageLoad`)
@@ -109,7 +113,7 @@
    * @param e
    */
   const onCreatePost = (e?: EventData) => {
-    console.log(`Create post!`)
+    console.log(`Map: onCreatePost`)
     showModal({
       page: AuthModalFrame,
       animated: true,
@@ -120,43 +124,84 @@
     })
   }
 
+  const getPrevious = (post: Feature): Feature => {
+    // return the previous post before this one
+    const index: number = posts.indexOf(post)
+    let prevIndex = index - 1
+    prevIndex = (prevIndex >= 0) ? prevIndex : posts.length - 1 // reset to last index if below zero
+    const newPost: Feature = posts[prevIndex]
+    return newPost
+  }
+  const getNext = (post: Feature): Feature => {
+    // return the next post after this one
+    const index = posts.indexOf(post)
+    let nextIndex = index + 1
+    nextIndex = (nextIndex < posts.length) ? nextIndex : 0 // reset to zero if beyond length of post
+    const newPost: Feature = posts[nextIndex]
+    return newPost
+  }
+  const onPreviewPostSwipe = (e: any) => {
+    // user has swiped the preview post
+    // console.log(`swiping start on post ${previewPost.id}`)
+    const direction = e.direction
+    switch (direction) {
+      case 1: // left
+        // console.log('swipe left')
+        previewPost = getPrevious(previewPost)
+        mapCenterPoint = previewPost
+        // console.log(`centering on post ${previewPost.id} at ${previewPost.geometry.coordinates} `)
+        break
+      case 2: // right
+        // console.log('swipe right')
+        previewPost = getNext(previewPost)
+        mapCenterPoint = previewPost
+        // console.log(`centering on post ${previewPost.id} at ${previewPost.geometry.coordinates} `)
+        break
+      case 3: // not up, but should be
+      case 8: // up
+        // console.log('swipe up')
+        previewPost = getNext(previewPost)
+        mapCenterPoint = previewPost
+        break
+      case 4: // down
+        // console.log('swipe down')
+        previewPost = getPrevious(previewPost)
+        mapCenterPoint = previewPost
+        break
+      default:
+        console.log(`unknown swipe direction: ${direction}`)
+    }
+    // console.log(`swiping end on post ${previewPost.id}`)
+  }
+
   const onListItemTap = (e: CustomEvent) => {
+    console.log(`Map: onListItemTap: post ${e.detail.detail.postId}`)
     // console.log(`Map.svelte: onMarkerTap ${JSON.stringify(e)}`)
     const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
+    const post: Feature = posts.find((p) => p.id === postId)
+    previewPost = post
+  }
 
+  const onMapTap = (e: CustomEvent) => {
+    console.log(`Map: onMapTap`)
+    previewPost = null // clear the preview
+  }
+
+  const showPost = (post: Feature) => {
+    console.log(`Map: showPost: ${post.id}`)
     navigate({
+      frame: Frame.getFrameById('mainFrame'),
       page: PostDetails,
-      props: { postId },
+      props: { postId: post.id as number },
       clearHistory: false,
       backstackVisible: false,
       transition: {
-        name: (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
+        name: 'slideLeft', // (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
         duration: 300,
         curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
       }
     })
 
-    // drawer.close()
-    // showModal({
-    //   page: AuthModalFrame,
-    //   animated: true,
-    //   props: {
-    //     postId,
-    //     pageName: 'PostDetails',
-    //     actionBarHidden: false,
-    //   },
-    // })
-
-    // showModal({
-    //   target: parent,
-    //   page: PostDetails,
-    //   animated: true,
-    //   fullscreen: false,
-    //   stretched: true,
-    //   props: {
-    //     postId
-    //   }
-    // })    
   }
 
   /**
@@ -164,7 +209,7 @@
    * @param e a Svelte event, which follows the CustomEvent API standard (https://developer.mozilla.org/en-US/docs/Web/API/CustomEvent/CustomEvent)
    */
   const onMapLongPress = (e: CustomEvent) => {
-      console.log(`Long press!`)
+      console.log(`Map: onMapLongPress`)
       onCreatePost()
       // webViewInterface.emit('clearSelection')
   }
@@ -212,11 +257,11 @@
   <actionBar title="Map" flat="true">
     <flexboxLayout class="w-full h-full" flexDirection="row" justifyContent="space-between">
       <label
-        text=""
-        class="text-2xl icon text-left w-1/3"
-        on:tap={e => { console.log('nothing button click')}}
+        text="{icons.settings}"
+        class="icons text-2xl icon text-left w-1/3"
         />
       <label text='Map' class="text-center text-lg w-1/3" />
+      <!-- <searchBar id="searchbar" class="w-full bg-none text-lg p-2 ml-2 mr-6" hint="Search" /> -->
       <label
         text="{icons.camera}"
         class="text-2xl icon text-right w-1/3"
@@ -230,33 +275,30 @@
     {stepIndex}
     {steps}
     on:stepIndexChange={onBottomSheetStepIndexChange}
-  > <!-- feed wrapper -->
+  >
     <drawer bind:this={drawer} class="drawer h-full w-full" on:start={onOpenDrawer} on:close={onCloseDrawer} > <!-- hamburger menu wrapper-->
 
       <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" rows="*" {drawer} />
-      <absoluteLayout prop:mainContent backgroundColor="red" class="w-full h-full">
-        <!-- <label top="10" left={centerX} backgroundColor="blue" text="Leaflet" class="bg-red-800 text-lg text-center m-0 p-4 z-10" /> -->
+      <gridLayout rows="100, *, 100" columns="100, *, 100" prop:mainContent backgroundColor="red" class="w-full h-full">
         <Leaflet
           id="map"
+          row="0"
+          col="0"
+          rowSpan="3"
+          colSpan="3"
           class="h-full w-full z-1"
           page={pageRef}
           htmlFilePath="~/assets/leaflet.html"
-          bind:this={map}
           on:markerTap={onListItemTap}
           on:longPress={onMapLongPress} 
+          on:mapTap={onMapTap}
           { posts }
           bbox={ mapBbox }
           centerPoint={ mapCenterPoint }
         />
-        <!-- <Header id="header" class="w-full m-2" on:hamburger={toggleDrawer} /> -->
-
-        <!-- eventually replace + sign with real icon-->
-        <!-- <label top={screenHeight-160} left={centerX-25} text="+" class="w-15 h-15 p-5 text-center text-xl icon text-white bg-black z-10" on:tap={onCreatePost}/> -->
-
-        <!-- trying out a listPicker -->
-        <!-- <listPicker items={['one', 'two', 'three', 'four', 'five', 'six', 'seven']} class="text-black bg-white w-full" left="0" top={screenHeight - 300} /> -->
-
-      </absoluteLayout>
+        <label text="{icons['gps-dot']}" class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />
+        <PostMapPreview visibility={previewPost ? 'visible' : 'hidden'} on:tap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} post={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:text-slate-200"  />
+      </gridLayout>
     </drawer>
     <Feed
       id="feed"
