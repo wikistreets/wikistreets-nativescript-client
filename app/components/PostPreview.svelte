@@ -8,10 +8,10 @@
     // $: console.log(`PostPreview: post: ${JSON.stringify(post)}`)
 
     onMount(() => {
-        console.log(`PostPreview: onMount`)
+        // console.log(`PostPreview: onMount`)
     })
     onDestroy(() => {
-        console.log(`PostPreview: onDestroy`)
+        // console.log(`PostPreview: onDestroy`)
     })
 
     const onComponentLoaded = (e: EventData) => {

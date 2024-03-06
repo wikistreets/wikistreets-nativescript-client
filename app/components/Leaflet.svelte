@@ -1,7 +1,7 @@
 <!-- @component Wrapper around a WebView that loads the HTML code for a Leaflet map. Emits markerTap event to parent component -->
 
 <script lang="ts">
-  import { Screen, Page, EventData, WebView, ViewBase, knownFolders, SwipeGestureEventData } from '@nativescript/core'
+  import { Screen, Page, EventData, WebView, ViewBase, knownFolders, SwipeGestureEventData, SwipeDirection } from '@nativescript/core'
   import { onMount, createEventDispatcher } from 'svelte'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
   import { Feature, center, geojsonType} from '@turf/turf'
@@ -98,21 +98,20 @@
 
   const onSwipe = (e: SwipeGestureEventData) => {
     switch (e.direction) {
-      case 1: // left
-        console.log('swipe left')
+      case SwipeDirection.left: // left
+        console.log('onSwipe: left')
         break
-      case 2: // right
-        console.log('swipe right')
+      case SwipeDirection.right: // right
+        console.log('onSwipe: right')
         break
-      case 3: // not up, but should be!
-      case 8: // up
-        console.log('swipe up')
+      case SwipeDirection.up: // up
+        console.log('onSwipe: up')
         break
-      case 4: // down
-        console.log('swipe down')
+      case SwipeDirection.down: // down
+        console.log('onSwipe: down')
         break
       default:
-        console.log(`unknown swipe direction: ${e.direction}`)
+        console.log(`onSwipe: ${e.direction}`)
     }
   }
   

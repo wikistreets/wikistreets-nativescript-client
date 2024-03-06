@@ -1,6 +1,6 @@
 <!-- @component Map page showing the leaflet map. -->
 <script lang="ts">
-  import { Screen, Application, Frame, Page, View, EventData, SwipeGestureEventData, Utils, on, Label } from '@nativescript/core'
+  import { Screen, Application, Frame, Page, View, EventData, SwipeGestureEventData, SwipeDirection, Utils, on, Label } from '@nativescript/core'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount, onDestroy } from 'svelte'
@@ -143,33 +143,31 @@
   const onPreviewPostSwipe = (e: any) => {
     // user has swiped the preview post
     // console.log(`swiping start on post ${previewPost.id}`)
-    const direction = e.direction
-    switch (direction) {
-      case 1: // left
-        // console.log('swipe left')
+    switch (e.direction) {
+      case SwipeDirection.left: // left
+        // console.log('onPreviewPostSwipe: left')
         previewPost = getPrevious(previewPost)
         mapCenterPoint = previewPost
         // console.log(`centering on post ${previewPost.id} at ${previewPost.geometry.coordinates} `)
         break
-      case 2: // right
-        // console.log('swipe right')
+      case SwipeDirection.right: // right
+        // console.log('onPreviewPostSwipe: right')
         previewPost = getNext(previewPost)
         mapCenterPoint = previewPost
         // console.log(`centering on post ${previewPost.id} at ${previewPost.geometry.coordinates} `)
         break
-      case 3: // not up, but should be
-      case 8: // up
-        // console.log('swipe up')
+      case SwipeDirection.up: // up
+        // console.log('onPreviewPostSwipe: up')
         previewPost = getNext(previewPost)
         mapCenterPoint = previewPost
         break
-      case 4: // down
-        // console.log('swipe down')
+      case SwipeDirection.down: // down
+        // console.log('onPreviewPostSwipe: down')
         previewPost = getPrevious(previewPost)
         mapCenterPoint = previewPost
         break
       default:
-        console.log(`unknown swipe direction: ${direction}`)
+        console.log(`unknown swipe direction: ${e.direction}`)
     }
     // console.log(`swiping end on post ${previewPost.id}`)
   }

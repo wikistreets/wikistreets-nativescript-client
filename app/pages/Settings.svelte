@@ -14,7 +14,7 @@
 
   let error: string
 
-  export let onComplete: Function = () => {}
+  // export let onComplete: Function = () => {}
 
   const onSettingChange = async setting => {
     /**

@@ -1,7 +1,7 @@
 <!-- @component Log in form. -->
 
 <script lang="ts">
-  import { Frame, Page, View, ItemEventData, EventData} from '@nativescript/core'
+  import { Frame, Page, View, ItemEventData, EventData, SwipeGestureEventData, SwipeDirection} from '@nativescript/core'
   import { onMount, onDestroy } from 'svelte'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { Template } from 'svelte-native/components'
@@ -14,6 +14,7 @@
   import { icons } from '../utils/icons'
   import { NativeViewElementNode } from 'svelte-native/dom'
   import { PullToRefresh } from '@nativescript-community/ui-pulltorefresh'
+  import UsersPreview from '~/components/UsersPreview.svelte'
 
   let parent: Frame | View
   let pageRef: Page // reference to the current page
@@ -23,25 +24,61 @@
   let collection: Collection // will hold a collection fetched from the API
   const fs = FeatureService.getInstance()
 
-  onMount(() => {
+  onMount(async () => {
     /**
      * Svelte hook when page is mounted
     */
     console.log(`Feed: onMount`)
     // fetch data to put into feed and map
-    posts = fs.getFeatures() // mock data for now
-    console.log(`posts length: ${posts.length}`)
     collection = fs.getCollection() // mock data for now
+    posts = await fs.getMockFeatures() // mock data for now
+
+    // add a special first item to the content list
+    // const featuredUsers = {
+    //   id: 0,
+    //   type: 'featuredUsers',
+    //   users: [
+    //     { id: 1, handle: 'user1', avatar: 'https://source.unsplash.com/random?id=1' },
+    //     { id: 2, handle: 'user2', avatar: 'https://source.unsplash.com/random?id=2' },
+    //     { id: 3, handle: 'user3', avatar: 'https://source.unsplash.com/random?id=3' },
+    //     { id: 4, handle: 'user4', avatar: 'https://source.unsplash.com/random?id=4' },
+    //     { id: 5, handle: 'user5', avatar: 'https://source.unsplash.com/random?id=5' },
+    //   ]
+    // }
+    // // content = [firstItem, ...posts]
+    // $: content = posts // set the content to the posts for now
+    // content.unshift(featuredUsers)
+    
   })
   onDestroy(() => {
     console.log(`Feed: onDestroy`)
   })
 
-  const onLoadMoreItems = (e: EventData) => {
+  const onLoadMoreItems = async (e: EventData) => {
     // infinite scroll... this method is called to load more data to the listView
     console.log(`Feed: onLoadMoreItems`)
-    posts.push(...fs.getFeatures()) // load more mock data for now
-    console.log(`posts length: ${posts.length}`)
+    const items = await fs.getMockFeatures() // load more mock data
+    posts = posts.concat(items) // add to list
+  }
+
+  const onActionBarSwipe = (e: SwipeGestureEventData) => {
+    // console.log(`Feed: onActionBarSwipe`)
+    switch (e.direction) {
+      case SwipeDirection.left: // left
+        console.log('onActionBarSwipe: left')
+        break
+      case SwipeDirection.right: // right
+        console.log('onActionBarSwipe: right')
+        break
+      case SwipeDirection.down: // down
+        console.log('onActionBarSwipe: down')
+        break
+      case SwipeDirection.up: // up
+        console.log('onActionBarSwipe: up')
+        break
+      default:
+        console.log(`onActionBarSwipe: ${e.direction}`)
+    }
   }
 
   let pullRefresh: NativeViewElementNode<PullToRefresh>
@@ -51,21 +88,28 @@
     }
     // do something to refesh page await refreshWeather();
     console.log(`refreshing feed...`)
+    posts = await fs.getMockFeatures() // mock data for now
     if (pullRefresh) {
       pullRefresh.nativeView.refreshing = false
     }
   }
 
-  const selectListItemTemplate = (item: any, index: number, items: any[]): string => {
+  const itemTemplateSelector = (item: any, index: number, items: any[]): string => {
     // different list item keys for even and odd rows
-    return index % 2 === 0 ? 'even' : 'odd'
+    
+     // special types
+    // if (item.type == 'featuredUsers'){ 
+    //   return 'featuredUsers'
+    // }
+    // regular posts
+    return index % 2 === 0 ? 'post-even' : 'post-odd' // regular post types
   }
   const spanSizeSelector = (item: any, _index: number): number => {
       return 1; // all items in list are full width
   }
 
   const onListItemTap = (e: ItemEventData) => {
-    console.log(`Feed: onListItemTap: ${JSON.stringify(e)}`)
+    // console.log(`Feed: onListItemTap: ${JSON.stringify(e)}`)
     // console.log(`Map.svelte: onMarkerTap ${JSON.stringify(e)}`)
     // const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
     // const post: Feature = posts.find((p) => p.id === postId)
@@ -91,7 +135,7 @@
 </script>
   
 <page actionBarHidden={false} class="w-full h-full" {...$$restProps}>
-  <actionBar title="Feed" flat="true">
+  <actionBar title="Feed" flat="true" on:swipe={onActionBarSwipe}>
     <flexboxLayout class="w-full h-full" flexDirection="row" justifyContent="space-between">
       <label
       text="{icons.settings}"
@@ -116,17 +160,20 @@
       <collectionView 
         separatorColor="transparent"
         items={posts}
-        itemTemplateSelector={selectListItemTemplate}
+        itemTemplateSelector={itemTemplateSelector}
         colWidth="100%"
         spanSize={spanSizeSelector}
         automationText="collectionView"
         on:itemTap={onListItemTap}
         on:loadMoreItems={onLoadMoreItems}
       >
-        <Template key="odd" let:item>
+        <!-- <Template key="featuredUsers" let:item>
+          <UsersPreview items={item.users} class="h-5"/>
+        </Template> -->
+        <Template key="post-odd" let:item>
           <PostPreview on:tap={ ()=> { showPost(item)} } item={item} class="w-full h-40 mb-1 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
         </Template>
-        <Template key="even" let:item>
+        <Template key="post-even" let:item>
           <PostPreview on:tap={ ()=> { showPost(item)} } item={item} class="w-full h-40 mb-1 bg-slate-700 dark:bg-slate-700 text-slate-200 dark:text-slate-200"  />
         </Template>
       </collectionView>

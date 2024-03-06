@@ -2,6 +2,20 @@ import { bbox, center, centerOfMass, collect } from '@turf/turf'
 import { FeatureCollection as Collection, Feature} from '@turf/turf'
 
 export class FeatureService {
+
+  public async getMockFeatures(): Promise<Feature[]> {
+    try {
+      console.log('Fetching mock features...')
+      const results = await fetch('https://my.api.mockaroo.com/features.json?key=d9ddfc40')
+      const data = await results.json()
+      return data
+    }
+    catch (error) {
+      console.error(error)
+      return []
+    }
+  }
+
   private features: Feature[] = [
     {
       id: 1,
