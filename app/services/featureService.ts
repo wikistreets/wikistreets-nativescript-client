@@ -5,6 +5,7 @@ export class FeatureService {
 
   // constructor that fetches mock data
   constructor() {
+      this.f = [] // start off blank
       this.c = {
         type: 'FeatureCollection',
         features: this.f = [], // starts off blank
@@ -19,7 +20,7 @@ export class FeatureService {
       console.log('Fetching mock features...')
       const results = await fetch('https://my.api.mockaroo.com/features.json?key=d9ddfc40')
       const data = await results.json()
-      this.f = data
+      this.f = this.f.concat(data) // merge arrays
       console.log('Got the mock features...')
       return data
     }

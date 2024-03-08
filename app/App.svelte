@@ -27,7 +27,7 @@
     console.log(`App: onDestroy()`)
   })
   const onPageLoad = (e: EventData) => {
-    console.log(`App: onPageLoad()`)
+    console.log(`App: onPageLoad`)
     page = e.object as Page
     bottomNav = page.getViewById('bottomNav') as Page
   }
