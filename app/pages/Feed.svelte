@@ -1,11 +1,12 @@
 <!-- @component Log in form. -->
 
 <script lang="ts">
-  import { Frame, Page, View, ItemEventData, EventData, SwipeGestureEventData, SwipeDirection} from '@nativescript/core'
   import { onMount, onDestroy } from 'svelte'
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { Template } from 'svelte-native/components'
   import { get } from 'svelte/store'
+  import { Frame, Page, View, ItemEventData, EventData, SwipeGestureEventData, SwipeDirection} from '@nativescript/core'
+  import { SharedTransition, ModalTransition } from '@nativescript/core'
   import { GPS } from '@nativescript-community/gps'
   import { FeatureService } from '../services/FeatureService'
   import { Feature, FeatureCollection as Collection } from '@turf/turf'
@@ -22,7 +23,7 @@
 
   let posts: Feature[] = [] // will hold posts fetched from API
   let collection: Collection // will hold a collection fetched from the API
-  const fs = FeatureService.getInstance()
+  let fs: FeatureService
 
   onMount(async () => {
     /**
@@ -30,19 +31,20 @@
     */
     console.log(`Feed: onMount`)
     // fetch data to put into feed and map
-    collection = fs.getCollection() // mock data for now
+    const fs = new FeatureService()
     posts = await fs.getMockFeatures() // mock data for now
+    collection = fs.collection // mock data for now
 
     // add a special first item to the content list
     // const featuredUsers = {
-    //   id: 0,
+    //   _id: 0,
     //   type: 'featuredUsers',
     //   users: [
-    //     { id: 1, handle: 'user1', avatar: 'https://source.unsplash.com/random?id=1' },
-    //     { id: 2, handle: 'user2', avatar: 'https://source.unsplash.com/random?id=2' },
-    //     { id: 3, handle: 'user3', avatar: 'https://source.unsplash.com/random?id=3' },
-    //     { id: 4, handle: 'user4', avatar: 'https://source.unsplash.com/random?id=4' },
-    //     { id: 5, handle: 'user5', avatar: 'https://source.unsplash.com/random?id=5' },
+    //     { _id: 1, handle: 'user1', avatar: 'https://source.unsplash.com/random?id=1' },
+    //     { _id: 2, handle: 'user2', avatar: 'https://source.unsplash.com/random?id=2' },
+    //     { _id: 3, handle: 'user3', avatar: 'https://source.unsplash.com/random?id=3' },
+    //     { _id: 4, handle: 'user4', avatar: 'https://source.unsplash.com/random?id=4' },
+    //     { _id: 5, handle: 'user5', avatar: 'https://source.unsplash.com/random?id=5' },
     //   ]
     // }
     // // content = [firstItem, ...posts]
@@ -108,19 +110,14 @@
       return 1; // all items in list are full width
   }
 
-  const onListItemTap = (e: ItemEventData) => {
-    // console.log(`Feed: onListItemTap: ${JSON.stringify(e)}`)
-    // console.log(`Map.svelte: onMarkerTap ${JSON.stringify(e)}`)
-    // const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
-    // const post: Feature = posts.find((p) => p.id === postId)
-  }
-
-  const showPost = (post: Feature) => {
-    console.log(`Map: showPost: ${post.id}`)
+  const onListItemTap = (e: CustomEvent) => {
+    const item = e.detail.detail.post // access svelte native data passed from dispatcher
+    console.log(JSON.stringify(item))
+    console.log(`Feed: onListItemTap: ${item._id}`)
     navigate({
       frame: Frame.getFrameById('mainFrame'),
       page: PostDetails,
-      props: { postId: post.id as number },
+      props: { post: item },
       clearHistory: false,
       backstackVisible: false,
       transition: {
@@ -164,17 +161,16 @@
         colWidth="100%"
         spanSize={spanSizeSelector}
         automationText="collectionView"
-        on:itemTap={onListItemTap}
         on:loadMoreItems={onLoadMoreItems}
       >
         <!-- <Template key="featuredUsers" let:item>
           <UsersPreview items={item.users} class="h-5"/>
         </Template> -->
         <Template key="post-odd" let:item>
-          <PostPreview on:tap={ ()=> { showPost(item)} } item={item} class="w-full h-40 mb-1 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
+          <PostPreview on:postPreviewTap={onListItemTap} item={item} class="w-full h-40 mb-1 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
         </Template>
         <Template key="post-even" let:item>
-          <PostPreview on:tap={ ()=> { showPost(item)} } item={item} class="w-full h-40 mb-1 bg-slate-700 dark:bg-slate-700 text-slate-200 dark:text-slate-200"  />
+          <PostPreview on:postPreviewTap={onListItemTap} item={item} class="w-full h-40 mb-1 bg-slate-700 dark:bg-slate-700 text-slate-200 dark:text-slate-200"  />
         </Template>
       </collectionView>
     </pullrefresh>

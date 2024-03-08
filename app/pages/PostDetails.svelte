@@ -4,16 +4,21 @@
   import { onMount } from 'svelte'
   import { closeModal, goBack } from 'svelte-native'
   import { Page, EventData, fromObject, SwipeGestureEventData, SwipeDirection } from '@nativescript/core'
+  import { SharedTransition, ModalTransition } from '@nativescript/core'
   import { FeatureService } from '../services/FeatureService'
+  import { Feature } from '@turf/turf'
 
   export let onComplete: Function = () => {}
-  export let postId: number
+  export let post: Feature
   export let editable: boolean = true
 
-  const post = FeatureService.getInstance().getFeatureById(postId)
+
+  // const fs = new FeatureService()
+
+  $: console.log(`PostDetails: postId ${JSON.stringify(post._id)}`)
 
   onMount(() => {
-    console.log(`PostDetails.svelte: onMount()`)
+    // console.log(`PostDetails.svelte: onMount()`)
   })
 
   let closePage = (e) => {
@@ -74,7 +79,7 @@
       on:tap={e => { onComplete('PostDetail.svelte share tapped... not functional yet.') }}
     />
   </actionBar>
-  <stackLayout height="100%" class="p-4">
+  <stackLayout height="100%" class="p-4" sharedTransitionTag="selectedPost" >
     <label text={post?.properties.title} class="text-xl mb-4" />
     <label text={post?.properties.body} class="text-sm mb-4" />
     <image src="https://source.unsplash.com/random" stretch="aspectFill" />

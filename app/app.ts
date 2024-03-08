@@ -11,6 +11,8 @@ import CollectionViewElement from '@nativescript-community/ui-collectionview/sve
 import DrawerElement from '@nativescript-community/ui-drawer/svelte'
 import { install as installBottomSheet } from '@nativescript-community/ui-persistent-bottomsheet'
 import BottomSheetElement from '@nativescript-community/ui-persistent-bottomsheet/svelte'
+import { install as installGestureHandler} from "@nativescript-community/gesturehandler";
+import { GestureHandlerTouchEvent, GestureHandlerStateEvent, GestureStateEventData, GestureTouchEventData, HandlerType } from '@nativescript-community/gesturehandler';
 import { registerElement, registerNativeViewElement } from 'svelte-native/dom';
 import { isConnected } from '~/stores/network'
 
@@ -18,16 +20,15 @@ import App from '~/App.svelte'
 
 try {
 
-  // necessary ui-drawer setup: https://github.com/nativescript-community/ui-drawer
-  installDrawer()
+  installDrawer() // see https://github.com/nativescript-community/ui-drawer
   DrawerElement.register()
 
-  // necessary ui-drawer setup: https://github.com/nativescript-community/ui-persistent-bottomsheet
-  installBottomSheet()
+  installBottomSheet()   // see https://github.com/nativescript-community/ui-persistent-bottomsheet
   BottomSheetElement.register()
 
-  // necessary for ui-collection-view setup: https://github.com/nativescript-community/ui-collectionview/tree/master
-  CollectionViewElement.register();
+  installGestureHandler() // see https://github.com/nativescript-community/gesturehandler
+
+  CollectionViewElement.register(); // see https://github.com/nativescript-community/ui-collectionview/tree/master
 
   // pull to refresh
   registerNativeViewElement(

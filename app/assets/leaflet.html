@@ -40,6 +40,7 @@
       const northEast = L.latLng(89.99346179538875, 180);
       const bounds = L.latLngBounds(southWest, northEast); // bounds of the world map
       const mapEl = document.getElementById("map");
+      const markers = [] // will hold the markers
 
       const createMap = () => {
         const map = L.map('map', {
@@ -68,7 +69,7 @@
 
         // initialize the leaflet map
         const map = createMap() 
-        map.on('click', function (e) {
+        map.on('click', (e) => {
           nsWebViewInterface.emit('mapClick', {lng: e.latlng.lng, lat: e.latlng.lat})
         })
 
@@ -78,11 +79,11 @@
           nsWebViewInterface.emit('onload') 
 
           // receive debugging messages from NativeScript app 
-          nsWebViewInterface.on('debug', function (message) {
+          nsWebViewInterface.on('debug', (message) => {
             // shoot test message to NativeScript app
             nsWebViewInterface.emit(
               'debug',
-              `webView received message: '${message}'`
+              `debug webView received message: '${message}'`
             ) 
           }) // messageToWebView
 
@@ -94,7 +95,7 @@
             if (document.selection) document.selection.empty()
             nsWebViewInterface.emit(
               'debug',
-              `Cleared selection`
+              `cleraSelection: done`
             ) 
           }) // clearSelection
 
@@ -111,49 +112,68 @@
           }) // setBounds
 
           // set the center and zoom of the map
-          nsWebViewInterface.on('setCenter', point => {
+          nsWebViewInterface.on('setCenter', feature => {
             // expects a GeoJSON Point object as argument
-            if (!point?.geometry?.coordinates) return
-            const [lng, lat] = point.geometry.coordinates
+            if (!feature?.geometry?.coordinates) return
+            const [lng, lat] = feature.geometry.coordinates
             const zoom = 4
             map.setView([lat, lng], zoom)
           }) // setCenter
 
 
           // set the center and zoom of the map
-          nsWebViewInterface.on('panTo', point => {
+          nsWebViewInterface.on('panTo', feature => {
             // expects a GeoJSON Point object as argument
             // nsWebViewInterface.emit('debug', `panTo: ${point.geometry.coordinates}!`)
-            if (!point?.geometry?.coordinates) return
-            const [lng, lat] = point.geometry.coordinates
+            if (!feature?.geometry?.coordinates) return
+            const [lng, lat] = feature.geometry.coordinates
             map.panTo([lat, lng])
           }) // setCenter
 
+          // highlight a specifi marker
+          nsWebViewInterface.on('focusMarker', feature => {
+            try {
+              const marker = markers.find(marker => marker.feature._id === feature._id)
+              if (marker) {
+                // need to flip to svg or other markers for this to work
+                // marker.style.backgroundColor = 'orange'
+                nsWebViewInterface.emit('debug', `focusMarker found marker: ${marker.feature._id}`)
+              }
+              else throw new Error('marker not found.')
+            }
+            catch (error) {
+              nsWebViewInterface.emit('debug', `focusMarker error: ${error}`)
+            }
+          }) // focusMarker
+
+
           // make a marker and place on map
-          nsWebViewInterface.on('makeMarker', point => {
+          nsWebViewInterface.on('makeMarker', feature => {
             // nsWebViewInterface.emit('debug', `Got a post!`)
-            if (!point?.geometry) return
-            if (point.geometry.type === 'Point') {
+            if (!feature?.geometry) return
+            if (feature.geometry.type === 'Point') {
               // points in leaflet have [lat,lng] format, whereas geojson in post has [lng,lat]
               const coords = [
-                point.geometry.coordinates[1], 
-                point.geometry.coordinates[0],
+              feature.geometry.coordinates[1], 
+              feature.geometry.coordinates[0],
               ]
-              // nsWebViewInterface.emit('debug', `Making marker for post ${post.id}!`) // debugging
-              L.marker(coords, {
+              // nsWebViewInterface.emit('debug', `Making marker for post ${post._id}!`) // debugging
+              const marker = L.marker(coords, {
                 bubblingMouseEvents: false // prevent clicks from bubbling up to map
               })
                 .addTo(map)
                 .on('click', function (e) {
-                  // nsWebViewInterface.emit('debug', `Marker tap on post ${post.id}!`)
+                  // nsWebViewInterface.emit('debug', `Marker tap on post ${post._id}!`)
                   // nsWebViewInterface.emit('debug', `Num markers total: ${map.getPane('markerPane').children.length}`)
-                  nsWebViewInterface.emit('onMarkerTap', point.id)
+                  nsWebViewInterface.emit('onMarkerTap', feature._id)
                 })
+                marker.feature = feature
+                markers.push(marker) // store it for later
             }
           }) // makeMarker
           
         } catch (error) {
-          nsWebViewInterface.emit('debug', `error: ${error}`)
+          nsWebViewInterface.emit('debug', `caught error: ${error}`)
         }
       }
     </script>

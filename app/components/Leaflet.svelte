@@ -22,18 +22,28 @@
   export let bbox: number[] // will hold the bounding box of the map
   export let centerPoint: any // will hold the center of the map
   export let panToTappedMarker: boolean = false // whether to pan to a tapped marker
+  export let focusOnTappedMarker: boolean = true // whether to highlight a tapped marker
   export let panToMapTapPoint: boolean = true // whether to pan to a tapped point on the map
   // export let onMarkerTap: (postId: number) => void // when user taps a marker on the map
 
   let isWebViewLoaded: boolean = false
   let webViewInterface: any // for passing messages to/from webview
-  const dispatch = createEventDispatcher(); // for emitting messages to parent component
+  const dispatch = createEventDispatcher(); // for emitting custom messages to parent component
 
   // get handle on webview interface once page has loaded
   let webView = null
   let map: any // will hold map passed to use from webView
 
   $: if (isWebViewLoaded) webViewInterface.emit('panTo', centerPoint) // set map center on change
+
+  $: if (isWebViewLoaded && posts.length) (() => {
+    // pass data to webview when webview communication is open and the posts prop has been received from parent
+    console.log(`Leaflet: ready with ${posts.length} posts`)
+    if (centerPoint) webViewInterface.emit('setCenter', centerPoint) // set map center
+    posts.forEach((post) => {
+      webViewInterface.emit('makeMarker', post) // place markers on map
+    })
+  })()
 
   /**
    * Handle on:loaded event for the webView component
@@ -54,15 +64,6 @@
     webViewInterface.on('onload', () => {
       // once the webview has fully loaded and sent us the 'onload' message, we can pass it data
       isWebViewLoaded = true
-      console.log(`Leaflet: webView loaded.`)
-      if (centerPoint) webViewInterface.emit('setCenter', centerPoint) // set map center
-
-      // pass data to webview
-      console.log(`Passing ${posts.length} posts to webView.`)
-      posts.forEach((post) => {
-        webViewInterface.emit('makeMarker', post) // place markers on map
-      })
-
     })
 
     webViewInterface.on('mapClick', (e: any) => {
@@ -84,12 +85,18 @@
       if (!postId) return
       console.log(`Leaflet: onMarkerTap: postId ${postId}`)
       dispatch('markerTap', { postId })
-      // center map on tapped marker
-      if (!panToTappedMarker) return // abort, if not desired
-      const geoJSONObj = posts.find((p) => p.id === postId)
-      // console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
-      webViewInterface.emit('panTo', geoJSONObj)
-      centerPoint = geoJSONObj
+      const geoJSONObj = posts.find((p) => p._id === postId) // the post whose marker was tapped
+      if (panToTappedMarker) {
+        // center map on tapped marker
+        // console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
+        webViewInterface.emit('panTo', geoJSONObj)
+        centerPoint = geoJSONObj
+      }
+      if (focusOnTappedMarker) {
+        // highlight the tapped marker
+        console.log(`Focusing on ${geoJSONObj._id}!`)
+        webViewInterface.emit('focusMarker', geoJSONObj) // ask webview to highlight marker
+      }
     })
 
     return webViewInterface

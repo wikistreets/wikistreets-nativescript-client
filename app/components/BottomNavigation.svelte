@@ -14,7 +14,7 @@
     let tabs: Label[] = [] // will hold the tabs
     let tabIndex: number = -1 // will hold the index of the currently-selected tab
 
-    const dispatch = createEventDispatcher(); // for emitting messages to parent component
+    const dispatch = createEventDispatcher(); // for emitting custom messages to parent component
 
     const onPageLoad = (e: EventData) => {
         page = e.object as Page // save reference

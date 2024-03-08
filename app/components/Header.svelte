@@ -8,7 +8,7 @@
   import { closeModal, goBack } from 'svelte-native'
   import { onMount, createEventDispatcher } from 'svelte'
 
-  const dispatch = createEventDispatcher(); // for emitting messages to parent component
+  const dispatch = createEventDispatcher(); // for emitting custom messages to parent component
 
   let searchBar: SearchBar // bound to searchBar element
   let layout: GridLayout // bound to gridLayout element

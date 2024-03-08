@@ -49,21 +49,22 @@
   let mapBbox: number[]
   let mapCenterPoint: Feature
   // let bottomSheet: View
-  let posts: Feature[] = [] // will hold posts fetched from API
+  let posts: Feature[] // will hold posts fetched from API
   let collection: Collection // will hold a collection fetched from the API
-  const fs = FeatureService.getInstance()
 
   let previewPost: Feature // a post the user has tapped on that we want to show preview of
 
-  onMount(() => {
+  onMount(async () => {
     /**
      * Svelte hook when page is mounted
     */
 
-    console.log(`Map: onMount`)
     // fetch data to put into feed and map
-    posts = fs.getFeatures() // mock data for now
-    collection = fs.getCollection() // mock data for now
+    console.log("Map: onMount: Loading features...")
+    const fs = new FeatureService()
+    posts = await fs.getMockFeatures() // mock data for now
+    console.log(`Map: onMount: ${posts.length} posts`)
+    collection = fs.collection // mock data for now
     mapBbox = fs.getBbox(collection)
     mapCenterPoint = fs.getCenter(collection)
     // console.log(JSON.stringify(bbox, null, 2))
@@ -142,19 +143,19 @@
   }
   const onPreviewPostSwipe = (e: any) => {
     // user has swiped the preview post
-    // console.log(`swiping start on post ${previewPost.id}`)
+    // console.log(`swiping start on post ${previewPost._id}`)
     switch (e.direction) {
       case SwipeDirection.left: // left
         // console.log('onPreviewPostSwipe: left')
         previewPost = getPrevious(previewPost)
         mapCenterPoint = previewPost
-        // console.log(`centering on post ${previewPost.id} at ${previewPost.geometry.coordinates} `)
+        // console.log(`centering on post ${previewPost._id} at ${previewPost.geometry.coordinates} `)
         break
       case SwipeDirection.right: // right
         // console.log('onPreviewPostSwipe: right')
         previewPost = getNext(previewPost)
         mapCenterPoint = previewPost
-        // console.log(`centering on post ${previewPost.id} at ${previewPost.geometry.coordinates} `)
+        // console.log(`centering on post ${previewPost._id} at ${previewPost.geometry.coordinates} `)
         break
       case SwipeDirection.up: // up
         // console.log('onPreviewPostSwipe: up')
@@ -169,14 +170,14 @@
       default:
         console.log(`unknown swipe direction: ${e.direction}`)
     }
-    // console.log(`swiping end on post ${previewPost.id}`)
+    // console.log(`swiping end on post ${previewPost._id}`)
   }
 
   const onListItemTap = (e: CustomEvent) => {
     console.log(`Map: onListItemTap: post ${e.detail.detail.postId}`)
     // console.log(`Map.svelte: onMarkerTap ${JSON.stringify(e)}`)
     const postId = e.detail.detail.postId // get the post id from the event... it seems to be double-wrapped in a recursive detail field
-    const post: Feature = posts.find((p) => p.id === postId)
+    const post: Feature = posts.find((p) => p._id === postId)
     previewPost = post
   }
 
@@ -186,11 +187,11 @@
   }
 
   const showPost = (post: Feature) => {
-    console.log(`Map: showPost: ${post.id}`)
+    console.log(`Map: showPost: ${post._id}`)
     navigate({
       frame: Frame.getFrameById('mainFrame'),
       page: PostDetails,
-      props: { postId: post.id as number },
+      props: { post: post },
       clearHistory: false,
       backstackVisible: false,
       transition: {
@@ -294,7 +295,7 @@
           centerPoint={ mapCenterPoint }
         />
         <label text="{icons['gps-dot']}" class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />
-        <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:tap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
+        <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
       </gridLayout>
     </drawer>
     <!-- <Feed
