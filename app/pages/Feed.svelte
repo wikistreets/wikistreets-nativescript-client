@@ -7,7 +7,6 @@
   import { get } from 'svelte/store'
   import { Frame, Page, View, ItemEventData, EventData, SwipeGestureEventData, SwipeDirection} from '@nativescript/core'
   import { SharedTransition, ModalTransition } from '@nativescript/core'
-  import { GPS } from '@nativescript-community/gps'
   import { FeatureService } from '../services/FeatureService'
   import { Feature, FeatureCollection as Collection } from '@turf/turf'
   import PostPreview from '~/components/PostPreview.svelte'
@@ -16,10 +15,12 @@
   import { NativeViewElementNode } from 'svelte-native/dom'
   import { PullToRefresh } from '@nativescript-community/ui-pulltorefresh'
   import UsersPreview from '~/components/UsersPreview.svelte'
+  import { geo } from '~/stores/geo'
 
   let parent: Frame | View
   let pageRef: Page // reference to the current page
-  let gps: GPS
+
+  let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 
   let posts: Feature[] = [] // will hold posts fetched from API
   let collection: Collection // will hold a collection fetched from the API
@@ -30,6 +31,12 @@
      * Svelte hook when page is mounted
     */
     console.log(`Feed: onMount`)
+
+    // subscribe to the geo location store and save the method to unsubscribe later
+    unsubscribers.push(geo.subscribe((value) => {
+      console.log(`Feed: geo.subscribe: ${JSON.stringify(value)}`)
+    }))
+
     // fetch data to put into feed and map
     const fs = new FeatureService()
     posts = await fs.getMockFeatures() // mock data for now
@@ -54,6 +61,8 @@
   })
   onDestroy(() => {
     console.log(`Feed: onDestroy`)
+    // unsubscribe from any subscribed svelte stores
+    unsubscribers.forEach((unsubscribe) => { unsubscribe() })
   })
 
   const onLoadMoreItems = async (e: EventData) => {

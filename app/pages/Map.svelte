@@ -5,7 +5,6 @@
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount, onDestroy } from 'svelte'
   import { get } from 'svelte/store'
-  import { GPS } from '@nativescript-community/gps'
   import { Drawer } from '@nativescript-community/ui-drawer'
   import Header from '~/components/Header.svelte'
   import HamburgerMenu from '~/components/HamburgerMenu.svelte'
@@ -21,13 +20,14 @@
   import PostPreview from '~/components/PostPreview.svelte'
   import { icons } from '../utils/icons'
   import { config } from '~/config/config'
+  import { geo } from '~/stores/geo'
 
 
   let parent: Frame | View
   let page: NativeViewElementNode<Page>; // bound to page
   let pageRef: Page // reference to the current page
 
-  let gps: GPS
+  let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 
   // screen dimensions
   // let screenHeight: number = Screen.mainScreen.heightDIPs
@@ -59,6 +59,12 @@
      * Svelte hook when page is mounted
     */
 
+    // subscribe to the geo location store and save the method to unsubscribe later
+    unsubscribers.push(geo.subscribe((value) => {
+      console.log(`Map: geo.subscribe: ${JSON.stringify(value)}`)
+    }))
+    
+
     // fetch data to put into feed and map
     console.log("Map: onMount: Loading features...")
     const fs = new FeatureService()
@@ -71,6 +77,8 @@
   })
   onDestroy(() => {
     console.log(`Map: onDestroy`)
+    // unsubscribe from any subscribed svelte stores
+    unsubscribers.forEach((unsubscribe) => { unsubscribe() })
   })
 
   /**

@@ -1,32 +1,43 @@
+import { writable, readable, derived } from 'svelte/store'
+import { CoreTypes, EventData } from '@nativescript/core'
+import { GeoService } from '~/services/geoService'
+import { DefaultLatLonKeys} from '@nativescript-community/gps'
+
+const defaults: DefaultLatLonKeys = { latitude: null, longitude: null, altitude: null }
+
 /**
- * Svelte store for keeping track of user's geolocation globally across app.
+ * A Svelte store to hold geolocation data.
  */
+export const geo = writable(defaults, () => {
+    // this method runs on first subscriber
+    console.log('geo: we have a subscriber!')
 
-import { derived, writable, Writable } from 'svelte/store'
+    // return method to run when no more subscribers
+    return () => {
+        console.log('geo: no more subscribers!')
+    }
+})
 
-export type LngLat = {
-  lng: number
-  lat: number
+/**
+ * Callback when the status of GPS changes on the device
+ * @param e Data about the change in GPS status
+ */
+const onStatusChange = (e: EventData) => {
+    console.log(`geo: onStatusChange: ${JSON.stringify(e)}`)
 }
 
-class GeoStore {
-  constructor(
-    public lngLat: Writable<LngLat> = writable({
-      lng: 41.1947,
-      lat: -73.87649,
+/**
+ * Callback for changes in location
+ * @param e Location data
+ */
+const onWatchEvent = (location: any) => {
+    console.log(`geo: onWatchEvent: ${JSON.stringify(location)}`)
+    geo.set({
+        latitude: location.lat,
+        longitude: location.lng,
+        altitude: location.alt,
     })
-  ) {}
-
-  get geoPosition() {
-    // Use derived to access writable values and export as readonly
-    return derived(this.lngLat, $lngLat => {
-      return $lngLat
-    })
-  }
 }
 
-// Export a singleton
-export const geoStore = new GeoStore()
-
-// Allow for multiple stores (good for contexts)
-// export const createGeoStore = () => new GeoStore();
+// set up callbacks to update store when location changes
+const gs = new GeoService(onStatusChange, onWatchEvent) // instantiate the geoservice to start tracking location
