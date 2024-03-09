@@ -1,90 +1,105 @@
 <!-- @component Register form for new users. -->
 
 <script lang="ts">
-    import { navigate, closeModal } from 'svelte-native'
-    import { Image, TextField } from '@nativescript/core'
-    import { NativeViewElementNode } from 'svelte-native/dom';
-    import { requestPermissions } from '@nativescript/camera';
-    import * as camera from "@nativescript/camera";
-    import { user, token } from '~/stores/auth'
-    import { config } from '~/config/config'
-    import Login from '~/pages/Login.svelte'
-    import { onMount } from 'svelte'
-    import { icons } from '~/utils/icons'
-  
-    let title: string
-    let body: string
-    let image: Image
-    let imageRef: NativeViewElementNode<Image>
-    $: imageRef = image ? image.nativeView : null // update the native element corresponding to the image
-  
-    let cameraLabelVisibility: string = 'visible' // 'visible' | 'hidden' | 'collapsed'
-    let error: string
+  import { navigate, closeModal } from 'svelte-native'
+  import { Image, TextField } from '@nativescript/core'
+  import { NativeViewElementNode } from 'svelte-native/dom';
+  import { requestPermissions } from '@nativescript/camera';
+  import * as camera from "@nativescript/camera";
+  import { user, token } from '~/stores/auth'
+  import { config } from '~/config/config'
+  import Login from '~/pages/Login.svelte'
+  import { onMount, onDestroy } from 'svelte'
+  import { icons } from '~/utils/icons'
+  import { geo } from '~/stores/geo'
 
-    const cameraOptions = {
-        width: 300,
-        height: 300,
-        keepAspectRatio: true,
-        saveToGallery: true
-    };
-  
-    export let onComplete: Function = () => {}
+  let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 
-    onMount(async () => {
-        requestPermissions().then(
-            function success() {
-                console.log(`Camera permission granted.`)
-                // error = `Camera permission granted!`
-            },
-            function failure() {
-                console.log(`Camera permission denied.`)
-                error = `Allow camera access in device settings`
-            }
-        )
-    })
+  let title: string
+  let body: string
+  let image: Image
+  let imageRef: NativeViewElementNode<Image>
+  $: imageRef = image ? image.nativeView : null // update the native element corresponding to the image
 
-    const onCameraButtonTap = async () => {
-        try {
-            const imageAsset = await camera.takePicture(cameraOptions);
-            imageRef.src = imageAsset
-            cameraLabelVisibility = 'hidden'
-            console.log(`Image taken: ${image.src}`)
-        } catch (err) {
-            console.error(err)
-            // cameraLabelVisibility = 'visible'
-        }
-    }
-  
-    const onSubmit = async () => {
-      /**
-       * body register form submission.  Update authentication store if successful.  Show error if not.
-       */
-      // console.log(
-      //   `Form data: title='${title}', body='${body}''`,
-      // )
-  
-      try {
-        const response = await fetch(`${config.WIKISTREETS_API}/posts/create`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
+  let cameraLabelVisibility: string = 'visible' // 'visible' | 'hidden' | 'collapsed'
+  let error: string
+
+  const cameraOptions = {
+      width: 300,
+      height: 300,
+      keepAspectRatio: true,
+      saveToGallery: true
+  };
+
+  export let onComplete: Function = () => {}
+
+  onMount(async () => {
+    // subscribe to the geo location store and save the method to unsubscribe later
+    unsubscribers.push(geo.subscribe((value) => {
+      console.log(`Map: geo.subscribe: ${JSON.stringify(value)}`)
+    }))
+
+    // request camera permissions
+      requestPermissions().then(
+          function success() {
+              console.log(`Camera permission granted.`)
+              // error = `Camera permission granted!`
           },
-          body: JSON.stringify({ title, body }),
-        })
-  
-        const data = await response.json()
-        if (response.ok) {
-          // check for a token and update auth store if present
-            onComplete('Create post success')
-        } else if (data.error) {
-            error = data.error
-            // console.error(error)
-        } 
+          function failure() {
+              console.log(`Camera permission denied.`)
+              error = `Allow camera access in device settings`
+          }
+      )
+  })
+
+  onDestroy(() => {
+    console.log(`Map: onDestroy`)
+    // unsubscribe from any subscribed svelte stores
+    unsubscribers.forEach((unsubscribe) => { unsubscribe() })
+  })
+
+  const onCameraButtonTap = async () => {
+      try {
+          const imageAsset = await camera.takePicture(cameraOptions);
+          imageRef.src = imageAsset
+          cameraLabelVisibility = 'hidden'
+          console.log(`Image taken: ${image.src}`)
       } catch (err) {
-        error = err
-        // console.error(error)
+          console.error(err)
+          // cameraLabelVisibility = 'visible'
       }
+  }
+
+  const onSubmit = async () => {
+    /**
+     * body register form submission.  Update authentication store if successful.  Show error if not.
+     */
+    // console.log(
+    //   `Form data: title='${title}', body='${body}''`,
+    // )
+
+    try {
+      const response = await fetch(`${config.WIKISTREETS_API}/posts/create`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ title, body }),
+      })
+
+      const data = await response.json()
+      if (response.ok) {
+        // check for a token and update auth store if present
+          onComplete('Create post success')
+      } else if (data.error) {
+          error = data.error
+          // console.error(error)
+      } 
+    } catch (err) {
+      error = err
+      // console.error(error)
     }
+  }
   </script>
   
   <page {...$$restProps} >
@@ -127,7 +142,8 @@
             <textView editable={false} class="m-4 h-8 text-center">
                 <span class="w-full text-center text-lg my-0 p-4">
                 {#if !error}
-                    Create a new post
+                    Create a new post 
+                    <!-- at {$geo.longitude} : {$geo.latitude}  -->
                 {:else}
                     {error}
                 {/if}

@@ -75,6 +75,7 @@
     mapCenterPoint = fs.getCenter(collection)
     // console.log(JSON.stringify(bbox, null, 2))
   })
+
   onDestroy(() => {
     console.log(`Map: onDestroy`)
     // unsubscribe from any subscribed svelte stores
