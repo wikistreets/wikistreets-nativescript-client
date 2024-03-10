@@ -69,7 +69,7 @@
     // infinite scroll... this method is called to load more data to the listView
     console.log(`Feed: onLoadMoreItems`)
     const newItems = await fs.getMockFeatures() // load more mock data
-    posts = posts.concat(newItems) // add to list
+    posts = [...newItems, ...posts] // add to list
   }
 
   const onActionBarSwipe = (e: SwipeGestureEventData) => {
