@@ -29,14 +29,6 @@
 
   let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 
-  // screen dimensions
-  // let screenHeight: number = Screen.mainScreen.heightDIPs
-  // let screenWidth: number = Screen.mainScreen.widthDIPs
-  // let centerX: number
-  // let centerY: number
-  // $: centerX = screenWidth / 2
-  // $: centerY = screenHeight / 2
-
   // let mapWatcher: ViewWatcher
   // let feedWatcher: ViewWatcher
   // let headerWatcher: ViewWatcher
@@ -61,7 +53,7 @@
 
     // subscribe to the geo location store and save the method to unsubscribe later
     unsubscribers.push(geo.subscribe((value) => {
-      console.log(`Map: geo.subscribe: ${JSON.stringify(value)}`)
+      console.log(`Map: geo update: ${JSON.stringify(value)}`)
     }))
     
 
@@ -116,6 +108,23 @@
     //   console.log(`feed y: ${Math.round(y)}`)
     //   // mapWatcher.view.height = screenHeight - (screenHeight - y) // update map
     // })
+  }
+
+  const onGPSIconTap = (e: EventData) => {
+    console.log(`Map: onGPSIconTap: currentLocation: ${JSON.stringify($geo)}`)
+    if (!$geo.latitude || !$geo.longitude) {
+      console.log(`Map: onGPSIconTap: no location data`)
+      return
+    }
+    // center the map on the user's location
+    mapCenterPoint = {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'Point',
+        coordinates: [$geo.longitude, $geo.latitude]
+      }
+    }
   }
 
   /**
@@ -262,18 +271,33 @@
 
 <page on:navigatingTo={onPageLoad} actionBarHidden={false} >
   <actionBar title="Map" flat="true">
-    <flexboxLayout class="w-full h-full" flexDirection="row" justifyContent="space-between">
+    <flexboxLayout class="w-full h-full mx-2" flexDirection="row" justifyContent="space-between">
       <label
         text="{icons.settings}"
         class="icons text-2xl icon text-left w-1/3"
         />
+      <!-- <actionItem
+        ios.position="left"
+        android.position="actionBar"
+        ios.systemIcon="32"
+        android.systemIcon="ic_menu_preferences"
+        on:tap={e => { console.log('settings icon click')}}
+      /> -->
       <label text='Map' class="text-center text-lg w-1/3" />
       <!-- <searchBar id="searchbar" class="w-full bg-none text-lg p-2 ml-2 mr-6" hint="Search" /> -->
       <label
-        text="{icons.camera}"
+        text="{icons.share}"
         class="text-2xl icon text-right w-1/3"
         on:tap={e => { console.log('camera button click')}}
-        />
+      />
+      <!-- <actionItem
+        ios.position="right"
+        android.position="actionBar"
+        ios.systemIcon="9"
+        android.systemIcon="ic_menu_share"
+        text="Cancel"
+        on:tap={e => { console.log('share icon click')}}
+      /> -->
     </flexboxLayout>
   </actionBar>
   <!-- <bottomSheet
@@ -302,8 +326,9 @@
           { posts }
           bbox={ mapBbox }
           centerPoint={ mapCenterPoint }
+          panToTappedMarker={true}
         />
-        <label text="{icons['gps-dot']}" class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />
+        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />
         <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
       </gridLayout>
     </drawer>

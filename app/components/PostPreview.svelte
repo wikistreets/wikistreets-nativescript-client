@@ -36,7 +36,7 @@
 <flexboxLayout flexDirection="row" sharedTransitionTag="selectedPost" justifyContent="flex-start" {...$$restProps} on:tap={onPostPreviewTap} on:swipe on:loaded={onComponentLoaded}>
 {#if item}
     <stackLayout class="w-1/3 mr-4">
-      <image class="h-full" src="https://source.unsplash.com/random?id={item.id}" stretch="aspectFill" />
+      <image class="h-full" src="https://source.unsplash.com/random?id={item._id}" stretch="aspectFill" />
     </stackLayout>
     <stackLayout class="w-2/3" horizontalAlignment="left" verticalAlignment="middle">
       <label text="{item.properties.title}" class="text-left text-lg w-full" />

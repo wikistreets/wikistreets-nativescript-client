@@ -56,7 +56,8 @@ export class GeoService {
         console.log('geoService: requesting location...');
         return this.gps.authorize(true).then(() => this.gps.enable())
     } else {
-        return Promise.resolve(true);
+        console.log(`geoService: location already enabled.`)
+        return Promise.resolve(true)
     }
   }
 
@@ -66,7 +67,7 @@ export class GeoService {
 
   public watch(callback: Function) {
     // watch for location changes and call the supplied callback when they occur
-    console.log('geoService: watch');
+    console.log(`geoService: watch: minimumUpdateTimer: ${this.minimumUpdateTime}`);
     this.gps.watchLocation(callback.bind(this), this.error, {
         provider: 'gps',
         minimumUpdateTime: this.minimumUpdateTime

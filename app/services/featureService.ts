@@ -5,6 +5,7 @@ export class FeatureService {
 
   // constructor that fetches mock data
   constructor() {
+      this.featureAPI = 'https://my.api.mockaroo.com/features.json?key=d9ddfc40'
       this.f = [] // start off blank
       this.c = {
         type: 'FeatureCollection',
@@ -12,13 +13,14 @@ export class FeatureService {
       }
   }
 
+  private featureAPI: string
   private f: Feature[] = []
   private c: Collection
 
   public async getMockFeatures(): Promise<Feature[]> {
+    console.log('Fetching mock features...')
     try {
-      console.log('Fetching mock features...')
-      const results = await fetch('https://my.api.mockaroo.com/features.json?key=d9ddfc40')
+      const results = await fetch(this.featureAPI)
       const data = await results.json()
       this.f = this.f.concat(data) // merge arrays
       console.log('Got the mock features...')

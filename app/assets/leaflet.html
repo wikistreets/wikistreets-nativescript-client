@@ -49,8 +49,7 @@
           worldCopyJump: true,
           maxBounds: bounds, // prevent panning outside world map
           minZoom: 2
-        }).setView([51.505, -0.09], 5).fitWorld()
-        // map.setMinZoom( map.getBoundsZoom( map.options.maxBounds ) ) // another way to prevent zoom out of bounds
+        }).fitWorld() 
         map.on('drag', function() {
           // do not allow dragging off edge of world map
          map.panInsideBounds(bounds, { animate: false });
@@ -70,6 +69,7 @@
         // initialize the leaflet map
         const map = createMap() 
         map.on('click', (e) => {
+          // nsWebViewInterface.emit('debug', `leaflet.js click: ${JSON.stringify(e.latlng)}`)
           nsWebViewInterface.emit('mapClick', {lng: e.latlng.lng, lat: e.latlng.lat})
         })
 
@@ -112,13 +112,12 @@
           }) // setBounds
 
           // set the center and zoom of the map
-          nsWebViewInterface.on('setCenter', feature => {
+          nsWebViewInterface.on('setView', ({feature, zoom}) => {
             // expects a GeoJSON Point object as argument
             if (!feature?.geometry?.coordinates) return
             const [lng, lat] = feature.geometry.coordinates
-            const zoom = 4
             map.setView([lat, lng], zoom)
-          }) // setCenter
+          }) // setView
 
 
           // set the center and zoom of the map
@@ -128,7 +127,7 @@
             if (!feature?.geometry?.coordinates) return
             const [lng, lat] = feature.geometry.coordinates
             map.panTo([lat, lng])
-          }) // setCenter
+          }) // panTo
 
           // highlight a specifi marker
           nsWebViewInterface.on('focusMarker', feature => {
@@ -170,8 +169,7 @@
                 marker.feature = feature
                 markers.push(marker) // store it for later
             }
-          }) // makeMarker
-          
+          }) // makeMarker          
         } catch (error) {
           nsWebViewInterface.emit('debug', `caught error: ${error}`)
         }
