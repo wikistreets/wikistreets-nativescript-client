@@ -17,6 +17,8 @@
   import UsersPreview from '~/components/UsersPreview.svelte'
   import { geo } from '~/stores/geo'
 
+  let isEditor = true // whether the user has permission to edit the collection
+
   let parent: Frame | View
   let pageRef: Page // reference to the current page
 
@@ -75,6 +77,21 @@
     const newItems = await fs.getMockFeatures() // load more mock data
     console.log(`Feed: got ${newItems.length} more items`)
     posts = posts.concat(newItems) // [...newItems, ...posts] // add to list
+  }
+
+  const onItemReorderStarting = (e: any) => {
+    // set e.returnValue to true or false to allow or cancel the reorder
+    e.returnValue = isEditor
+  }
+
+  const onItemReorderStarted = ({ object, index, item }) => {
+    // console.log(`Feed: onItemReorderStarted: id->${item._id}, index->${index}`)
+  }
+
+  const onItemReordered = ({ object, index, item, data }) => {
+    const newIndex = data.targetIndex
+    if (newIndex < 0) return // user abandonded reorder
+    console.log(`Feed: onItemReorderStarted: id->${item._id}, oldIndex->${index}, newIndex->${newIndex}`)
   }
 
   const onActionBarSwipe = (e: SwipeGestureEventData) => {
@@ -175,7 +192,14 @@
         colWidth="100%"
         spanSize={spanSizeSelector}
         automationText="collectionView"
+        reorderEnabled={true}
+        reorderLongPressEnabled={true}
+        on:itemReorderStarting={onItemReorderStarting}
+        on:itemReorderStarted={onItemReorderStarted}
+        on:itemReordered={onItemReordered}
         on:loadMoreItems={onLoadMoreItems}
+        swipeActions={true}
+        on:swipe={e => { console.log(`Feed: swipe`) }}
       >
         <!-- <Template key="featuredUsers" let:item>
           <UsersPreview items={item.users} class="h-5"/>
