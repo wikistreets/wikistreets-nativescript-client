@@ -34,7 +34,7 @@
 
     // subscribe to the geo location store and save the method to unsubscribe later
     unsubscribers.push(geo.subscribe((value) => {
-      console.log(`Feed: geo.subscribe: ${JSON.stringify(value)}`)
+      // console.log(`Feed: geo.subscribe: ${JSON.stringify(value)}`)
     }))
 
     // fetch data to put into feed and map
