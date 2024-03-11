@@ -20,7 +20,7 @@
   import PostPreview from '~/components/PostPreview.svelte'
   import { icons } from '../utils/icons'
   import { config } from '~/config/config'
-  import { geo } from '~/stores/geo'
+  import { geo, geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
 
 
   let parent: Frame | View
@@ -40,9 +40,11 @@
   // let feed: View
   let mapBbox: number[]
   let mapCenterPoint: Feature
+  let mapZoom: number = config?.map?.defaults?.zoom || 12
   // let bottomSheet: View
   let posts: Feature[] // will hold posts fetched from API
   let collection: Collection // will hold a collection fetched from the API
+  let fs: FeatureService
 
   let previewPost: Feature // a post the user has tapped on that we want to show preview of
 
@@ -53,13 +55,12 @@
 
     // subscribe to the geo location store and save the method to unsubscribe later
     unsubscribers.push(geo.subscribe((value) => {
-      console.log(`Map: geo update: ${JSON.stringify(value)}`)
+      // console.log(`Map: geo update: ${JSON.stringify(value)}`)
     }))
     
-
     // fetch data to put into feed and map
     console.log("Map: onMount: Loading features...")
-    const fs = new FeatureService()
+    fs = new FeatureService()
     posts = await fs.getMockFeatures() // mock data for now
     console.log(`Map: onMount: ${posts.length} posts`)
     collection = fs.collection // mock data for now
@@ -73,6 +74,18 @@
     // unsubscribe from any subscribed svelte stores
     unsubscribers.forEach((unsubscribe) => { unsubscribe() })
   })
+
+  /**
+   * For infinite scroll, called when we need more postPreview items
+   * @param e
+   */
+   const onLoadMoreItems = async (e: EventData) => {
+    // infinite scroll... this method is called to load more data to the listView
+    console.log(`Feed: onLoadMoreItems`)
+    const newItems = await fs.getMockFeatures() // load more mock data
+    console.log(`Feed: got ${newItems.length} more items`)
+    posts = posts.concat(newItems) // [...newItems, ...posts] // add to list
+  }
 
   /**
    * Handler for page load event
@@ -112,8 +125,9 @@
 
   const onGPSIconTap = (e: EventData) => {
     console.log(`Map: onGPSIconTap: currentLocation: ${JSON.stringify($geo)}`)
-    if (!$geo.latitude || !$geo.longitude) {
+    if (!$geoIsEnabled) {
       console.log(`Map: onGPSIconTap: no location data`)
+      solicitGPSConsent()
       return
     }
     // center the map on the user's location
@@ -125,6 +139,8 @@
         coordinates: [$geo.longitude, $geo.latitude]
       }
     }
+    // zoom in
+    mapZoom = config.map.defaults.zoom
   }
 
   /**
@@ -151,37 +167,41 @@
     const newPost: Feature = posts[prevIndex]
     return newPost
   }
-  const getNext = (post: Feature): Feature => {
+  const getNext = async (post: Feature): Promise<Feature> => {
     // return the next post after this one
     const index = posts.indexOf(post)
+    console.log(`getNext: index: ${index}, posts.length: ${posts.length}`)
+    if (index >= 0 && index == posts.length - 3) {
+      await onLoadMoreItems(null) // attempt infiniteScroll
+    }
     let nextIndex = index + 1
     nextIndex = (nextIndex < posts.length) ? nextIndex : 0 // reset to zero if beyond length of post
     const newPost: Feature = posts[nextIndex]
     return newPost
   }
-  const onPreviewPostSwipe = (e: any) => {
+  const onPreviewPostSwipe = async (e: any) => {
     // user has swiped the preview post
     // console.log(`swiping start on post ${previewPost._id}`)
     switch (e.direction) {
-      case SwipeDirection.left: // left
-        // console.log('onPreviewPostSwipe: left')
+      case SwipeDirection.right:
+        console.log('onPreviewPostSwipe: right')
         previewPost = getPrevious(previewPost)
         mapCenterPoint = previewPost
         // console.log(`centering on post ${previewPost._id} at ${previewPost.geometry.coordinates} `)
         break
-      case SwipeDirection.right: // right
-        // console.log('onPreviewPostSwipe: right')
-        previewPost = getNext(previewPost)
+      case SwipeDirection.left:
+        console.log('onPreviewPostSwipe: left')
+        previewPost = await getNext(previewPost)
         mapCenterPoint = previewPost
         // console.log(`centering on post ${previewPost._id} at ${previewPost.geometry.coordinates} `)
         break
-      case SwipeDirection.up: // up
-        // console.log('onPreviewPostSwipe: up')
-        previewPost = getNext(previewPost)
+      case SwipeDirection.down:
+        console.log('onPreviewPostSwipe: down')
+        previewPost = await getNext(previewPost)
         mapCenterPoint = previewPost
         break
-      case SwipeDirection.down: // down
-        // console.log('onPreviewPostSwipe: down')
+      case SwipeDirection.up:
+        console.log('onPreviewPostSwipe: up')
         previewPost = getPrevious(previewPost)
         mapCenterPoint = previewPost
         break
@@ -326,6 +346,7 @@
           { posts }
           bbox={ mapBbox }
           centerPoint={ mapCenterPoint }
+          zoom={ mapZoom }
           panToTappedMarker={true}
         />
         <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />

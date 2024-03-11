@@ -5,4 +5,13 @@ export const config = {
     startSnap: 0,
     snapPoints: [0, 20, 200, 400, 600, 700],
   },
+  map: {
+    defaults: {
+      zoom: 12,
+      centerPoint: {
+        lat: 40.748817,
+        lng: -73.985428,
+      },
+    },
+  }
 }

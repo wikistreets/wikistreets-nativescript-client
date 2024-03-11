@@ -20,6 +20,7 @@
   export let posts: any[] = [] // will hold posts to put onto map
   export let bbox: number[] // will hold the bounding box of the map
   export let centerPoint: Feature // will hold the center of the map
+  export let zoom: number = 4 // initial zoom level
   export let panToTappedMarker: boolean = false // whether to pan to a tapped marker
   export let focusOnTappedMarker: boolean = true // whether to highlight a tapped marker
   export let panToMapTapPoint: boolean = true // whether to pan to a tapped point on the map
@@ -38,7 +39,7 @@
   $: if (isWebViewLoaded && posts.length) (() => {
     // pass data to webview when webview communication is open and the posts prop has been received from parent
     console.log(`Leaflet: ready with ${posts.length} posts`)
-    if (centerPoint) webViewInterface.emit('setView', {feature: centerPoint, zoom: 4}) // set map center
+    if (centerPoint) webViewInterface.emit('setView', {feature: centerPoint, zoom}) // set map center
     posts.forEach((post) => {
       webViewInterface.emit('makeMarker', post) // place markers on map
     })
@@ -68,12 +69,17 @@
     webViewInterface.on('mapClick', (e: any) => {
       // center map on clicked point
       if (!panToMapTapPoint) return // abort, if not desired
-      console.log(`Leaflet: mapClick: ${JSON.stringify(e)}!`)
+      // console.log(`Leaflet: mapClick: ${JSON.stringify(e)}!`)
       const geoJSONObj: Feature = {type: 'Feature', properties: { }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] }}
       // console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
       webViewInterface.emit('panTo', geoJSONObj)
       centerPoint = geoJSONObj
       dispatch('mapTap', {centerPoint}) // let parent know where tap happened
+    })
+
+    webViewInterface.on('mapZoom', (zoomLevel: number) => {
+      console.log(`Leaflet: mapZoom: ${zoomLevel}`)
+      zoom = zoomLevel
     })
 
     // receive debubbing messages from webView

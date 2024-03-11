@@ -11,7 +11,7 @@ export const DEFAULT_GEO_OPTIONS: GPSOptions = {
   desiredAccuracy: CoreTypes.Accuracy.high,
   updateDistance: 10,
   maximumAge: 20000,
-  timeout: 20000,
+  timeout: 2000,
 }
 
 const STARTING_GEO: DefaultLatLonKeys = { 
@@ -36,25 +36,41 @@ export class GeoService {
    * @param onStatusChange callback for when location status changes
    * @param onWatchEvent callback for when location is updated
    */
-  constructor(onStatusChange: (e: EventData) => void, onWatchEvent?: Function, minimumUpdateTime: number = 1000) {
+  constructor(onEnable?: () => void, onStatusChange?: (e: EventData) => void, onWatchEvent?: Function, onError?: (type: string, e: any) => void, minimumUpdateTime: number = 1000) {
     this.gps = new GPS()
     this.minimumUpdateTime = minimumUpdateTime
     setGeoLocationKeys('lat', 'lng', 'alt')
 
     this.gpsPoints = new ObservableArray([]);
 
-    onStatusChange = onStatusChange || this.handleStatusEvent;
+    onStatusChange = onStatusChange || this.handleStatusEvent; // defauld status change handler
+    this.error = onError || this.error; // default error handler
     this.gps.on(GPS.gps_status_event, onStatusChange);
 
     this.enableLocation() // authorize location tracking
-      .then(() => { this.watch(onWatchEvent) }) // set up location watcher with a callback
-      .catch(this.error);
+      .then(() => { 
+        this.watch(onWatchEvent) 
+        onEnable() // custom callback to run after attempt is made to enable location services
+      }) // set up location watcher with a callback
+      .catch(err => {
+        this.error('enableLocation', err) // report error
+      });
   }
 
   public enableLocation() {
     if (!this.gps.isEnabled()) {
         console.log('geoService: requesting location...');
-        return this.gps.authorize(true).then(() => this.gps.enable())
+        try {
+          return this.gps.authorize(true).then(() => this.gps.enable())
+          .catch(err => {
+            this.error('authorize', err)
+            return Promise.reject(err)          
+          })
+        }
+        catch (err) {
+          this.error('authorize', err)
+          return Promise.reject(err)
+        }
     } else {
         console.log(`geoService: location already enabled.`)
         return Promise.resolve(true)
@@ -65,25 +81,59 @@ export class GeoService {
     return this.gps.isEnabled()
   }
 
+  /**
+   * Wrapper around the geolocation plugin's openGPSSettings method for Android devices
+   */
+  public async openGPSSettings() {
+    try {
+      return await this.gps.openGPSSettings()    
+    }
+    catch (err) {
+      this.error('openGPSSettings', err)
+      return Promise.reject(err)
+    }
+  }
+
   public watch(callback: Function) {
     // watch for location changes and call the supplied callback when they occur
     console.log(`geoService: watch: minimumUpdateTimer: ${this.minimumUpdateTime}`);
-    this.gps.watchLocation(callback.bind(this), this.error, {
-        provider: 'gps',
-        minimumUpdateTime: this.minimumUpdateTime
-    }).then((watchId) => (this.watchId = watchId))
-    .catch(this.error)
+    try {
+      this.gps.watchLocation(
+        callback.bind(this), // make sure `this` in the callback refers to the GeoService instance
+        err => { this.error('watch', err) }, // error callback
+        {
+          // watch GPS options
+          provider: 'gps',
+          minimumUpdateTime: this.minimumUpdateTime
+        })
+        .then((watchId) => (this.watchId = watchId))
+        .catch(err => this.error('watch', err))
+    }
+    catch (err) {
+      this.error('watch', err)
+    }
   }
 
   public clearWatch() {
     console.log('geoService: clearWatch');
-    this.gps.clearWatch(this.watchId);
+    try {
+      this.gps.clearWatch(this.watchId);
+    }
+    catch (err) {
+      this.error('clearWatch', err);
+    }
   }
 
 
-  public getLocation(settings: any = DEFAULT_GEO_OPTIONS) {
+  public getLocation(settings: GPSOptions = DEFAULT_GEO_OPTIONS) {
     if (this.gps.isEnabled()) {
+      try {
         return this.gps.getCurrentLocation(settings);
+      }
+      catch (err) {
+        this.error('getLocation', err);
+        return Promise.reject(err);
+      }
     }
     return Promise.reject('geoService: Geolocation not enabled.')
   }
@@ -114,8 +164,9 @@ export class GeoService {
     this.gpsPoints.unshift({ name: gpsTime });
   }  
 
-  private error(e: any) {
-    console.log('geService: error:', e);
+  private error(type: string, e: any) {
+    if (typeof e === 'object') e = JSON.stringify(e);
+    console.log(`geoService: error: ${type}: ${e}`);
   }
 
   private data() {
@@ -128,8 +179,7 @@ export class GeoService {
 
   private destroy() {
     if (this.watchId) {
-      console.log('clearWatch');
-      this.gps.clearWatch(this.watchId);
+      this.clearWatch()
     }
   }
 

@@ -36,6 +36,7 @@
     <script type="text/javascript">
 
       // create the map
+      let map // will hold map
       const southWest = L.latLng(-89.98155760646617, -180)
       const northEast = L.latLng(89.99346179538875, 180);
       const bounds = L.latLngBounds(southWest, northEast); // bounds of the world map
@@ -43,7 +44,7 @@
       const markers = [] // will hold the markers
 
       const createMap = () => {
-        const map = L.map('map', {
+        map = L.map('map', {
           attributionControl: false,
           zoomControl: false,
           worldCopyJump: true,
@@ -71,6 +72,11 @@
         map.on('click', (e) => {
           // nsWebViewInterface.emit('debug', `leaflet.js click: ${JSON.stringify(e.latlng)}`)
           nsWebViewInterface.emit('mapClick', {lng: e.latlng.lng, lat: e.latlng.lat})
+        })
+
+        map.on('zoomend', (e) => {
+          // nsWebViewInterface.emit('debug', `leaflet.js zoomend: ${map.getZoom()}`)
+          nsWebViewInterface.emit('mapZoom', map.getZoom())
         })
 
         try {

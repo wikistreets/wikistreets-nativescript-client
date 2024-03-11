@@ -38,7 +38,7 @@
     }))
 
     // fetch data to put into feed and map
-    const fs = new FeatureService()
+    fs = new FeatureService()
     posts = await fs.getMockFeatures() // mock data for now
     collection = fs.collection // mock data for now
 
@@ -65,11 +65,16 @@
     unsubscribers.forEach((unsubscribe) => { unsubscribe() })
   })
 
+  /**
+   * For infinite scroll, called when collectionView needs more data
+   * @param e
+   */
   const onLoadMoreItems = async (e: EventData) => {
     // infinite scroll... this method is called to load more data to the listView
     console.log(`Feed: onLoadMoreItems`)
     const newItems = await fs.getMockFeatures() // load more mock data
-    posts = [...newItems, ...posts] // add to list
+    console.log(`Feed: got ${newItems.length} more items`)
+    posts = posts.concat(newItems) // [...newItems, ...posts] // add to list
   }
 
   const onActionBarSwipe = (e: SwipeGestureEventData) => {
