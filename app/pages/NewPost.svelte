@@ -2,11 +2,10 @@
 
 <script lang="ts">
 import { navigate, closeModal } from 'svelte-native'
-import { Dialogs, EventData, Image, ImageAsset, Page, TextField } from '@nativescript/core'
+import { Dialogs, EventData, Image, ImageAsset, Page, TextField, Utils } from '@nativescript/core'
 import { NativeViewElementNode } from 'svelte-native/dom';
 import { requestPermissions as requestCameraPermissions, isAvailable as isCameraAvailable } from '@nativescript/camera';
 import * as camera from "@nativescript/camera";
-import { TNSPlayer } from '@nativescript-community/audio';
 import { user, token } from '~/stores/auth'
 import { config } from '~/config/config'
 import Login from '~/pages/Login.svelte'
@@ -17,6 +16,7 @@ import { geocodeLocation } from '~/services/geocodeService';
 import { Template } from 'svelte-native/components'
 import PostContentBlock from './PostContentBlock.svelte';
   import { CollectionView } from '@nativescript-community/ui-collectionview'
+  import { collectionOf } from '@turf/turf'
 
 interface ContentBlock {
     type: 'blank-slate' | 'image' | 'audio' | 'video' | 'text'
@@ -121,6 +121,8 @@ const onItemReordered = ({ object, index, item, data }) => {
     const newIndex = data.targetIndex
     if (newIndex < 0) return // user abandonded reorder
     console.log(`NewPost: onItemReorderStarted: id->${item._id}, oldIndex->${index}, newIndex->${newIndex}`)
+    // refresh so iOS doesn't mess up the heights
+    refreshCollection()	
 }
 
 const onSubmit = async () => {
@@ -217,9 +219,23 @@ const scrollToEndOfCollection = () => {
         contentCollection.scrollToIndex(contentCollection.items.length - 1, true) // animated
     }, 200)
 }
+
+/**
+ * Refresh the collection...
+ */
+const refreshCollection = () => {
+    const contentCollection = page.getViewById('contentCollection') as CollectionView
+    contentCollection.refreshVisibleItems()
+}
+
+const clearClutter = () => {
+    // dismiss the keyboard
+    Utils.dismissKeyboard()
+    Utils.dismissSoftInput()
+}
 </script>
     
-<page {...$$restProps} on:loaded={onPageLoad}>
+<page {...$$restProps} on:loaded={onPageLoad} on:tap={clearClutter}>
     <actionBar title="New post" flat="true">
     <actionItem
         ios.position="right"
@@ -259,16 +275,16 @@ const scrollToEndOfCollection = () => {
                         on:swipe={e => { console.log(`Feed: swipe`) }}
                     >
                         <Template key='blank-slate' let:item>
-                            <PostContentBlock type={item.type} item={item} class="w-4/5 rounded-md mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                            <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                         </Template>
                         <Template key='text' let:item>
-                            <PostContentBlock type={item.type} item={item} class="w-4/5 rounded-md mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                            <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                         </Template>
                         <Template key='image' let:item>
-                            <PostContentBlock type={item.type} item={item} class="w-4/5 rounded-md mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                            <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                         </Template>
                         <Template key='audio' let:item>
-                            <PostContentBlock type={item.type} item={item} class="w-4/5 rounded-md mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                            <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                         </Template>
 
                     </collectionView>
