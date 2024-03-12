@@ -68,9 +68,9 @@ onMount(() => {
     items = [
         // { type: 'instructions', text: 'Add photos, video, or record audio.'},
         // { type: 'blank-slate', text: 'Hello world'},
-        { type: 'audio', audio: '~/assets/audio/sample.mp3'},
-        { type: 'image', image: sampleImage},
+        // { type: 'image', image: sampleImage},
         // { type: 'text', text: 'Twas brillig and the slithy toves...'},
+        // { type: 'audio', audio: '~/assets/audio/sample.mp3'},
     ]
 
 }) // onMount
@@ -203,6 +203,8 @@ const onPhotoButtonTap =  async () => {
 
 const onMicrophoneButtonTap = () => {
     console.log(`NewPost: onMicrophoneButtonTap`)
+    const newItems: ContentBlock[] = [{ type: 'audio', audio: '~/assets/audio/sample.mp3' }]
+    items = items.concat(newItems)
 }
 
 const onTextButtonTap = () => {
