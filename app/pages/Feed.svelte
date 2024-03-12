@@ -18,6 +18,7 @@
   import { geo } from '~/stores/geo'
 
   let isEditor = true // whether the user has permission to edit the collection
+  let isLoading = true // waiting for feed to load
 
   let parent: Frame | View
   let pageRef: Page // reference to the current page
@@ -42,6 +43,7 @@
     // fetch data to put into feed and map
     fs = new FeatureService()
     posts = await fs.getMockFeatures() // mock data for now
+    isLoading = false
     collection = fs.collection // mock data for now
 
     // add a special first item to the content list
@@ -71,23 +73,61 @@
    * For infinite scroll, called when collectionView needs more data
    * @param e
    */
-  const onLoadMoreItems = async (e: EventData) => {
+   const onLoadMoreItems = async (e: EventData) => {
     // infinite scroll... this method is called to load more data to the listView
-    console.log(`Feed: onLoadMoreItems`)
+    // console.log(`Feed: onLoadMoreItems`)
     const newItems = await fs.getMockFeatures() // load more mock data
     console.log(`Feed: got ${newItems.length} more items`)
     posts = posts.concat(newItems) // [...newItems, ...posts] // add to list
   }
 
+  /**
+   * Determine which template to use for each list item
+   * @param item
+   * @param index
+   * @param items
+   */
+  const itemTemplateSelector = (item: any, index: number, items: any[]): string => {
+    // different list item keys for even and odd rows
+    
+     // special types
+    // if (item.type == 'featuredUsers'){ 
+    //   return 'featuredUsers'
+    // }
+    // regular posts
+    return index % 2 === 0 ? 'post-even' : 'post-odd' // regular post types
+  }
+
+  /**
+   * Determine how many columns each list item will span
+   * @param item
+   * @param _index
+   */
+  const spanSizeSelector = (item: any, _index: number): number => {
+      return 1; // all items in list are full width
+  }
+
+  /**
+   * Called when user tries to reorder a list item to determine whether its allowed
+   * @param e
+   */
   const onItemReorderStarting = (e: any) => {
     // set e.returnValue to true or false to allow or cancel the reorder
     e.returnValue = isEditor
   }
 
+  /**
+   * Called when user starts reordering the list
+   * @param e: CollectionViewEventData
+   */
   const onItemReorderStarted = ({ object, index, item }) => {
     // console.log(`Feed: onItemReorderStarted: id->${item._id}, index->${index}`)
   }
 
+  /**
+   * Called when user finishes reordering the list
+   * @param e: CollectionViewEventData
+   */
   const onItemReordered = ({ object, index, item, data }) => {
     const newIndex = data.targetIndex
     if (newIndex < 0) return // user abandonded reorder
@@ -125,20 +165,6 @@
     if (pullRefresh) {
       pullRefresh.nativeView.refreshing = false
     }
-  }
-
-  const itemTemplateSelector = (item: any, index: number, items: any[]): string => {
-    // different list item keys for even and odd rows
-    
-     // special types
-    // if (item.type == 'featuredUsers'){ 
-    //   return 'featuredUsers'
-    // }
-    // regular posts
-    return index % 2 === 0 ? 'post-even' : 'post-odd' // regular post types
-  }
-  const spanSizeSelector = (item: any, _index: number): number => {
-      return 1; // all items in list are full width
   }
 
   const onListItemTap = (e: CustomEvent) => {
@@ -184,7 +210,8 @@
       class="py-4 text-center text-md text-white bg-slate-600 rounded-t-lg"
       text={feedbackMessage}
     /> -->
-    <pullrefresh bind:this={pullRefresh} on:refresh={refresh} indicatorFillColor="#f1f5f9" indicatorColor="#000">
+    <activityIndicator visibility={isLoading ? 'visible' : 'hidden'} busy={isLoading} class='w-full h-full' />
+    <pullrefresh visibility={isLoading ? 'hidden' : 'visible'} bind:this={pullRefresh} on:refresh={refresh} indicatorFillColor="#f1f5f9" indicatorColor="#000">
       <collectionView 
         separatorColor="transparent"
         items={posts}
@@ -198,7 +225,6 @@
         on:itemReorderStarted={onItemReorderStarted}
         on:itemReordered={onItemReordered}
         on:loadMoreItems={onLoadMoreItems}
-        swipeActions={true}
         on:swipe={e => { console.log(`Feed: swipe`) }}
       >
         <!-- <Template key="featuredUsers" let:item>

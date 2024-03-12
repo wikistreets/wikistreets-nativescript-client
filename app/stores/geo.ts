@@ -1,5 +1,6 @@
-import { writable, readable, derived, get } from 'svelte/store'
+import { writable, readable, derived, get, Readable } from 'svelte/store'
 import { CoreTypes, EventData, confirm, ConfirmOptions, alert, AlertOptions } from '@nativescript/core'
+import { geocodeAddress, geocodeLocation } from '~/services/geocodeService'
 import { GeoService } from '~/services/geoService'
 import { DefaultLatLonKeys} from '@nativescript-community/gps'
 import { Dialogs } from '@nativescript/core'
@@ -24,6 +25,16 @@ export const geo = writable(defaults, () => {
     return () => {
         console.log('geo: no more subscribers!')
     }
+})
+
+/**
+ * A Svelte store to hold address data as type geocodeService/geocodeLocation
+ */
+export const addressData: Readable<geocodeLocation> = derived(geo, ($geo, set) => {
+    geocodeAddress({ latitude: $geo.latitude, longitude: $geo.longitude })
+    .then((result) => {
+        set(result)
+    })
 })
 
 /**

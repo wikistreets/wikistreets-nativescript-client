@@ -51,9 +51,11 @@
 	<!-- END GEOLOCATION -->
 	<!-- BEGIN CAMERA -->
 	<key>NSCameraUsageDescription</key>
-	<string>enter your camera permission request text here</string>
+	<string>Take a new photo</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>enter your photo library permission request text here</string>
+	<string>Access your Photo Library</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Record an audio track</string>
 	<!-- END CAMERA -->
 </dict>
 </plist>

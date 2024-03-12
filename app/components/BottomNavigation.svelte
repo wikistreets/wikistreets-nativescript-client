@@ -5,6 +5,7 @@
     import Map from '~/pages/Map.svelte'
     import Feed from '~/pages/Feed.svelte'
     import CreatePost from '~/pages/CreatePost.svelte'
+    import NewPost from '~/pages/NewPost.svelte'
     import Search from '~/pages/Search.svelte'
     import Settings from '~/pages/Settings.svelte'
     import { navigate } from 'svelte-native'
@@ -96,7 +97,7 @@
     <flexboxLayout class="w-full h-full" id="tabs">
         <label text="{icons.map}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Map)} />
         <label text="{icons['format-list-bulleted']}" class="text-2xl icon text-center m-1 w-full h-full"  on:tap={() => onTabTap(Feed)} />
-        <label text="{icons['plus-box']}" class="text-5xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(CreatePost)} />
+        <label text="{icons['plus-box']}" class="text-5xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(NewPost)} />
         <label text="{icons.search}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Search)} />
         <label text="{icons.account}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Settings)} />
     </flexboxLayout>
