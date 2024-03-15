@@ -79,7 +79,7 @@
    * For infinite scroll, called when we need more postPreview items
    * @param e
    */
-   const onLoadMoreItems = async (e: EventData) => {
+  const onLoadMoreItems = async (e: EventData) => {
     // infinite scroll... this method is called to load more data to the listView
     console.log(`Feed: onLoadMoreItems`)
     const newItems = await fs.getMockFeatures() // load more mock data

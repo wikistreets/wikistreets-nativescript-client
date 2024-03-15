@@ -57,5 +57,12 @@
 	<key>NSMicrophoneUsageDescription</key>
 	<string>Record an audio track</string>
 	<!-- END CAMERA -->
+	<!-- BEGIN PHOTO LIBRARY -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Description text goes here</string>
+	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
+	<true/>
+	<!-- END PHOTO LIBRARY -->
+
 </dict>
 </plist>

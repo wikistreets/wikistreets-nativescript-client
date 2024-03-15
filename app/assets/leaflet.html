@@ -74,6 +74,22 @@
           nsWebViewInterface.emit('mapClick', {lng: e.latlng.lng, lat: e.latlng.lat})
         })
 
+        map.on('dragstart', (e) => {
+          nsWebViewInterface.emit('dragstart', {
+            bounds: map.getBounds(),
+            center: map.getCenter(),
+            zoom: map.getZoom()
+          })
+        })
+
+        map.on('moveend', (e) => {
+          nsWebViewInterface.emit('mapMove', {
+            bounds: map.getBounds(),
+            center: map.getCenter(),
+            zoom: map.getZoom()
+          })
+        })
+
         map.on('zoomend', (e) => {
           // nsWebViewInterface.emit('debug', `leaflet.js zoomend: ${map.getZoom()}`)
           nsWebViewInterface.emit('mapZoom', map.getZoom())

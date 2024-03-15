@@ -9,7 +9,7 @@ const defaults: DefaultLatLonKeys = { latitude: null, longitude: null, altitude:
 
 export const geoIsEnabled = writable(true) // store to hold the status of GPS... assume true
 
-let gs // will hold geoService instance
+let gs: GeoService // will hold geoService instance
 
 /**
  * A Svelte store to hold geolocation data.
@@ -20,6 +20,7 @@ export const geo = writable(defaults, () => {
 
     // set up callbacks to update store when location changes
     gs = new GeoService(onEnableLocation, onStatusChange, onWatchEvent, onError) // instantiate the geoservice to start tracking location
+    gs.enableLocation() // authorize location tracking
 
     // return method to run when no more subscribers
     return () => {
@@ -33,7 +34,9 @@ export const geo = writable(defaults, () => {
 export const addressData: Readable<geocodeLocation> = derived(geo, ($geo, set) => {
     geocodeAddress({ latitude: $geo.latitude, longitude: $geo.longitude })
     .then((result) => {
-        set(result)
+        if (result && ('sys' in result)) {
+            set(result)
+        }
     })
 })
 

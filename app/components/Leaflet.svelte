@@ -18,7 +18,7 @@
   export { pageRef as page }
   export let htmlFilePath: string
   export let posts: any[] = [] // will hold posts to put onto map
-  export let bbox: number[] // will hold the bounding box of the map
+  export let bbox: number[] = null // will hold the bounding box of the map
   export let centerPoint: Feature // will hold the center of the map
   export let zoom: number = 4 // initial zoom level
   export let panToTappedMarker: boolean = false // whether to pan to a tapped marker
@@ -36,14 +36,19 @@
 
   $: if (isWebViewLoaded) webViewInterface.emit('panTo', centerPoint) // set map center on change
 
+  $: if (isWebViewLoaded && centerPoint && zoom) (() => {
+    // set the view
+    webViewInterface.emit('setView', {feature: centerPoint, zoom}) // set map center
+  })()
+
   $: if (isWebViewLoaded && posts.length) (() => {
     // pass data to webview when webview communication is open and the posts prop has been received from parent
     console.log(`Leaflet: ready with ${posts.length} posts`)
-    if (centerPoint) webViewInterface.emit('setView', {feature: centerPoint, zoom}) // set map center
     posts.forEach((post) => {
       webViewInterface.emit('makeMarker', post) // place markers on map
     })
   })()
+
 
   /**
    * Handle on:loaded event for the webView component
@@ -72,7 +77,7 @@
       // console.log(`Leaflet: mapClick: ${JSON.stringify(e)}!`)
       const geoJSONObj: Feature = {type: 'Feature', properties: { }, geometry: { type: 'Point', coordinates: [e.lng, e.lat] }}
       // console.log(`Centering on ${JSON.stringify(geoJSONObj, null, 2)}!`)
-      webViewInterface.emit('panTo', geoJSONObj)
+      // webViewInterface.emit('panTo', geoJSONObj)
       centerPoint = geoJSONObj
       dispatch('mapTap', {centerPoint}) // let parent know where tap happened
     })
@@ -80,6 +85,14 @@
     webViewInterface.on('mapZoom', (zoomLevel: number) => {
       console.log(`Leaflet: mapZoom: ${zoomLevel}`)
       zoom = zoomLevel
+    })
+
+    webViewInterface.on('mapMove', (e: any) => {
+      dispatch('mapMove', e)
+    })
+
+    webViewInterface.on('dragstart', (e: any) => {
+      dispatch('dragStart', e)
     })
 
     // receive debubbing messages from webView
