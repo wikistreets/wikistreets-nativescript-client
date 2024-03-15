@@ -175,7 +175,7 @@ const clearClutter = () => {
 </script>
     
 <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-    <actionItem ios.position='left' android.position='actionBar' text="Cancel" on:tap={goBack} />
+    <navigationButton text="Cancel" on:tap={goBack} />
     <actionBar title="Select Location" flat="true">
     <actionItem
         ios.position="right"

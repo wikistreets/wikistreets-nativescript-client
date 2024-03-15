@@ -228,12 +228,12 @@
   const onMapLongPress = (e: CustomEvent) => {
       console.log(`Map: onMapLongPress`)
       // navigate to new post page
-      navigate({
-        frame: Frame.getFrameById('topmost'),
-        page: NewPostSeletcLocation,
-        clearHistory: true,
-        animated: false,
-      })
+      // navigate({
+      //   frame: Frame.getFrameById('topmost'),
+      //   page: NewPostSeletcLocation,
+      //   clearHistory: false,
+      //   animated: false,
+      // })
   }
 
   // function nextStep() {
