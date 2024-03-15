@@ -229,7 +229,7 @@
       console.log(`Map: onMapLongPress`)
       // navigate to new post page
       navigate({
-        frame: Frame.getFrameById('mainFrame'),
+        frame: Frame.getFrameById('topmost'),
         page: NewPostSeletcLocation,
         clearHistory: true,
         animated: false,
