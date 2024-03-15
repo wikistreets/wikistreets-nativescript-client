@@ -140,26 +140,6 @@
     mapZoom = config.map.defaults.zoom
   }
 
-  /**
-   * Handler for when user clicks the icon to create a new post
-   * @param e
-   */
-  const onCreatePost = (e?: EventData) => {
-    console.log(`Map: onCreatePost`)
-    navigate({
-      frame: Frame.getFrameById('mainFrame'),
-      page: NewPostSeletcLocation,
-      props: { post: null },
-      clearHistory: false,
-      backstackVisible: false,
-      transition: {
-        name: 'slideLeft', // (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
-        duration: 300,
-        curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
-      }
-    })
-  }
-
   const getPrevious = (post: Feature): Feature => {
     // return the previous post before this one
     const index: number = posts.indexOf(post)
@@ -247,8 +227,13 @@
    */
   const onMapLongPress = (e: CustomEvent) => {
       console.log(`Map: onMapLongPress`)
-      onCreatePost()
-      // webViewInterface.emit('clearSelection')
+      // navigate to new post page
+      navigate({
+        frame: Frame.getFrameById('mainFrame'),
+        page: NewPostSeletcLocation,
+        clearHistory: true,
+        animated: false,
+      })
   }
 
   // function nextStep() {

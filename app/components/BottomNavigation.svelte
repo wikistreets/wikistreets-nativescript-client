@@ -4,7 +4,6 @@
     import { icons } from '../utils/icons'
     import Map from '~/pages/Map.svelte'
     import Feed from '~/pages/Feed.svelte'
-    import CreatePost from '~/pages/CreatePost.svelte'
     import NewPostSelectLocation from '~/pages/NewPostSelectLocation.svelte'
     import Search from '~/pages/Search.svelte'
     import Settings from '~/pages/Settings.svelte'
