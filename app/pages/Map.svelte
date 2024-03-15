@@ -1,6 +1,6 @@
 <!-- @component Map page showing the leaflet map. -->
 <script lang="ts">
-import { Screen, Application, Frame, Page, View, EventData, SwipeGestureEventData, SwipeDirection, Utils, on, Label } from '@nativescript/core'
+import { Screen, Application, Frame, Page, View, EventData, SwipeGestureEventData, SwipeDirection, Utils, on, Label, GridLayout } from '@nativescript/core'
 import { navigate, showModal, closeModal } from 'svelte-native'
 import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
 import { onMount, onDestroy } from 'svelte'
@@ -280,31 +280,11 @@ function toggleDrawer() {
 
 <page on:navigatingTo={onPageLoad} actionBarHidden={false} >
   <actionBar title="{selectedCollection.title}" flat="true">
-    <flexboxLayout class="w-full h-full mx-2" flexDirection="row" justifyContent="space-between">
-      <label text="{icons.menu}" on:tap={onHamburgerIconTap} class="icons text-2xl icon text-left w-1/3" />
-      <!-- <actionItem
-        ios.position="left"
-        android.position="actionBar"
-        ios.systemIcon="32"
-        android.systemIcon="ic_menu_preferences"
-        on:tap={e => { console.log('settings icon click')}}
-      /> -->
-      <label text='{selectedCollection.title}' class="text-center text-lg w-1/3" />
-      <!-- <searchBar id="searchbar" class="w-full bg-none text-lg p-2 ml-2 mr-6" hint="Search" /> -->
-      <label
-        text="{icons.share}"
-        class="text-2xl icon text-right w-1/3"
-        on:tap={e => { console.log('camera button click')}}
-      />
-      <!-- <actionItem
-        ios.position="right"
-        android.position="actionBar"
-        ios.systemIcon="9"
-        android.systemIcon="ic_menu_share"
-        text="Cancel"
-        on:tap={e => { console.log('share icon click')}}
-      /> -->
-    </flexboxLayout>
+    <gridLayout columns="auto, *, auto" class="w-full h-full mx-2">
+      <label col={0} text="{icons.menu}" on:tap={onHamburgerIconTap} class="icons text-2xl icon text-left" />
+      <label col={1} text='{selectedCollection.title}' class="w-full text-center text-lg" />
+      <label col={2} text="{icons.share}" class="text-2xl icon text-right" on:tap={e => { console.log('share button click')}} />
+    </gridLayout>
   </actionBar>
   <!-- <bottomSheet
     bind:this={bottomSheet}
