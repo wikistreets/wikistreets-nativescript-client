@@ -251,7 +251,7 @@ import PostContentBlock from '~/components/PostContentBlock.svelte';
     </script>
         
     <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-        <actionItem ios.position='left' android.position='actionBar' text="Cancel" on:tap={onGoBack} />
+        <navigationButton text="Back" on:tap={onGoBack} />
         <actionBar title="Add Content" flat="true">
         <actionItem
             ios.position="right"
