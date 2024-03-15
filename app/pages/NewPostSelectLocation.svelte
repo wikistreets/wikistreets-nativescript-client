@@ -136,6 +136,12 @@ const onMapMove = async (e: CustomEvent) => {
     streetAddress = newAddress ? newAddress : streetAddress
 }
 
+const onMapZoom = (e: EventData) => {
+    // stop using GPS address so user can find address by panning map
+    useGPSAddress = false
+    console.log(`onMapZoom: ${JSON.stringify(e)}`)
+}
+
 const onMapDragStart = () => {
     // stop using GPS address so user can find address by panning map
     useGPSAddress = false
@@ -200,6 +206,7 @@ const clearClutter = () => {
                           zoom={ mapZoom }
                           panToMapTapPoint={false}
                           on:mapMove={onMapMove}
+                          on:mapZoom={onMapZoom}
                           on:dragStart={onMapDragStart}
                         />
                         <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />

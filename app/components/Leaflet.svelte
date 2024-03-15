@@ -83,7 +83,7 @@
     })
 
     webViewInterface.on('mapZoom', (zoomLevel: number) => {
-      console.log(`Leaflet: mapZoom: ${zoomLevel}`)
+      dispatch('mapZoom', zoomLevel)
       zoom = zoomLevel
     })
 

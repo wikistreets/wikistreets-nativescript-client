@@ -4,23 +4,20 @@
   import { navigate, showModal, closeModal } from 'svelte-native'
   import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
   import { onMount, onDestroy } from 'svelte'
-  import { get } from 'svelte/store'
   import { Drawer } from '@nativescript-community/ui-drawer'
-  import Header from '~/components/Header.svelte'
-  import HamburgerMenu from '~/components/HamburgerMenu.svelte'
-  // import Feed from '~/components/Feed.svelte'
-  import PostDetails from './PostDetails.svelte';
-  import AuthModalFrame from '~/components/AuthModalFrame.svelte';
-  import Leaflet from '~/components/Leaflet.svelte'
   // import Theme from '@nativescript/theme' // to detect dark mode
-  // import Footer from '~/components/Footer.svelte'
-  import { ViewWatcher } from '~/stores/view'
-  import { FeatureService } from '../services/FeatureService'
   import { Feature, FeatureCollection as Collection } from '@turf/turf'
-  import PostPreview from '~/components/PostPreview.svelte'
   import { icons } from '../utils/icons'
   import { config } from '~/config/config'
   import { geo, geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
+  import { FeatureService } from '../services/FeatureService'
+  import AuthModalFrame from '~/components/AuthModalFrame.svelte';
+  import HamburgerMenu from '~/components/HamburgerMenu.svelte'
+  import Leaflet from '~/components/Leaflet.svelte'
+  import PostDetails from '~/pages/PostDetails.svelte';
+  import PostPreview from '~/components/PostPreview.svelte'
+  import NewPostSeletcLocation from '~/pages/NewPostSelectLocation.svelte'
+  // import Footer from '~/components/Footer.svelte'
 
 
   let parent: Frame | View
@@ -149,13 +146,17 @@
    */
   const onCreatePost = (e?: EventData) => {
     console.log(`Map: onCreatePost`)
-    showModal({
-      page: AuthModalFrame,
-      animated: true,
-      props: {
-        pageName: 'CreatePost',
-        actionBarHidden: false,
-      },
+    navigate({
+      frame: Frame.getFrameById('mainFrame'),
+      page: NewPostSeletcLocation,
+      props: { post: null },
+      clearHistory: false,
+      backstackVisible: false,
+      transition: {
+        name: 'slideLeft', // (__ANDROID__) ? 'slideLeft' : 'flipLeft', // slide | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
+        duration: 300,
+        curve: 'spring' // ease | easeIn | easeInOut | easeOut | linear | spring
+      }
     })
   }
 
