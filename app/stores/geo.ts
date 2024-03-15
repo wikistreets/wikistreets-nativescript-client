@@ -71,7 +71,7 @@ const onEnableLocation = async () => {
  */
 const onStatusChange = (e: any) => {
     const enabled = (e.object?.enabled === true && e.data?.enabled === true)
-    console.log(`geo: onStatusChange: enabled: ${enabled}, computed from data ${JSON.stringify(e)}`)
+    // console.log(`geo: onStatusChange: enabled: ${enabled}, computed from data ${JSON.stringify(e)}`)
     geoIsEnabled.set(enabled) // store the result of the GPS status update
 }
 

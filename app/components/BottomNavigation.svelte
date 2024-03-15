@@ -17,8 +17,8 @@
     const dispatch = createEventDispatcher(); // for emitting custom messages to parent component
 
     const onPageLoad = (e: EventData) => {
+      console.log(`BottomNavigation: onPageLoad`)
         page = e.object as Page // save reference
-        console.log(`BottomNavigation: onPageLoad`)
         // get array of labels in the flexboxLayout
         const flexBox = page.getViewById('tabs')
         // keep array of children
@@ -41,7 +41,7 @@
             frame,
             page,
             clearHistory,
-            animated,
+            animated
         })
     }
 

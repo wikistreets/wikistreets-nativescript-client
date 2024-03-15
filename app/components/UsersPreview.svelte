@@ -17,7 +17,7 @@
   import { flexDirectionProperty } from '@nativescript/core/ui/layouts/flexbox-layout'
   
     let parent: Frame | View
-    let pageRef: Page // reference to the current page
+    let page: Page // reference to the current page
     let gps: GPS
   
     export let items: any[] = [] // will hold users fetched from API

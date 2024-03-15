@@ -14,6 +14,7 @@ import { config } from '~/config/config'
 import { icons } from '~/utils/icons'
 import { geocodeAddress, geocodeLocation } from '~/services/geocodeService';
 import Login from '~/pages/Login.svelte'
+import Map from '~/pages/Map.svelte'
 import NewPostAddContent from '~/pages/NewPostAddContent.svelte';
 import Leaflet from '~/components/Leaflet.svelte'
   import { PreviousNextView } from '@nativescript/iqkeyboardmanager'
@@ -30,10 +31,10 @@ let keyboardAppearanceDark: boolean = false;
 let toggleDoneButtonTextChanged: boolean = false;
 let increaseKeyboardDistanceFromtextField: boolean = false;
 
+let page: Page
+
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let mapFeedback = ''
-
-let page: Page
 
 let streetAddress: string = `Use map to select a location`
 let mapCenterPoint: Feature
@@ -100,6 +101,12 @@ const onSubmit = () => {
             streetAddress,
             mapCenterPoint,
             mapZoom
+        },
+        animated: true,
+        transition: {
+            name: 'fade', // curlUp (iOS only) | curlDown (iOS only) | explode | fade | flipRight | flipLeft | slideLeft | slideRight | slideTop | slideBottom
+            duration: 300,
+            curve: 'easeIn'
         }
     
     })
@@ -136,7 +143,7 @@ const onMapMove = async (e: CustomEvent) => {
     streetAddress = newAddress ? newAddress : streetAddress
 }
 
-const onMapZoom = (e: EventData) => {
+const onMapZoom = (e: CustomEvent) => {
     // stop using GPS address so user can find address by panning map
     useGPSAddress = false
     console.log(`onMapZoom: ${JSON.stringify(e)}`)
@@ -150,6 +157,10 @@ const onMapDragStart = () => {
 
 const onLocationSelected = () => {
     console.log(`NewPost: onLocationSelected`)
+}
+
+const onGoBack = async () => {
+    goBack()
 }
 
 const buildAddress = (addressData) => {
@@ -175,14 +186,30 @@ const clearClutter = () => {
 </script>
     
 <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-    <navigationButton text="Cancel" on:tap={goBack} />
     <actionBar title="Select Location" flat="true">
-    <actionItem
-        ios.position="right"
-        android.position="actionBar"
-        text="Next"
-        on:tap={onSubmit}
-    />
+        {#if __ANDROID__}
+        <navigationButton
+            android.systemIcon="ic_menu_close_clear_cancel"
+            text="Cancel"
+            on:tap={onGoBack}
+        />
+        {:else }
+        <navigationButton visibility='collapsed' text="Cancel" on:tap={onGoBack} />
+        <actionItem
+            ios.position="left"
+            android.position="actionBar"
+            ios.systemIcon="24"
+            android.systemIcon="ic_menu_close_clear_cancel"
+            text="Cancel"
+            on:tap={onGoBack}
+        />
+        {/if}
+        <actionItem
+            ios.position="right"
+            android.position="actionBar"
+            text="Next"
+            on:tap={onSubmit}
+        />
     </actionBar>
 
     <previousNextView>
@@ -200,7 +227,6 @@ const clearClutter = () => {
                           rowSpan="5"
                           colSpan="5"
                           class="h-full w-full z-1"
-                          page={page}
                           htmlFilePath="~/assets/leaflet.html"
                           centerPoint={ mapCenterPoint }
                           zoom={ mapZoom }
