@@ -1,17 +1,18 @@
 <script lang="ts">
 import { createEventDispatcher } from 'svelte'
 import { Image, TextField } from '@nativescript/core'
-import { TNSPlayer } from '@nativescript-community/audio';
+// import { TNSPlayer } from '@nativescript-community/audio';
+import { AudioPlayer } from '~/services/audioService'
 import { NativeViewElementNode } from 'svelte-native/dom'
 import { icons } from '~/utils/icons';
 import { onDestroy, onMount } from 'svelte'
 
 export let item
 export let type: string
-export let textHint: string = 'Text'
+export let textHint: string = 'Enter text'
 
 // audio
-let audioPlayer: TNSPlayer
+let audioPlayer: AudioPlayer = new AudioPlayer(args=>console.log(args), true, 5) // instantiate
 let playIcon: string = icons['play-circle']
 let pauseIcon: string = icons['pause-circle']
 let isPlaying: boolean = false
@@ -26,13 +27,10 @@ if (type == 'image') {
 const dispatch = createEventDispatcher(); // for emitting custom messages to parent component
 
 onMount(() => {
-    // console.log(`PostContentBlock: onMount`)
-    audioPlayer = new TNSPlayer()
 })
 
 onDestroy(() => {
-    // console.log(`PostContentBlock: onDestroy`)
-    audioPlayer.dispose()
+    audioPlayer.stop()
 })
 
 const onDragHandleTap = () => {
@@ -44,27 +42,30 @@ const onDragHandleTap = () => {
  * Play audio track passed in item.audio
  */
 const onPlayAudioButtonTap = async () => {
-    if (audioPlayer.isAudioPlaying()) {
+
+    if (audioPlayer.isPlaying) {
         audioPlayer.pause()
         isPlaying = false
         return
     }
-    
-    isPlaying = true
-    audioPlayer.playFromFile({
-        audioFile: item.audio,
-        loop: false,
-        completeCallback: (args) => {
+
+    audioPlayer.start(item.audio, false, 
+        args=>{
+            // on complete
+            console.log(`complete: ${JSON.stringify(args)}`)
+            isPlaying=false
+        }, 
+        args => {
+            // on error
+            console.log(`error: ${args}`)
             isPlaying = false
-            console.log(`onPlayAudioButtonTap: completeCallback: ${JSON.stringify(args)}`)
-        },
-        errorCallback: (err) => {
-            isPlaying = false
-            console.log(`onPlayAudioButtonTap: error: ${JSON.stringify(err)}`)
-        }
-    }).then(() => {
-        // what next?
+        }, 
+        args => {
+            // on info
+            console.log(`info ${args}`)
     })
+    isPlaying = true
+
 }
 
 </script>
@@ -90,7 +91,7 @@ const onPlayAudioButtonTap = async () => {
     <gridLayout row={0} col={1} columns='auto, *' rows='80, 0' class='m-4 w-full h-full' verticalAlignment='middle'>
         <textView visibility={isPlaying ? 'hidden' : 'visible'} row={0} col={0} bind:text={playIcon} on:tap={ onPlayAudioButtonTap } editable={false} class="icon text-4xl mx-4 my-0" />
         <textView visibility={isPlaying ? 'visible' : 'hidden'} row={0} col={0} bind:text={pauseIcon} on:tap={ onPlayAudioButtonTap } editable={false} class="icon text-4xl mx-4 my-0" />
-        <textViewWithHint row={0} col={1} bind:text={item.text} hint='{textHint}' autocapitalizationType="sentences" autocorrect={true} editable={true} lineHeight={0} class='text-lg w-full my-2 dark:text-slate-700' />
+        <textViewWithHint row={0} col={1} bind:text={item.text} hint='{textHint}' autocapitalizationType="sentences" autocorrect={true} editable={true}  lineHeight={0} class='text-lg w-full my-2 dark:text-slate-700' />
     </gridLayout>
 </gridLayout>
 

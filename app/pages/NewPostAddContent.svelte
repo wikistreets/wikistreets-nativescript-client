@@ -11,6 +11,8 @@ import { Feature } from '@turf/turf'
 import { user, token } from '~/stores/auth'
 import { icons } from '~/utils/icons'
 import { config } from '~/config/config'
+import { cameraService } from '~/services/cameraService'
+import { audioService } from '~/services/audioService'
 import PostContentBlock from '~/components/PostContentBlock.svelte';
 
 interface ContentBlock {
@@ -21,22 +23,12 @@ interface ContentBlock {
     video?: string
 }
 
-const cameraOptions: camera.CameraOptions = {
-    width: 500,
-    height: 500,
-    keepAspectRatio: true,
-    saveToGallery: false,
-    modalPresentationStyle: (__IOS__) ? UIModalPresentationStyle.Custom : null // FullScreen creates some layout problems with icons
-}
-
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
 let controlsFeedback = 'Add photos, text, or record audio.'
-let isCameraPermission = false // whether we already have permission to access camera
 
 let page: Page
 
-let isMapVisible = true
 export let streetAddress: string
 export let mapCenterPoint: Feature
 export let mapZoom: number
@@ -116,26 +108,6 @@ const onItemDragHandleTap = (e: CustomEvent) => {
     c.startDragging(index)
 }
 
-const onNewItem = () => {
-    // fetch collection and watch for item changes
-    const contentCollection = page.getViewById('contentCollection') as CollectionView
-    // scroll to new item
-    scrollToEndOfCollection()
-    // get last item in collection... delay since it takes a moment for item to populate into collection
-    setTimeout(() => {
-        const lastItem = contentCollection.getItemAtIndex(contentCollection.items.length - 1) as View
-        if (!lastItem) return
-        // // find any text fields within the child
-        // lastItem.eachChildView((child: View) => {
-        //     if (child instanceof TextView || child instanceof TextField) {
-        //         console.log('found one!')
-        //         child.focus()
-        //     }
-        //     return true
-        // })
-    }, 200)
-}
-
 const onGoBack = async () => {
     console.log(`NewPost: onGoBack: ${items.length > 0}`)
     const confirmed = (items.length > 0) ? await Dialogs.confirm({
@@ -148,47 +120,7 @@ const onGoBack = async () => {
 }
 
 const onSubmit = async () => {
-    isMapVisible = false
     console.log(`NewPost: onSubmit`)
-}
-
-const solicitCameraPermission = (async () => {
-    // request camera permissions, if not yet done
-    return await camera.requestCameraPermissions().then(
-        () => {
-            // permission granted
-            console.log(`Camera permission granted.`)
-            isCameraPermission = true
-            return true
-        },
-        () => {
-            //permission denied
-            console.log(`Camera permission denied.`)
-            Dialogs.alert({
-                title: "Camera access denied",
-                message: "Allow camera access in device settings to add photos",
-                okButtonText: "OK"
-            })
-            return false
-        }
-    )
-}).bind(Frame.topmost())
-
-const takePhoto = async () => {
-    try {
-        // take a photo
-        const imageAsset: ImageAsset = await camera.takePicture(cameraOptions);
-        const image = new Image()
-        image.src = imageAsset;
-        console.log(`NewPost: takePicture: created image: ${image.src.options.width}x${image.src.options.height}`)
-        // add new item to collection
-        const newItems: ContentBlock[] = [{ type: 'image', image: image }]
-        items = items.concat(newItems)
-        onNewItem()
-
-    } catch (err) {
-        console.error(`NewPost: takePicture: ${err}`)
-    }
 }
 
 const onPhotoButtonTap =  async () => {
@@ -200,17 +132,44 @@ const onPhotoButtonTap =  async () => {
         })
         return
     }
-    if (!isCameraPermission) {
+    if (!cameraService.isPermission) {
         // ask for permission, then take the photo
-        solicitCameraPermission().then((result) => {
+        cameraService.solicitPermission().then((result) => {
             if (result) {
-                takePhoto()
+                // permission granted
+                cameraService.takePhoto().then( (image: Image) => {
+                    if (image) {
+                        // add new item to collection
+                        const newItems: ContentBlock[] = [{ type: 'image', image: image }]
+                        items = items.concat(newItems)
+                        scrollToEndOfCollection()
+                    }
+                })
+                .catch(err => {
+                    console.error(`NewPost: error taking photo: ${err}`)
+                })
+            }
+            else {
+                // permission denied
+                Dialogs.alert({
+                    title: "Camera access denied",
+                    message: "Allow camera access in device settings to add photos",
+                    okButtonText: "OK"
+                })
+
             }
         })
     }
     else {
         // just take the photo!
-        takePhoto()
+        cameraService.takePhoto().then( (image: Image) => {
+            if (image) {
+                // add new item to collection
+                const newItems: ContentBlock[] = [{ type: 'image', image: image }]
+                items = items.concat(newItems)
+                scrollToEndOfCollection()
+            }
+        })
     }
 }
 
@@ -218,14 +177,14 @@ const onMicrophoneButtonTap = () => {
     console.log(`NewPost: onMicrophoneButtonTap`)
     const newItems: ContentBlock[] = [{ type: 'audio', audio: '~/assets/audio/sample.mp3' }]
     items = items.concat(newItems)
-    onNewItem()
+    scrollToEndOfCollection()
 }
 
 const onTextButtonTap = () => {
     console.log(`NewPost: onTextButtonTap: created text`)
     const newItems: ContentBlock[] = [{ type: 'text', text: '' }]
     items = items.concat(newItems)
-    onNewItem()
+    scrollToEndOfCollection()
 }
 
 const scrollToEndOfCollection = () => {
@@ -279,38 +238,43 @@ const clearClutter = () => {
             <contentView row="0">
                 <frame id="content">
                     <page actionBarHidden={true} >
-                        
-                        <!-- BEGIN: post content builder -->
-                        <collectionView 
-                            id='contentCollection'
-                            class='pt-2 pb-60'
-                            separatorColor="transparent"
-                            items={items}
-                            colWidth="100%"
-                            automationText="collectionView"
-                            reorderEnabled={true}
-                            reorderLongPressEnabled={true}
-                            itemTemplateSelector={itemTemplateSelector}
-                            itemTap={ onItemTap }
-                            on:itemReorderStarting={onItemReorderStarting}
-                            on:itemReorderStarted={onItemReorderStarted}
-                            on:itemReordered={onItemReordered}
-                            on:swipe={e => { console.log(`Feed: swipe`) }}
-                        >
-                            <Template key='blank-slate' let:item>
-                                <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
-                            </Template>
-                            <Template key='text' let:item>
-                                <PostContentBlock type={item.type} item={item} textHint='Text' class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
-                            </Template>
-                            <Template key='image' let:item>
-                                <PostContentBlock type={item.type} item={item} textHint='Image caption'class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
-                            </Template>
-                            <Template key='audio' let:item>
-                                <PostContentBlock on:dragHandleTap={ onItemDragHandleTap } type={item.type} textHint='Audio caption' item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
-                            </Template>
-                        </collectionView>
-                        <!-- END: post content builder -->
+                        <gridLayout rows="60, *" class='w-full h-full'>
+                            <!-- Post title -->
+                            <textField row={0} id='post-title' hint="Enter post title" class="text-2xl text-center p-2 m-2"  />
+
+                            <!-- BEGIN: post content builder -->
+                            <collectionView 
+                                row={1}
+                                id='contentCollection'
+                                class='pt-2 pb-60'
+                                separatorColor="transparent"
+                                items={items}
+                                colWidth="100%"
+                                automationText="collectionView"
+                                reorderEnabled={true}
+                                reorderLongPressEnabled={true}
+                                itemTemplateSelector={itemTemplateSelector}
+                                itemTap={ onItemTap }
+                                on:itemReorderStarting={onItemReorderStarting}
+                                on:itemReorderStarted={onItemReorderStarted}
+                                on:itemReordered={onItemReordered}
+                                on:swipe={e => { console.log(`Feed: swipe`) }}
+                            >
+                                <Template key='blank-slate' let:item>
+                                    <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                </Template>
+                                <Template key='text' let:item>
+                                    <PostContentBlock type={item.type} item={item} textHint='Enter text' class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                </Template>
+                                <Template key='image' let:item>
+                                    <PostContentBlock type={item.type} item={item} textHint='Image caption'class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                </Template>
+                                <Template key='audio' let:item>
+                                    <PostContentBlock on:dragHandleTap={ onItemDragHandleTap } type={item.type} textHint='Audio caption' item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                </Template>
+                            </collectionView>
+                            <!-- END: post content builder -->
+                        </gridLayout>
     
                     </page>
                 </frame>

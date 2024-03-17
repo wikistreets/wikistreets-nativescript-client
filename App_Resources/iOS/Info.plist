@@ -49,20 +49,30 @@
 	<string>location</string>
 	</array>
 	<!-- END GEOLOCATION -->
-	<!-- BEGIN CAMERA -->
+	<!-- BEGIN AUDIO VIDEO -->
+	<key>NSBluetoothPeripheralUsageDescription</key>
+	<string>Not used by this application</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>Not used by this application</string>
 	<key>NSCameraUsageDescription</key>
-	<string>Take a new photo</string>
+	<string>Take new photos with the app</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>Center map on current location</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>Save new photos to the app</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Access your Photo Library</string>
+	<string>Add photos to the app</string>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Record an audio track</string>
-	<!-- END CAMERA -->
-	<!-- BEGIN PHOTO LIBRARY -->
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Description text goes here</string>
+	<string>Add new audio to the app</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>Translate spoken words to text</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>Not used by this application</string>
+	<key>NSMotionUsageDescription</key>
+	<string>Not used by this application</string>
 	<key>PHPhotoLibraryPreventAutomaticLimitedAccessAlert</key>
 	<true/>
-	<!-- END PHOTO LIBRARY -->
+	<!-- BEGIN AUDIO VIDEO -->
 
 </dict>
 </plist>
