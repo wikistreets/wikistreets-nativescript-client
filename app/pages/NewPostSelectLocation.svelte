@@ -38,7 +38,7 @@ let mapFeedback = ''
 
 let streetAddress: string = `Use map to select a location`
 let mapCenterPoint: Feature
-let mapZoom: number = config?.map?.defaults?.homingZoom || 3
+let mapZoom: number = config?.map?.defaults?.homingZoom
 let useGPSAddress = true
 
 
@@ -66,7 +66,7 @@ onMount(() => {
                     type: 'Point',
                     coordinates: [value.longitude, value.latitude]
                 }
-            }        
+            }
             // console.log(`NewPost: onMount: mapCenterPoint: ${JSON.stringify(mapCenterPoint)}`)
         }
     }))

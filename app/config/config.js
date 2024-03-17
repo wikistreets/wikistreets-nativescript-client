@@ -7,7 +7,7 @@ export const config = {
   },
   map: {
     defaults: {
-      zoom: 12,
+      zoom: 2,
       homingZoom: 17,
       centerPoint: {
         lat: 40.748817,

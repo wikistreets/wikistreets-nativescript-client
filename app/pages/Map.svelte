@@ -38,7 +38,7 @@ let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 // let feed: View
 let mapBbox: number[]
 let mapCenterPoint: Feature
-let mapZoom: number = config?.map?.defaults?.zoom || 12
+let mapZoom: number = config?.map?.defaults?.zoom
 // let bottomSheet: View
 let posts: Feature[] // will hold posts fetched from API
 let collection: Collection // will hold a collection fetched from the API
@@ -65,14 +65,13 @@ onMount(async () => {
   }))
   
   // fetch data to put into feed and map
-  console.log("Map: onMount: Loading features...")
+  // console.log("Map: onMount: Loading features...")
   fs = new FeatureService()
   posts = await fs.getMockFeatures() // mock data for now
   console.log(`Map: onMount: ${posts.length} posts`)
   collection = fs.collection // mock data for now
   mapBbox = fs.getBbox(collection)
   mapCenterPoint = fs.getCenter(collection)
-  // console.log(JSON.stringify(bbox, null, 2))
 })
 
 onDestroy(() => {
@@ -87,9 +86,9 @@ onDestroy(() => {
  */
 const onLoadMoreItems = async (e: EventData) => {
   // infinite scroll... this method is called to load more data to the listView
-  console.log(`Feed: onLoadMoreItems`)
+  // console.log(`Feed: onLoadMoreItems`)
   const newItems = await fs.getMockFeatures() // load more mock data
-  console.log(`Feed: got ${newItems.length} more items`)
+  console.log(`Feed: onLoadMoreItems: got ${newItems.length} more items`)
   posts = posts.concat(newItems) // [...newItems, ...posts] // add to list
 }
 
@@ -135,7 +134,7 @@ const onGPSIconTap = (e: EventData) => {
     }
   }
   // zoom in
-  mapZoom = config.map.defaults.zoom
+  mapZoom = config.map.defaults.homingZoom
 }
 
 const onHamburgerIconTap = (e: EventData) => {

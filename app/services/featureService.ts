@@ -7,15 +7,10 @@ export class FeatureService {
   constructor() {
       this.featureAPI = 'https://my.api.mockaroo.com/features.json?key=d9ddfc40'
       this.f = [] // start off blank
-      this.c = {
-        type: 'FeatureCollection',
-        features: this.f = [], // starts off blank
-      }
   }
 
   private featureAPI: string
   private f: Feature[] = []
-  private c: Collection
 
   public async getMockFeatures(): Promise<Feature[]> {
     console.log('Fetching mock features...')
@@ -23,7 +18,7 @@ export class FeatureService {
       const results = await fetch(this.featureAPI)
       const data = await results.json()
       this.f = this.f.concat(data) // merge arrays
-      console.log('Got the mock features...')
+      console.log(`Now have ${this.f.length} mock features...`)
       return data
     }
     catch (error) {
@@ -37,7 +32,10 @@ export class FeatureService {
   }
 
   get collection(): Collection {
-    return this.c
+    return {
+      type: 'FeatureCollection',
+      features: this.f
+    }
   }
 
   getFeatureById(id: number): Feature | undefined {
@@ -45,10 +43,14 @@ export class FeatureService {
   }
 
   getBbox(collection: Collection): any {
-    return bbox(collection)
+    const bounds = bbox(collection)
+    // console.log(`Bbox: ${JSON.stringify(bounds)}`)
+    return bounds
   }
 
   getCenter(collection: Collection): any {
-    return centerOfMass(collection)
+    const center = centerOfMass(collection)
+    // console.log(`Center: ${JSON.stringify(center)}`)
+    return center
   }
 }

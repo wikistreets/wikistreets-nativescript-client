@@ -17,7 +17,7 @@
     const dispatch = createEventDispatcher(); // for emitting custom messages to parent component
 
     const onPageLoad = (e: EventData) => {
-      console.log(`BottomNavigation: onPageLoad`)
+      // console.log(`BottomNavigation: onPageLoad`)
         page = e.object as Page // save reference
         // get array of labels in the flexboxLayout
         const flexBox = page.getViewById('tabs')
@@ -35,7 +35,7 @@
 
     const onTabTap = (page: any, frameId: string = 'mainFrame', clearHistory:boolean = true, animated:boolean = false) => {
         // dispatch('navTap', { page })
-        console.log(`BottomNavigation: onTabTap`)
+        // console.log(`BottomNavigation: onTabTap`)
         const frame = Frame.getFrameById(frameId)
         navigate({
             frame,
