@@ -2,6 +2,42 @@ import { Application, Utils, Dialogs, File, knownFolders } from '@nativescript/c
 import { TNSPlayer, TNSRecorder, AudioRecorderOptions, AudioPlayerOptions } from '@nativescript-community/audio'
 import { request } from '@nativescript-community/perms';
 
+/**
+ * 
+ * @returns appropriate audio file extension for the given platform
+ */
+export const platformExtension = () => {
+    // 'mp3'
+    return __ANDROID__ ? 'm4a' : 'caf'
+}
+
+/**
+ * 
+ * @returns a unique filename for the audio recording with appropriate file extension
+ */
+export const uniqueFilename = () => {
+    const filename = `recording-${new Date().getTime()}-${Math.floor(Math.random() * 1000)}` // generate unique filename
+    console.log(`filename: ${filename}`)
+    return filename
+}
+
+/**
+ * Generates an appropriate file path for an audio file accessible by this app on the device
+ * @param folderName Desired folder name, if any... defaults to 'audio'
+ * @param filename Desired file name, if any... defaults to timestamped random filename
+ * @returns Absolute file path
+ */
+export const constructFilePath = (folderName='audio', filename?: string) => {
+    if (!filename) {
+        filename = uniqueFilename()
+    }
+    const audioFolder = knownFolders.externalDocuments().getFolder(folderName);
+    const filePath = `${audioFolder.path}/${filename}.${platformExtension()}`
+    // const audioFolder = knownFolders.currentApp().getFolder('audio');
+    // const recordedFile: File = audioFolder.getFile(`recording.${this.platformExtension}`);
+    return filePath
+}
+
 export class AudioPlayer {
     private _meterInterval: number
     private _player: TNSPlayer
@@ -21,14 +57,6 @@ export class AudioPlayer {
         request({
             storage:{}
         }).then(permissionsCallback)
-    }
-
-    public getFilePath() {
-        const audioFolder = knownFolders.externalDocuments().getFolder('audio');
-        const filePath = `${audioFolder.path}/recording.${this.platformExtension}`
-        // const audioFolder = knownFolders.currentApp().getFolder('audio');
-        // const recordedFile: File = audioFolder.getFile(`recording.${this.platformExtension}`);
-        return filePath
     }
 
     /**
@@ -126,11 +154,6 @@ export class AudioPlayer {
         this._player.changePlayerSpeed(speed);
     }
 
-    private get platformExtension() {
-        // 'mp3'
-        return `${__ANDROID__ ? 'm4a' : 'caf'}`;
-    }
-
     private async _startDurationTracking(duration) {
         if (this._player && this._player.isAudioPlaying()) {
             const tracker = Utils.setInterval(() => {
@@ -175,8 +198,9 @@ export class AudioRecorder {
     audioMeter: any = 0
     recordedAudioFile: string
     currentVolume: number
+    filePath: string
 
-    constructor(permissionsCallback=(r:any) => console.log(r), debugMode: boolean = false) {
+    constructor(permissionsCallback=(args:any) => console.log(args), debugMode: boolean = false) {
         this._recorder = new TNSRecorder();
         this._recorder.debug = debugMode; // set true for tns_recorder logs
 
@@ -186,7 +210,7 @@ export class AudioRecorder {
         }).then(permissionsCallback)
     }
 
-    async start(args) {
+    async start(completeCallBack=(args:any)=>null, errorCallback=(err:any)=>null, infoCallback=(args:any)=>null filePath?: string) {
         try {
             if (!TNSRecorder.CAN_RECORD()) {
                 Promise.reject('This device cannot record audio.')
@@ -204,24 +228,23 @@ export class AudioRecorder {
                 androidEncoder = 3
             }
 
-            const recordingPath = this.getFilePath()
+            this.filePath = (filePath) ? filePath : constructFilePath()
 
             const recorderOptions: AudioRecorderOptions = {
-                filename: recordingPath,
+                filename: this.filePath,
                 format: androidFormat,
                 sampleRate: 48000,
+                metering: true,
                 android: __ANDROID__ ? {
                     encoder: androidEncoder
                 } :  undefined,
 
-                metering: true,
-
-                infoCallback: (infoObject) => {
-                    console.log(JSON.stringify(infoObject))
+                infoCallback: (args: any) => {
+                    infoCallback(args)
                 },
 
-                errorCallback: (errorObject) => {
-                    console.log(JSON.stringify(errorObject))
+                errorCallback: (err: any) => {
+                    errorCallback(err)
                 }
             };
 
@@ -233,6 +256,7 @@ export class AudioRecorder {
         } catch (err) {
             this.isRecording = false;
             this._resetMeter()
+            errorCallback(err)
             Promise.reject(err)
         }
     }
@@ -266,14 +290,6 @@ export class AudioRecorder {
         }
     }
 
-    public getFilePath() {
-        const audioFolder = knownFolders.externalDocuments().getFolder('audio');
-        const filePath = `${audioFolder.path}/recording.${this.platformExtension}`
-        // const audioFolder = knownFolders.currentApp().getFolder('audio');
-        // const recordedFile: File = audioFolder.getFile(`recording.${this.platformExtension}`);
-        return filePath
-    }
-
     public getFile(filePath) {
         try {
             console.log('recording exists: ' + File.exists(filePath))
@@ -281,11 +297,6 @@ export class AudioRecorder {
         } catch (ex) {
             console.log(ex)
         }
-    }
-
-    private get platformExtension() {
-        // 'mp3'
-        return __ANDROID__ ? 'm4a' : 'caf'
     }
 
 }

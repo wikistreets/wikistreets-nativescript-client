@@ -109,11 +109,11 @@
           <stacklayout class='m-0 my-2 p-0'>
             <label text='Collections' class='font-bold text-2xl' />
             {#each collections as collection}
-              <button text={collection.title} textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-2' on:tap={() => {
+              <button text={collection.title} textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => {
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="+ Create new" textWrap={true} class='text-left text-lg mx-4 my-2'  />
+            <button text="+ Create new" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' />
           </stacklayout>
           <!-- END: collections -->
 
@@ -125,10 +125,10 @@
               <label class="w-full" text={$user?.handle} />
               <label class="w-full" text={$user?.email} />
             </stacklayout>
-            <button text='Profile' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-2' on:tap={() => modalTo('Settings')} />
+            <button text='Profile' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Settings')} />
             {:else}
-            <button text='Login' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-2' on:tap={() => modalTo('Login')} />
-            <button text='Register' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-2' on:tap={() => modalTo('Register')} />
+            <button text='Login' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
+            <button text='Register' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />
             {/if}
           </stacklayout>
           <!-- END: account stuff -->

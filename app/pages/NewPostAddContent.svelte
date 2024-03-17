@@ -12,7 +12,7 @@ import { user, token } from '~/stores/auth'
 import { icons } from '~/utils/icons'
 import { config } from '~/config/config'
 import { cameraService } from '~/services/cameraService'
-import { audioService } from '~/services/audioService'
+import { AudioRecorder } from '~/services/audioService'
 import PostContentBlock from '~/components/PostContentBlock.svelte';
 
 interface ContentBlock {
@@ -213,11 +213,12 @@ const clearClutter = () => {
         <actionBar title="Add Content" flat="true">
             {#if __ANDROID__}
             <navigationButton
+                android.systemIcon="ic_menu_back"
                 text="Back"
                 on:tap={onGoBack}
             />
             {:else }
-            <navigationButton visibility='collapsed' text="Cancel" on:tap={onGoBack} />
+            <navigationButton visibility='collapsed' text="Back" on:tap={onGoBack} />
             <actionItem
                 ios.position="left"
                 android.position="actionBar"
@@ -282,14 +283,14 @@ const clearClutter = () => {
               <contentView row="1">
                 <frame id="addMediaButtons">
                     <page actionBarHidden={true}>
-                            <gridLayout row={1} rows="auto, auto" class="w-full h-full p-2 pb-4 m-2 border-t-2 border-b-2 border-t-slate-200 border-b-slate-200 border-solid">
-                                <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400"  text="{controlsFeedback}" />
-                                <flexboxLayout row={1} flexDirection="row" justifyContent="center" class="p-0 m-0">
-                                        <label on:tap={onPhotoButtonTap} text="{icons.camera}" class="text-5xl icon text-center align-middle m-4" />
-                                        <label on:tap={onMicrophoneButtonTap} text="{icons.mic}" class="text-5xl icon text-center align-middle m-4" />
-                                        <label on:tap={onTextButtonTap} text="{icons['font']}" class="text-5xl icon text-center align-middle m-4" />
-                                </flexboxLayout>
-                            </gridLayout>
+                        <gridLayout row={1} rows="auto, auto" class="w-full h-full p-2 pb-4 m-2 border-t-2 border-b-2 border-t-slate-200 border-b-slate-200 border-solid">
+                            <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400"  text="{controlsFeedback}" />
+                            <flexboxLayout row={1} flexDirection="row" justifyContent="center" class="p-0 m-0">
+                                    <label on:tap={onPhotoButtonTap} text="{icons.camera}" class="text-5xl icon text-center align-middle m-4" />
+                                    <label on:tap={onMicrophoneButtonTap} text="{icons.mic}" class="text-5xl icon text-center align-middle m-4" />
+                                    <label on:tap={onTextButtonTap} text="{icons['font']}" class="text-5xl icon text-center align-middle m-4" />
+                            </flexboxLayout>
+                        </gridLayout>
                     </page>
                 </frame>
               </contentView>  

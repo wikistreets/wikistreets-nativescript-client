@@ -39,6 +39,8 @@ $: if (isWebViewLoaded && centerPoint && zoom) (() => {
   webViewInterface.emit('setView', {feature: centerPoint, zoom}) // set map center
 })()
 
+$: console.log(`Leaflet: isWebViewLoaded: ${isWebViewLoaded}`)
+
 $: if (isWebViewLoaded && posts.length) (() => {
   // pass data to webview when webview communication is open and the posts prop has been received from parent
   console.log(`Leaflet: ready with ${posts.length} posts`)
@@ -54,6 +56,7 @@ $: if (isWebViewLoaded && posts.length) (() => {
  */
 const onWebViewLoaded = (e: EventData) => {
   console.log(`Leaflet: onWebViewLoaded`)
+  isWebViewLoaded = true
   webView = e.object as WebView
 
   // set up bi-directional communications with webView

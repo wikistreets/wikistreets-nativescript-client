@@ -23,7 +23,7 @@
         const flexBox = page.getViewById('tabs')
         // keep array of children
         flexBox.eachChild((child: View): boolean => {
-            console.log(`child: ${child}`)
+            // console.log(`child: ${child}`)
             tabs.push(child as Label) // add to array for later
             return true
         })

@@ -235,7 +235,7 @@ const clearClutter = () => {
                           on:mapZoom={onMapZoom}
                           on:dragStart={onMapDragStart}
                         />
-                        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />
+                        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center w-full text-slate-800" row="0" col="0" />
                         <label text="{icons['gps']}" on:tap={onGPSIconTap} class="icon text-6xl text-center w-full text-red-800" row="2" col="2" />
                       </gridLayout>                
                 <!-- END: leaflet map to pick location -->

@@ -315,7 +315,7 @@ function toggleDrawer() {
           zoom={ mapZoom }
           panToTappedMarker={true}
         />
-        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center text-lg w-full text-slate-800" row="0" col="0" />
+        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center w-full text-slate-800" row="0" col="0" />
         <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
       </gridLayout>
     </drawer>
