@@ -44,9 +44,9 @@ $: if (isWebViewLoaded && isFitBounds && bbox) (() => {
 })()
 
 // otherwise, if there is no bounding box, but we have a center point and zoom level, set the map to that view
-$: if (isWebViewLoaded && !isFitBounds && centerPoint && zoom) (() => {
+$: if (isWebViewLoaded && !(isFitBounds && bbox) && centerPoint && zoom) (() => {
   // set the view
-  // console.log(`Leaflet: setting center to ${JSON.stringify(centerPoint.geometry)} at zoom ${zoom}`)
+  console.log(`Leaflet: setting center to ${JSON.stringify(centerPoint.geometry)} at zoom ${zoom}`)
   webViewInterface.emit('setView', {feature: centerPoint, zoom}) // set map center
 })()
 
