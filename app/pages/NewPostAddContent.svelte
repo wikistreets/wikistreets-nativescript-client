@@ -26,7 +26,8 @@ interface ContentBlock {
 
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
-let controlsFeedback = 'Add photos, text, or record audio.'
+let defaultControlsFeedback = 'Add photos, text, or record audio.'
+let controlsFeedback = defaultControlsFeedback
 
 // audio recorder
 let audioRecorder: AudioRecorder
@@ -34,6 +35,7 @@ let audioRecorder: AudioRecorder
 // audio player
 let audioPlayer: AudioPlayer = new AudioPlayer(args=>console.log(args), true, 5) // instantiate
 let isPlaying: boolean = false
+let isRecording: boolean = false
 
 let page: Page
 
@@ -42,7 +44,7 @@ export let mapCenterPoint: Feature
 export let mapZoom: number
 
 
-const onAudioStop = (e: CustomEvent) => {
+const onAudioStop = async (e?: CustomEvent) => {
     audioPlayer.stop()
 }
 const onAudioPlay = (e: CustomEvent) => {
@@ -79,7 +81,7 @@ function onGestureTouch(args: GestureTouchEventData) {
     view.translateX = extraData.translationX
     view.translateY = extraData.translationY
 }
-function onGestureState(args: GestureStateEventData) {
+async function onGestureState(args: GestureStateEventData) {
     //guessing at states: 0=UNDETERMINED, 1=FAILED, 2=BEGAN, 3=CANCELLED, 4=ACTIVE, 5=END
     const GESTURE_BEGAN = 2
     const GESTURE_END = 5
@@ -87,6 +89,11 @@ function onGestureState(args: GestureStateEventData) {
     const { state, prevState, extraData, view } = args.data
     // console.log('onGestureState', state, prevState, view, extraData)
     if (state == GESTURE_BEGAN) {
+        setTimeout(() => {
+            isRecording = true
+            controlsFeedback = 'Recording...'
+        }, 200)
+        await onAudioStop() // stop any playing audio just in case
         audioRecorder = new AudioRecorder((args) => {
             // permissions callback
             console.log(`NewPost: audioRecorder: permissions: ${args}`)
@@ -102,6 +109,8 @@ function onGestureState(args: GestureStateEventData) {
     }
     else if (state == GESTURE_END) {
         audioRecorder.stop().then(filePath => {
+            isRecording = false
+            controlsFeedback = defaultControlsFeedback // revert
             console.log(`NewPost: audioRecorder: stopped: ${filePath}`)
             const newItems: ContentBlock[] = [{ type: 'audio', audio: filePath }]
             items = items.concat(newItems)
@@ -381,11 +390,11 @@ const clearClutter = () => {
                 <frame id="addMediaButtons">
                     <page actionBarHidden={true} on:loaded={onMediaButtonsLoad}>
                         <gridLayout row={1} rows="auto, auto" class="w-full h-full p-2 pb-4 m-2 border-t-2 border-b-2 border-t-slate-200 border-b-slate-200 border-solid">
-                            <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400"  text="{controlsFeedback}" />
-                            <flexboxLayout row={1} flexDirection="row" justifyContent="center" class="p-0 m-0">
-                                    <label on:tap={onPhotoButtonTap} text="{icons.camera}" class="text-5xl icon text-center align-middle m-4" />
-                                    <label on:tap={onMicrophoneButtonTap} text="{icons.mic}" id='microphone-button' class="text-5xl icon text-center align-middle m-4" />
-                                    <label on:tap={onTextButtonTap} text="{icons['font']}" class="text-5xl icon text-center align-middle m-4" />
+                            <label row={0} class="text-center text-sm p-0 m-0 text-slate-400 dark:text-slate-300"  text="{controlsFeedback}" />
+                            <flexboxLayout row={1} flexDirection="row" justifyContent="center" backgroundColor={isRecording ? 'red' : ''} class="p-0 m-0">
+                                    <label on:tap={onPhotoButtonTap} text="{icons.camera}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />
+                                    <label on:tap={onMicrophoneButtonTap} on:tap={()=> {controlsFeedback='Press and hold to record audio'}} text="{icons.mic}" id='microphone-button' class="text-5xl icon text-center align-middle m-4" />
+                                    <label on:tap={onTextButtonTap} text="{icons['font']}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />
                             </flexboxLayout>
                         </gridLayout>
                     </page>
