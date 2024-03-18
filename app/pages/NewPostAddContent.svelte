@@ -15,14 +15,7 @@ import { config } from '~/config/config'
 import { cameraService } from '~/services/cameraService'
 import { AudioPlayer, AudioRecorder } from '~/services/audioService'
 import PostContentBlock from '~/components/PostContentBlock.svelte'
-
-interface ContentBlock {
-    type: 'blank-slate' | 'image' | 'audio' | 'video' | 'text'
-    text?: string,
-    image?: Image,
-    audio?: string,
-    video?: string
-}
+import { ContentBlock } from '~/models/contentBlock'
 
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
@@ -40,6 +33,7 @@ let isPlaying: boolean = false
 let isRecording: boolean = false
 
 let page: Page
+let contentCollection: CollectionView
 
 export let streetAddress: string
 export let mapCenterPoint: Feature
@@ -47,49 +41,66 @@ export let mapZoom: number
 
 
 const onAudioStop = async (e?: CustomEvent) => {
+    // const item = e?.detail?.detail?.item // double-nested by svelte-native
     audioPlayer.stop()
+    items.forEach(item => item.isPlaying = false) // swap play/pause icons for all
+    items = [...items] // reactive update
 }
 const onAudioPlay = (e: CustomEvent) => {
-    const item = e.detail.detail.item // double-nested by svelte-native
+    let item = e.detail.detail.item // double-nested by svelte-native
     console.log(`NewPost: onAudioPlay: ${item.audio}`)
     if (audioPlayer.isPlaying) {
         audioPlayer.pause()
         isPlaying = false
+        items.forEach(item => item.isPlaying = false) // swap play/pause icons for all
+        items = [...items] // reactive update
         return
     }
+
+    isPlaying = true
+    const i = items.indexOf(item)
+    items.at(i).isPlaying = true // change icon
+    console.log(`Updating item ${i}`)
+    items = [...items] // reactive update
 
     audioPlayer.start(item.audio, false, 
         args=>{
             // on complete
             console.log(`complete: ${JSON.stringify(args)}`)
             isPlaying=false
+            const i = items.indexOf(item)
+            items.at(i).isPlaying = false // change icon
+            items = [...items] // reactive update
         }, 
         args => {
             // on error
             console.log(`error: ${args}`)
             isPlaying = false
+            const i = items.indexOf(item)
+            items.at(i).isPlaying = false // change icon
+            items = [...items] // reactive update
         }, 
         args => {
             // on info
             console.log(`info ${args}`)
     })
-    isPlaying = true
-
 }
 
-function onGestureTouch(args: GestureTouchEventData) {
-    console.log('onGestureTouch', args.data.state, args.data.view, args.data.extraData)
+const onGestureTouch = (args: GestureTouchEventData) => {
+    // console.log('onGestureTouch', args.data.state, args.data.view, args.data.extraData)
     const { state, extraData, view } = args.data
+    console.log(`onGestureTouch: ${state}`)
     view.translateX = extraData.translationX
     view.translateY = extraData.translationY
 }
-async function onGestureState(args: GestureStateEventData) {
+const onGestureState = async (args: GestureStateEventData) => {
     //guessing at states: 0=UNDETERMINED, 1=FAILED, 2=BEGAN, 3=CANCELLED, 4=ACTIVE, 5=END
     const GESTURE_BEGAN = 2
     const GESTURE_END = 5
     // based on react native gesture handler: https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/states-events
     const { state, prevState, extraData, view } = args.data
     // console.log('onGestureState', state, prevState, view, extraData)
+    console.log(`onGestureState: ${state}`)
     if (state == GESTURE_BEGAN) {
         isRecording = true
         controlsFeedback = CONTROLS_FEEDBACK_RECORDING
@@ -112,7 +123,7 @@ async function onGestureState(args: GestureStateEventData) {
             isRecording = false
             controlsFeedback = CONTROLS_FEEDBACK_DEFAULT // revert
             console.log(`NewPost: audioRecorder: stopped: ${filePath}`)
-            const newItems: ContentBlock[] = [{ type: 'audio', audio: filePath }]
+            const newItems: ContentBlock[] = [{ type: 'audio', audio: filePath, isPlaying: false }]
             items = items.concat(newItems)
             scrollToEndOfCollection()
         })
@@ -138,29 +149,32 @@ onMount(() => {
 
 onDestroy(() => {
     console.log(`NewPost: onDestroy`)
-    audioRecorder.stop() // stop recording if it's still going
+    // stop playing if it's still going
+    audioPlayer.stop() 
+    audioPlayer = null
+    // stop recording if it's still going
+    audioRecorder.stop() 
     audioRecorder = null
     // unsubscribe from any subscribed svelte stores
     unsubscribers.forEach((unsubscribe) => { unsubscribe() })
-})
+}) // onDestroy
 
 const onPageLoad = (e: EventData) => {
     console.log(`NewPost: onPageLoad`)
     page = e.object as Page // store reference to page
-}
+} // onPageLoad
 
 const onMediaButtonsLoad = (e: EventData) => {
     // attach gesture handler to microphone icon
     const page = e.object as Page // mediabuttons page
     gestureHandler = manager.createGestureHandler(HandlerType.LONG_PRESS, 10, {
         enabled: true,
-    })    
+    })
     gestureHandler.on(GestureHandlerTouchEvent, onGestureTouch, this)
     gestureHandler.on(GestureHandlerStateEvent, onGestureState, this)
     const micButton = page.getViewById('microphone-button') as View
     console.log(micButton)
     gestureHandler.attachToView(micButton);
-
 }
 
 /**
@@ -174,8 +188,7 @@ const itemTemplateSelector = (item: any, index: number, items: any[]): string =>
 }
 
 const onItemTap = ( ({ item, index }) => {
-    const collection = page.getViewById('contentCollection') as CollectionView
-    collection.startDragging(index)
+    contentCollection.startDragging(index)
 })
 
 /**
@@ -305,7 +318,7 @@ const scrollToEndOfCollection = () => {
  */
 const refreshCollection = () => {
     const contentCollection = page.getViewById('contentCollection') as CollectionView
-    contentCollection.refreshVisibleItems()
+    contentCollection.refresh()
 }
 
 const clearClutter = () => {

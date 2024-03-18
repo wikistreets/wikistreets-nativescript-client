@@ -1,13 +1,13 @@
 <script lang="ts">
-import { createEventDispatcher } from 'svelte'
+import { onDestroy, onMount, createEventDispatcher } from 'svelte'
 import { Image, TextField } from '@nativescript/core'
 // import { TNSPlayer } from '@nativescript-community/audio';
 import { AudioPlayer } from '~/services/audioService'
 import { NativeViewElementNode } from 'svelte-native/dom'
 import { icons } from '~/utils/icons';
-import { onDestroy, onMount } from 'svelte'
+import { ContentBlock } from '~/models/contentBlock'
 
-export let item
+export let item: ContentBlock = null
 export let type: string
 export let textHint: string = 'Enter text'
 
@@ -15,6 +15,9 @@ export let textHint: string = 'Enter text'
 let playIcon: string = icons['play-circle']
 let pauseIcon: string = icons['pause-circle']
 let isPlaying: boolean = false
+$: isPlaying = item.isPlaying // reactive
+
+$: console.log(`isPlaying: ${isPlaying}`)
 
 // image
 let imageMode: 'portrait' | 'landscape' = 'landscape'
@@ -29,7 +32,7 @@ onMount(() => {
 })
 
 onDestroy(() => {
-    isPlaying = false
+    // isPlaying = false
     dispatch('audioStop', {})
 })
 
@@ -38,7 +41,7 @@ onDestroy(() => {
  */
 const onPlayAudioButtonTap = async () => {
     // console.log(`onPlayAudioButtonTap: ${item.audio}`)
-    isPlaying = !isPlaying
+    // isPlaying = !isPlaying
     dispatch('audioPlay', { item })
 }
 

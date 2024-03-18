@@ -137,8 +137,7 @@ export class AudioPlayer {
     public async stop() {
         await this._player.dispose();
         this._stopDurationTracking()
-        this._stopVolumeTracking()
-        
+        this._stopVolumeTracking()   
     }
 
     mute() {
