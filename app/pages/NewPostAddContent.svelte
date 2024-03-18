@@ -91,10 +91,8 @@ async function onGestureState(args: GestureStateEventData) {
     const { state, prevState, extraData, view } = args.data
     // console.log('onGestureState', state, prevState, view, extraData)
     if (state == GESTURE_BEGAN) {
-        setTimeout(() => {
-            isRecording = true
-            controlsFeedback = CONTROLS_FEEDBACK_RECORDING
-        }, 200)
+        isRecording = true
+        controlsFeedback = CONTROLS_FEEDBACK_RECORDING
         await onAudioStop() // stop any playing audio just in case
         audioRecorder = new AudioRecorder((args) => {
             // permissions callback
