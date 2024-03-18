@@ -26,8 +26,10 @@ interface ContentBlock {
 
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
-let defaultControlsFeedback = 'Add photos, text, or record audio.'
-let controlsFeedback = defaultControlsFeedback
+const CONTROLS_FEEDBACK_DEFAULT = 'Add photos, text, or record audio.'
+const CONTROLS_FEEDBACK_INSTRUCTIONS = 'Press and hold to record audio'
+const CONTROLS_FEEDBACK_RECORDING = 'Recording...'
+let controlsFeedback = CONTROLS_FEEDBACK_DEFAULT
 
 // audio recorder
 let audioRecorder: AudioRecorder
@@ -91,7 +93,7 @@ async function onGestureState(args: GestureStateEventData) {
     if (state == GESTURE_BEGAN) {
         setTimeout(() => {
             isRecording = true
-            controlsFeedback = 'Recording...'
+            controlsFeedback = CONTROLS_FEEDBACK_RECORDING
         }, 200)
         await onAudioStop() // stop any playing audio just in case
         audioRecorder = new AudioRecorder((args) => {
@@ -110,7 +112,7 @@ async function onGestureState(args: GestureStateEventData) {
     else if (state == GESTURE_END) {
         audioRecorder.stop().then(filePath => {
             isRecording = false
-            controlsFeedback = defaultControlsFeedback // revert
+            controlsFeedback = CONTROLS_FEEDBACK_DEFAULT // revert
             console.log(`NewPost: audioRecorder: stopped: ${filePath}`)
             const newItems: ContentBlock[] = [{ type: 'audio', audio: filePath }]
             items = items.concat(newItems)
@@ -393,7 +395,7 @@ const clearClutter = () => {
                             <label row={0} class="text-center text-sm p-0 m-0 text-slate-400 dark:text-slate-300"  text="{controlsFeedback}" />
                             <flexboxLayout row={1} flexDirection="row" justifyContent="center" backgroundColor={isRecording ? 'red' : ''} class="p-0 m-0">
                                     <label on:tap={onPhotoButtonTap} text="{icons.camera}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />
-                                    <label on:tap={onMicrophoneButtonTap} on:tap={()=> {controlsFeedback='Press and hold to record audio'}} text="{icons.mic}" id='microphone-button' class="text-5xl icon text-center align-middle m-4" />
+                                    <label on:tap={onMicrophoneButtonTap} on:tap={()=> {controlsFeedback=CONTROLS_FEEDBACK_INSTRUCTIONS}} text="{icons.mic}" id='microphone-button' class="text-5xl icon text-center align-middle m-4" />
                                     <label on:tap={onTextButtonTap} text="{icons['font']}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />
                             </flexboxLayout>
                         </gridLayout>
