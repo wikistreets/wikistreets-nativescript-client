@@ -210,7 +210,7 @@ export class AudioRecorder {
         }).then(permissionsCallback)
     }
 
-    async start(completeCallBack=(args:any)=>null, errorCallback=(err:any)=>null, infoCallback=(args:any)=>null filePath?: string) {
+    async start(completeCallBack=(args:any)=>null, errorCallback=(err:any)=>null, infoCallback=(args:any)=>null, filePath?: string) {
         try {
             if (!TNSRecorder.CAN_RECORD()) {
                 Promise.reject('This device cannot record audio.')

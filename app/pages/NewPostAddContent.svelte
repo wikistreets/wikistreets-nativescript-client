@@ -5,15 +5,16 @@ import { onMount, onDestroy } from 'svelte'
 import { navigate, closeModal, goBack } from 'svelte-native'
 import { Template } from 'svelte-native/components'
 import { Dialogs, EventData, Frame, Image, ImageAsset, Page, TextField, TextView, Utils, View } from '@nativescript/core'
-import * as camera from "@nativescript/camera";
+import { GestureHandlerTouchEvent, GestureHandlerStateEvent, GestureStateEventData, GestureTouchEventData, HandlerType, Manager as GestureManager} from '@nativescript-community/gesturehandler'
+import * as camera from "@nativescript/camera"
 import { CollectionView } from '@nativescript-community/ui-collectionview'
-import { Feature } from '@turf/turf'
+import { Feature } from '~/models/feature'
 import { user, token } from '~/stores/auth'
 import { icons } from '~/utils/icons'
 import { config } from '~/config/config'
 import { cameraService } from '~/services/cameraService'
 import { AudioRecorder } from '~/services/audioService'
-import PostContentBlock from '~/components/PostContentBlock.svelte';
+import PostContentBlock from '~/components/PostContentBlock.svelte'
 
 interface ContentBlock {
     type: 'blank-slate' | 'image' | 'audio' | 'video' | 'text'
@@ -32,6 +33,23 @@ let page: Page
 export let streetAddress: string
 export let mapCenterPoint: Feature
 export let mapZoom: number
+
+
+function onGestureTouch(args: GestureTouchEventData) {
+    console.log('onGestureTouch', args.data.state, args.data.view, args.data.extraData)
+    const { state, extraData, view } = args.data
+    view.translateX = extraData.translationX
+    view.translateY = extraData.translationY
+}
+function onGestureState(args: GestureStateEventData) {
+    //guessing at states: 0=UNDETERMINED, 1=FAILED, 2=BEGAN, 3=CANCELLED, 4=ACTIVE, 5=END
+    // based on react native gesture handler: https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/states-events
+    const { state, prevState, extraData, view } = args.data
+    console.log('onGestureState', state, prevState, view, extraData)
+}
+const manager = GestureManager.getInstance()
+let gestureHandler
+
 
 onMount(() => {
     console.log(`NewPost: onMount`)
@@ -55,6 +73,20 @@ onDestroy(() => {
 const onPageLoad = (e: EventData) => {
     console.log(`NewPost: onPageLoad`)
     page = e.object as Page // store reference to page
+}
+
+const onMediaButtonsLoad = (e: EventData) => {
+    // attach gesture handler to microphone icon
+    const page = e.object as Page // mediabuttons page
+    gestureHandler = manager.createGestureHandler(HandlerType.LONG_PRESS, 10, {
+        enabled: true,
+    })    
+    gestureHandler.on(GestureHandlerTouchEvent, onGestureTouch, this)
+    gestureHandler.on(GestureHandlerStateEvent, onGestureState, this)
+    const micButton = page.getViewById('microphone-button') as View
+    console.log(micButton)
+    gestureHandler.attachToView(micButton);
+
 }
 
 /**
@@ -282,12 +314,12 @@ const clearClutter = () => {
               </contentView>
               <contentView row="1">
                 <frame id="addMediaButtons">
-                    <page actionBarHidden={true}>
+                    <page actionBarHidden={true} on:loaded={onMediaButtonsLoad}>
                         <gridLayout row={1} rows="auto, auto" class="w-full h-full p-2 pb-4 m-2 border-t-2 border-b-2 border-t-slate-200 border-b-slate-200 border-solid">
                             <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400"  text="{controlsFeedback}" />
                             <flexboxLayout row={1} flexDirection="row" justifyContent="center" class="p-0 m-0">
                                     <label on:tap={onPhotoButtonTap} text="{icons.camera}" class="text-5xl icon text-center align-middle m-4" />
-                                    <label on:tap={onMicrophoneButtonTap} text="{icons.mic}" class="text-5xl icon text-center align-middle m-4" />
+                                    <label on:tap={onMicrophoneButtonTap} text="{icons.mic}" id='microphone-button' class="text-5xl icon text-center align-middle m-4" />
                                     <label on:tap={onTextButtonTap} text="{icons['font']}" class="text-5xl icon text-center align-middle m-4" />
                             </flexboxLayout>
                         </gridLayout>

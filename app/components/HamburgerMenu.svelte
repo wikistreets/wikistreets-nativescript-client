@@ -7,12 +7,12 @@
   import { user, isAuthenticated, logout } from '~/stores/auth'
   import AuthModalFrame from '~/components/AuthModalFrame.svelte'
   import Map from '~/pages/Map.svelte'
-  import { FeatureCollection as Collection } from '@turf/turf'
+  import { Collection } from '~/models/feature'
 
   export let collectionPage: Page = Map
 
   // mock collections
-  const collections = [
+  const collections: Collection[] = [
     {
       _id: 0,
       title: 'Everything',

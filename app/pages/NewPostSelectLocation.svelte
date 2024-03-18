@@ -7,7 +7,7 @@ import { Dialogs, EventData, Frame, Image, ImageAsset, Page, TextField, Utils } 
 import { requestPermissions as requestCameraPermissions, isAvailable as isCameraAvailable } from '@nativescript/camera';
 import * as camera from "@nativescript/camera";
 // import { PreviousNextView } from '@nativescript/iqkeyboardmanager'
-import { Feature, FeatureCollection as Collection } from '@turf/turf'
+import { Feature } from '~/models/feature'
 import { user, token } from '~/stores/auth'
 import { addressData, geo, geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
 import { config } from '~/config/config'

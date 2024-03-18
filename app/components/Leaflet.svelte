@@ -4,7 +4,7 @@
 import { Screen, Page, EventData, WebView, ViewBase, knownFolders, SwipeGestureEventData, SwipeDirection } from '@nativescript/core'
 import { onMount, createEventDispatcher } from 'svelte'
 import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
-import { Feature, center, geojsonType} from '@turf/turf'
+import { Feature} from '~/models/feature'
 const webViewInterfaceModule = require('nativescript-webview-interface')
 
 // for positioning elements

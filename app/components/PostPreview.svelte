@@ -2,7 +2,7 @@
     import { onMount, onDestroy, createEventDispatcher } from 'svelte'
     import { EventData } from '@nativescript/core';
     import { SharedTransition, ModalTransition } from '@nativescript/core'
-    import { Feature } from '@turf/turf'
+    import { Feature } from '~/models/feature'
     
     export let item: Feature
 

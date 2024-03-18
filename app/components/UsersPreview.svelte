@@ -8,7 +8,7 @@
     import { get } from 'svelte/store'
     import { GPS } from '@nativescript-community/gps'
     import { FeatureService } from '../services/FeatureService'
-    import { Feature, FeatureCollection as Collection } from '@turf/turf'
+    import { Feature } from '~/models/feature'
     import PostPreview from '~/components/PostPreview.svelte'
     import PostDetails from '~/pages/PostDetails.svelte'
     import { icons } from '../utils/icons'

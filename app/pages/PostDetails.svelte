@@ -6,7 +6,7 @@
   import { Page, EventData, fromObject, SwipeGestureEventData, SwipeDirection } from '@nativescript/core'
   import { SharedTransition, ModalTransition } from '@nativescript/core'
   import { FeatureService } from '../services/FeatureService'
-  import { Feature } from '@turf/turf'
+  import { Feature } from '~/models/feature'
 
   export let onComplete: Function = () => {}
   export let post: Feature

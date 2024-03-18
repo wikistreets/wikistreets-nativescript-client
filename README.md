@@ -26,6 +26,9 @@ The project is set up to run unit tests using [jasmine](https://jasmine.github.i
 
 ## Troubleshooting
 
+### Hot Module Reloading (HMR)
+If running on iOS shows error messages mentioning `hmr`, try running without that, e.g. `ns debug ios --no-hmr`.  This isn't a solution, since HMR should work, but could avoid the problem.
+
 ### Android
 If running on Android produces errors about `Duplicate class` in Kotlin, follow the solution mentioned [here](https://stackoverflow.com/a/77432977) and insert the following line into the `platforms/android/app/build.gradle` at the bottom of the `dependencies { ... }` code block:
 

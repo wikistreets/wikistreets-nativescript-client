@@ -12,7 +12,7 @@ import DrawerElement from '@nativescript-community/ui-drawer/svelte'
 import { install as installBottomSheet } from '@nativescript-community/ui-persistent-bottomsheet'
 import BottomSheetElement from '@nativescript-community/ui-persistent-bottomsheet/svelte'
 import * as IQKeyboardManager from '@nativescript/iqkeyboardmanager'
-// import { install as installGestureHandler} from "@nativescript-community/gesturehandler";
+import { install as installGestureHandler} from "@nativescript-community/gesturehandler";
 // import { GestureHandlerTouchEvent, GestureHandlerStateEvent, GestureStateEventData, GestureTouchEventData, HandlerType } from '@nativescript-community/gesturehandler';
 import { registerElement, registerNativeViewElement } from 'svelte-native/dom';
 import { isConnected } from '~/stores/network'
@@ -27,7 +27,7 @@ try {
   installBottomSheet()   // see https://github.com/nativescript-community/ui-persistent-bottomsheet
   BottomSheetElement.register()
 
-  // installGestureHandler() // see https://github.com/nativescript-community/gesturehandler
+  installGestureHandler(true) // see https://github.com/nativescript-community/gesturehandler
 
   CollectionViewElement.register(); // see https://github.com/nativescript-community/ui-collectionview/tree/master
 

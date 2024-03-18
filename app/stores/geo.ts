@@ -60,7 +60,7 @@ export const solicitConsent = async () => {
  * Callback when location is successfully enabled
  */
 const onEnableLocation = async () => {
-    console.log(`geo: onEnableLocation: gs.isEnabled: ${gs.isEnabled()}`)
+    console.log(`geo: onEnableLocation: gs.isEnabled: ${gs.isEnabled}`)
     const location = await gs.getLocation()
     console.log(`geo: onEnableLocation: location: ${JSON.stringify(location)}`)
 }

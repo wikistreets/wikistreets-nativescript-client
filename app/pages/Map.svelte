@@ -6,7 +6,7 @@ import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
 import { onMount, onDestroy } from 'svelte'
 import { Drawer } from '@nativescript-community/ui-drawer'
 // import Theme from '@nativescript/theme' // to detect dark mode
-import { Feature, FeatureCollection as Collection } from '@turf/turf'
+import { Collection, Feature } from '~/models/feature'
 import { icons } from '../utils/icons'
 import { config } from '~/config/config'
 import { geo, geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
@@ -314,7 +314,7 @@ function toggleDrawer() {
           zoom={ mapZoom }
           panToTappedMarker={true}
         />
-        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center w-full text-slate-800" row="0" col="0" />
+        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center w-full text-slate-800" row="0" col={0} />
         <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
       </gridLayout>
     </drawer>

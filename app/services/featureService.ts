@@ -1,5 +1,5 @@
 import { bbox, center, centerOfMass, collect } from '@turf/turf'
-import { FeatureCollection as Collection, Feature} from '@turf/turf'
+import { Collection, Feature} from '~/models/feature'
 
 export class FeatureService {
 
