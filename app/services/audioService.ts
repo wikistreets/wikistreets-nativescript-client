@@ -210,9 +210,10 @@ export class AudioRecorder {
         }).then(permissionsCallback)
     }
 
-    async start(completeCallBack=(args:any)=>null, errorCallback=(err:any)=>null, infoCallback=(args:any)=>null, filePath?: string) {
+    async start(errorCallback=(err:any)=>null, infoCallback=(args:any)=>null, filePath?: string) {
         try {
             if (!TNSRecorder.CAN_RECORD()) {
+                this._resetMeter()
                 Promise.reject('This device cannot record audio.')
                 return;
             }
@@ -244,6 +245,7 @@ export class AudioRecorder {
                 },
 
                 errorCallback: (err: any) => {
+                    this._resetMeter()
                     errorCallback(err)
                 }
             };
@@ -261,7 +263,7 @@ export class AudioRecorder {
         }
     }
 
-    async stop(args) {
+    async stop() {
         this._resetMeter();
         await this._recorder.stop().catch((ex) => {
             console.log(ex);
@@ -272,6 +274,7 @@ export class AudioRecorder {
         this.isRecording = false;
         // alert('Recorder stopped.');
         this._resetMeter();
+        return this.filePath // end with file path
     }
 
     private _initMeter() {

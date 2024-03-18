@@ -13,7 +13,7 @@ import { user, token } from '~/stores/auth'
 import { icons } from '~/utils/icons'
 import { config } from '~/config/config'
 import { cameraService } from '~/services/cameraService'
-import { AudioRecorder } from '~/services/audioService'
+import { AudioPlayer, AudioRecorder } from '~/services/audioService'
 import PostContentBlock from '~/components/PostContentBlock.svelte'
 
 interface ContentBlock {
@@ -27,6 +27,11 @@ interface ContentBlock {
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
 let controlsFeedback = 'Add photos, text, or record audio.'
+
+let audioRecorder: AudioRecorder = new AudioRecorder((args) => {
+    // permissions callback
+    console.log(`NewPost: audioRecorder: permissions: ${args}`)
+}, true)
 
 let page: Page
 
@@ -43,9 +48,30 @@ function onGestureTouch(args: GestureTouchEventData) {
 }
 function onGestureState(args: GestureStateEventData) {
     //guessing at states: 0=UNDETERMINED, 1=FAILED, 2=BEGAN, 3=CANCELLED, 4=ACTIVE, 5=END
+    const GESTURE_BEGAN = 2
+    const GESTURE_END = 5
     // based on react native gesture handler: https://docs.swmansion.com/react-native-gesture-handler/docs/fundamentals/states-events
     const { state, prevState, extraData, view } = args.data
-    console.log('onGestureState', state, prevState, view, extraData)
+    // console.log('onGestureState', state, prevState, view, extraData)
+    if (state == GESTURE_BEGAN) {
+        audioRecorder.start(args => {
+            // error callback
+            console.log(`NewPost: audioRecorder: error: ${args}`)
+        },
+        args => {
+            // info callback
+            console.log(`NewPost: audioRecorder: info: ${args}`)
+        })
+    }
+    else if (state == GESTURE_END) {
+        audioRecorder.stop().then(filePath => {
+            console.log(`NewPost: audioRecorder: stopped: ${filePath}`)
+            const newItems: ContentBlock[] = [{ type: 'audio', audio: filePath }]
+            items = items.concat(newItems)
+            scrollToEndOfCollection()
+        })
+    }
+
 }
 const manager = GestureManager.getInstance()
 let gestureHandler
@@ -66,6 +92,8 @@ onMount(() => {
 
 onDestroy(() => {
     console.log(`NewPost: onDestroy`)
+    audioRecorder.stop() // stop recording if it's still going
+    audioRecorder = null
     // unsubscribe from any subscribed svelte stores
     unsubscribers.forEach((unsubscribe) => { unsubscribe() })
 })
@@ -207,9 +235,9 @@ const onPhotoButtonTap =  async () => {
 
 const onMicrophoneButtonTap = () => {
     console.log(`NewPost: onMicrophoneButtonTap`)
-    const newItems: ContentBlock[] = [{ type: 'audio', audio: '~/assets/audio/sample.mp3' }]
-    items = items.concat(newItems)
-    scrollToEndOfCollection()
+    // const newItems: ContentBlock[] = [{ type: 'audio', audio: '~/assets/audio/sample.mp3' }]
+    // items = items.concat(newItems)
+    // scrollToEndOfCollection()
 }
 
 const onTextButtonTap = () => {
