@@ -28,10 +28,12 @@ let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
 let controlsFeedback = 'Add photos, text, or record audio.'
 
-let audioRecorder: AudioRecorder = new AudioRecorder((args) => {
-    // permissions callback
-    console.log(`NewPost: audioRecorder: permissions: ${args}`)
-}, true)
+// audio recorder
+let audioRecorder: AudioRecorder
+
+// audio player
+let audioPlayer: AudioPlayer = new AudioPlayer(args=>console.log(args), true, 5) // instantiate
+let isPlaying: boolean = false
 
 let page: Page
 
@@ -39,6 +41,37 @@ export let streetAddress: string
 export let mapCenterPoint: Feature
 export let mapZoom: number
 
+
+const onAudioStop = (e: CustomEvent) => {
+    audioPlayer.stop()
+}
+const onAudioPlay = (e: CustomEvent) => {
+    const item = e.detail.detail.item // double-nested by svelte-native
+    console.log(`NewPost: onAudioPlay: ${item.audio}`)
+    if (audioPlayer.isPlaying) {
+        audioPlayer.pause()
+        isPlaying = false
+        return
+    }
+
+    audioPlayer.start(item.audio, false, 
+        args=>{
+            // on complete
+            console.log(`complete: ${JSON.stringify(args)}`)
+            isPlaying=false
+        }, 
+        args => {
+            // on error
+            console.log(`error: ${args}`)
+            isPlaying = false
+        }, 
+        args => {
+            // on info
+            console.log(`info ${args}`)
+    })
+    isPlaying = true
+
+}
 
 function onGestureTouch(args: GestureTouchEventData) {
     console.log('onGestureTouch', args.data.state, args.data.view, args.data.extraData)
@@ -54,6 +87,10 @@ function onGestureState(args: GestureStateEventData) {
     const { state, prevState, extraData, view } = args.data
     // console.log('onGestureState', state, prevState, view, extraData)
     if (state == GESTURE_BEGAN) {
+        audioRecorder = new AudioRecorder((args) => {
+            // permissions callback
+            console.log(`NewPost: audioRecorder: permissions: ${args}`)
+        }, true)
         audioRecorder.start(args => {
             // error callback
             console.log(`NewPost: audioRecorder: error: ${args}`)
@@ -331,7 +368,7 @@ const clearClutter = () => {
                                     <PostContentBlock type={item.type} item={item} textHint='Image caption'class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                                 </Template>
                                 <Template key='audio' let:item>
-                                    <PostContentBlock on:dragHandleTap={ onItemDragHandleTap } type={item.type} textHint='Audio caption' item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock on:audioStop={ onAudioStop } on:audioPlay={ onAudioPlay } type={item.type} textHint='Audio caption' item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                                 </Template>
                             </collectionView>
                             <!-- END: post content builder -->

@@ -31,7 +31,7 @@ export const constructFilePath = (folderName='audio', filename?: string) => {
     if (!filename) {
         filename = uniqueFilename()
     }
-    const audioFolder = knownFolders.externalDocuments().getFolder(folderName);
+    const audioFolder = knownFolders.documents().getFolder(folderName);
     const filePath = `${audioFolder.path}/${filename}.${platformExtension()}`
     // const audioFolder = knownFolders.currentApp().getFolder('audio');
     // const recordedFile: File = audioFolder.getFile(`recording.${this.platformExtension}`);
@@ -73,7 +73,7 @@ export class AudioPlayer {
                 audioFile,
                 loop,
                 completeCallback: async (args:any) => {
-                    await this._player.dispose();
+                    // await this._player.dispose()
                     this._stopDurationTracking()
                     this._stopVolumeTracking()
                     completeCallBack(args)
@@ -91,6 +91,8 @@ export class AudioPlayer {
 
             if (fileType === 'local') {
                 await this._player.playFromFile(playerOptions).catch((err: any) => {
+                    this._stopDurationTracking()
+                    this._stopVolumeTracking()
                     errorCallback(err)
                 });
                 this.audioTrackDuration = await this._player.getAudioTrackDuration()
@@ -99,6 +101,8 @@ export class AudioPlayer {
                 this.volumeTracker = this._startVolumeTracking()
             } else if (fileType === 'remote') {
                 await this._player.playFromUrl(playerOptions).catch((err: any) => {
+                    this._stopDurationTracking()
+                    this._stopVolumeTracking()
                     errorCallback(err)
                 });
             }
@@ -270,6 +274,7 @@ export class AudioRecorder {
             this.isRecording = false;
             this._resetMeter();
         });
+        await this._recorder.dispose();
 
         this.isRecording = false;
         // alert('Recorder stopped.');

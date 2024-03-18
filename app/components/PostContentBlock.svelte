@@ -12,7 +12,6 @@ export let type: string
 export let textHint: string = 'Enter text'
 
 // audio
-let audioPlayer: AudioPlayer = new AudioPlayer(args=>console.log(args), true, 5) // instantiate
 let playIcon: string = icons['play-circle']
 let pauseIcon: string = icons['pause-circle']
 let isPlaying: boolean = false
@@ -30,43 +29,23 @@ onMount(() => {
 })
 
 onDestroy(() => {
-    audioPlayer.stop()
+    isPlaying = false
+    dispatch('audioStop', {})
 })
-
-const onDragHandleTap = () => {
-    dispatch('dragHandleTap', { item })
-}
-
 
 /**
  * Play audio track passed in item.audio
  */
 const onPlayAudioButtonTap = async () => {
-
-    if (audioPlayer.isPlaying) {
-        audioPlayer.pause()
-        isPlaying = false
-        return
-    }
-
-    audioPlayer.start(item.audio, false, 
-        args=>{
-            // on complete
-            console.log(`complete: ${JSON.stringify(args)}`)
-            isPlaying=false
-        }, 
-        args => {
-            // on error
-            console.log(`error: ${args}`)
-            isPlaying = false
-        }, 
-        args => {
-            // on info
-            console.log(`info ${args}`)
-    })
-    isPlaying = true
-
+    // console.log(`onPlayAudioButtonTap: ${item.audio}`)
+    isPlaying = !isPlaying
+    dispatch('audioPlay', { item })
 }
+
+const onDragHandleTap = () => {
+    dispatch('dragHandleTap', { item })
+}
+
 
 </script>
 
