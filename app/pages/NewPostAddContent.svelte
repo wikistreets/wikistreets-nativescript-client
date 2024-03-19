@@ -150,10 +150,10 @@ onMount(() => {
 onDestroy(() => {
     console.log(`NewPost: onDestroy`)
     // stop playing if it's still going
-    audioPlayer.stop() 
+    if (audioPlayer) audioPlayer.stop() 
     audioPlayer = null
     // stop recording if it's still going
-    audioRecorder.stop() 
+    if (audioRecorder) audioRecorder.stop() 
     audioRecorder = null
     // unsubscribe from any subscribed svelte stores
     unsubscribers.forEach((unsubscribe) => { unsubscribe() })
@@ -172,9 +172,10 @@ const onMediaButtonsLoad = (e: EventData) => {
     })
     gestureHandler.on(GestureHandlerTouchEvent, onGestureTouch, this)
     gestureHandler.on(GestureHandlerStateEvent, onGestureState, this)
-    const micButton = page.getViewById('microphone-button') as View
-    console.log(micButton)
-    gestureHandler.attachToView(micButton);
+    // const micButton = page.getViewById('microphone-button') as View
+    // gestureHandler.attachToView(micButton);
+    const mediaControls = page.getViewById('media-controls') as View
+    gestureHandler.attachToView(mediaControls);
 }
 
 /**
@@ -329,7 +330,7 @@ const clearClutter = () => {
 </script>
         
     <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-        <actionBar title="Add Content" flat="true">
+        <actionBar title="{streetAddress}" flat="true">
             {#if __ANDROID__}
             <navigationButton
                 android.systemIcon="ic_menu_back"
@@ -403,8 +404,8 @@ const clearClutter = () => {
                 <frame id="addMediaButtons">
                     <page actionBarHidden={true} on:loaded={onMediaButtonsLoad}>
                         <gridLayout row={1} rows="auto, auto" class="w-full h-full p-2 pb-4 m-2 border-t-2 border-b-2 border-t-slate-200 border-b-slate-200 border-solid">
-                            <label row={0} class="text-center text-sm p-0 m-0 text-slate-400 dark:text-slate-300"  text="{controlsFeedback}" />
-                            <flexboxLayout row={1} flexDirection="row" justifyContent="center" backgroundColor={isRecording ? 'red' : ''} class="p-0 m-0">
+                            <label row={0} color={isRecording ? 'red' : ''} class="text-center text-sm p-0 m-0 text-slate-400 dark:text-slate-300"  text="{controlsFeedback}" />
+                            <flexboxLayout id="media-controls" row={1} flexDirection="row" justifyContent="center" backgroundColor={isRecording ? 'red' : ''} class="p-0 m-0">
                                     <label on:tap={onPhotoButtonTap} text="{icons.camera}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />
                                     <label on:tap={onMicrophoneButtonTap} on:tap={()=> {controlsFeedback=CONTROLS_FEEDBACK_INSTRUCTIONS}} text="{icons.mic}" id='microphone-button' class="text-5xl icon text-center align-middle m-4" />
                                     <label on:tap={onTextButtonTap} text="{icons['font']}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />

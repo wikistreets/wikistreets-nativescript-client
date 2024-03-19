@@ -2,6 +2,18 @@
 
 Native mobile app developed with Nativescript, Svelte, and TailwindCSS.
 
+## Projects that make this possible
+
+### OpenStreetMap data
+This app depends upon [OpenStreetMap](https://openstreetmap.org) (OSM) data, &copy; OpenStreetMap contibutors, and made available for use under the [Open Database License](https://openstreetmap.org/copyright).  If you notice any map data that should be updated or corrected, consider [fixing it yourself](https://www.openstreetmap.org/fixthemap) or reporting the issue.
+
+### OpenStreetMap map tiles
+By default, we also use the OSM tile server, in accordance with their [Tile Usage Policy](https://operations.osmfoundation.org/policies/tiles/).  This tile server is entirely supported by donations and not meant to be used heavily by apps.  Consider donating to OSM to support their mission to make map data and map image tiles freely available to the world.  Should our app become so popular that we exceed their very reasonable tile usage limits, we have provided an in-app account setting that allows users to switch to a different tile server.
+
+### Alternate tile servers
+OpenStreetMap maintains a list of [raster](https://wiki.openstreetmap.org/wiki/Raster_tile_providers) and [vector](https://wiki.openstreetmap.org/wiki/Vector_tiles#Providers) tile providers that can be used within the app in place of the default OSM standard tile server.
+
+
 ## Installation
 
 - create Apple Developer account at https://developer.apple.com/
