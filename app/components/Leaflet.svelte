@@ -108,7 +108,7 @@ const onWebViewLoaded = (e: EventData) => {
 
   webViewInterface.on('mapZoom', (zoomLevel: number) => {
     dispatch('mapZoom', zoomLevel)
-    zoom = zoomLevel
+    // zoom = zoomLevel
   })
 
   webViewInterface.on('mapMove', (e: any) => {
