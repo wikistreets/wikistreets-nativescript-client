@@ -37,8 +37,9 @@ let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 
 // let feed: View
 let mapBbox: number[]
-let mapCenterPoint: Feature
-let mapAutoHoming: boolean = true
+let mapCenterPoint: Feature // centerpoint of map
+let homePoint: Feature // user's geolocation
+let mapAutoHoming: boolean = false // whether to center on the homePoint
 let mapZoom: number = config?.map?.defaults?.zoom
 let geoUnsubscribe: any // will hold the method to unsubscribe from the geo store
 
@@ -47,6 +48,7 @@ let posts: Feature[] // will hold posts fetched from API
 let collection: Collection // will hold a collection fetched from the API
 let fs: FeatureService
 
+$: console.log(`mapAutoHoming: ${mapAutoHoming}`)
 
 let previewPost: Feature // a post the user has tapped on that we want to show preview of
 
@@ -119,6 +121,7 @@ const onPageLoad = (e: EventData) => {
 const stopGeoTracking = () => {
     // already tracking geolocation, so stop it
     console.log(`Map: unsubscribing from geo`)
+    mapAutoHoming = false
     geoUnsubscribe()
     geoUnsubscribe = null
 }
@@ -137,7 +140,7 @@ const onGPSIconTap = (e: EventData) => {
   geoUnsubscribe = geo.subscribe((newGeo) => {
     // console.log(`Map: geo update: ${JSON.stringify(newGeo)}`)
     // center the map on the user's location
-    mapCenterPoint = {
+    homePoint = {
       type: 'Feature',
       properties: {},
       geometry: {
@@ -145,6 +148,7 @@ const onGPSIconTap = (e: EventData) => {
         coordinates: [newGeo.longitude, newGeo.latitude]
       }
     }
+    if (mapAutoHoming) mapCenterPoint = homePoint // center the map on the user's location, if desired
   }) // geo.subscribe
   unsubscribers.push(geoUnsubscribe) // save in subscription list for remove onDestroy
 
@@ -259,6 +263,21 @@ const onMapLongPress = (e: CustomEvent) => {
     // })
 }
 
+
+const onMapMove = async (e: CustomEvent) => {
+  console.log('onMapMove')
+}
+
+const onMapZoom = (e: CustomEvent) => {
+  console.log('onMapZoom')
+}
+
+const onMapDragStart = () => {
+  console.log('onMapDragStart')
+  mapAutoHoming = false // stop auto-centering on user's current location
+}
+
+
 function onOpenDrawer() {
   drawer.open()
 }
@@ -325,17 +344,19 @@ function toggleDrawer() {
           colSpan="3"
           class="h-full w-full z-1"
           htmlFilePath="~/assets/leaflet.html"
+          { posts }
+          bbox={ mapBbox }
+          bind:centerPoint={ mapCenterPoint }
+          bind:zoom={ mapZoom }
+          panToMapTapPoint={false}
+          panToTappedMarker={true}
           on:markerTap={onListItemTap}
           on:longPress={onMapLongPress} 
           on:mapTap={onMapTap}
-          { posts }
-          bbox={ mapBbox }
-          bind:autoHoming={ mapAutoHoming }
-          bind:centerPoint={ mapCenterPoint }
-          bind:zoom={ mapZoom }
-          panToMapTapPoint={true}
-          panToTappedMarker={true}
-        />
+          on:mapMove={onMapMove}
+          on:mapZoom={onMapZoom}
+          on:dragStart={onMapDragStart}
+/>
         <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full {geoUnsubscribe ? 'text-slate-800' : 'text-slate-400'}" row="0" col={0} />
         <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
       </gridLayout>

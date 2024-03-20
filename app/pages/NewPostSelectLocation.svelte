@@ -33,8 +33,9 @@ let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let mapFeedback = ''
 
 let streetAddress: string = `Use map to select a location`
-let mapCenterPoint: Feature
-let mapAutoHoming: boolean = true
+let mapCenterPoint: Feature // centerpoint of map
+let homePoint: Feature // user's geolocation
+let mapAutoHoming: boolean = false // whether to center on the homePoint
 let mapZoom: number = config.map.defaults.homingZoom
 let geoUnsubscribe: any // will hold the method to unsubscribe from the geo store
 let useGPSAddress = true
@@ -91,13 +92,18 @@ const onSubmit = () => {
     })
 }
 
+const stopGeoTracking = () => {
+    // already tracking geolocation, so stop it
+    console.log(`Map: unsubscribing from geo`)
+    mapAutoHoming = false
+    geoUnsubscribe()
+    geoUnsubscribe = null
+}
+
 const onGPSIconTap = (e?: EventData) => {
   // console.log(`Map: onGPSIconTap: currentLocation: ${JSON.stringify($geo)}`)
   if (geoUnsubscribe) {
-    // already tracking geolocation, so stop it
-    console.log(`NewPost: unsubscribing from geo`)
-    geoUnsubscribe()
-    geoUnsubscribe = null
+    stopGeoTracking()
     return
   }
 
@@ -107,8 +113,8 @@ const onGPSIconTap = (e?: EventData) => {
   mapZoom = config.map.defaults.homingZoom // zoom in
   geoUnsubscribe = geo.subscribe((newGeo) => {
     console.log(`NewPost: geo update: ${JSON.stringify(newGeo)}`)
-    // center the map on the user's location
-    mapCenterPoint = {
+    // save user's current location
+    homePoint = {
       type: 'Feature',
       properties: {},
       geometry: {
@@ -116,6 +122,7 @@ const onGPSIconTap = (e?: EventData) => {
         coordinates: [newGeo.longitude, newGeo.latitude]
       }
     }
+    if (mapAutoHoming) mapCenterPoint = homePoint // center the map on the user's location, if desired
   }) // geo.subscribe
   unsubscribers.push(geoUnsubscribe) // save in subscription list for remove onDestroy
 
@@ -143,6 +150,7 @@ const onMapZoom = (e: CustomEvent) => {
 }
 
 const onMapDragStart = () => {
+    mapAutoHoming = false // stop auto-centering on user's current location
     // stop using GPS address so user can find address by panning map
     useGPSAddress = false
     console.log(`onMapDragStart: useGPSAddress: ${useGPSAddress}`)
@@ -242,9 +250,8 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                             class="h-full w-full z-1"
                             htmlFilePath="~/assets/leaflet.html"
                             bind:centerPoint={ mapCenterPoint }
-                            bind:autoHoming={ mapAutoHoming }
                             bind:zoom={ mapZoom }
-                            panToMapTapPoint={true}
+                            panToMapTapPoint={false}
                             on:mapMove={onMapMove}
                             on:mapZoom={onMapZoom}
                             on:dragStart={onMapDragStart}
