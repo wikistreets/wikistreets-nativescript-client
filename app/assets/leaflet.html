@@ -41,6 +41,8 @@
 
       // create the map
       let map // will hold map
+      let homeMarker // will hold the home marker
+      let isHomeVisible = false // whether to show home marker
       let currentBaseLayer // will hold the base layer
       const southWest = L.latLng(-89.98155760646617, -180)
       const northEast = L.latLng(89.99346179538875, 180);
@@ -57,6 +59,7 @@
           minZoom: 2
         }).fitWorld() 
         map.attributionControl.setPrefix('')
+
         map.on('drag', function() {
           // do not allow dragging off edge of world map
          map.panInsideBounds(bounds, { animate: false });
@@ -71,11 +74,25 @@
         return map
       }
 
+      // home icon
+      const homeIcon = L.divIcon({
+        html: `
+          <svg width="26" height="26" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <circle r="10" cx="13" cy="13" fill="#0a84ff" stroke="white" stroke-width="4" />
+          </svg>`,
+        className: "homeIcon",
+        iconSize: [24, 40],
+        iconAnchor: [12, 40],
+      })
+
       // interface to NativeScript app
       window.onload = async () => {
 
         // initialize the leaflet map
         const map = createMap() 
+
+        homeMarker = L.marker([-500, -500], { icon: homeIcon }).addTo(map) // off-screen
+
         map.on('click', (e) => {
           // nsWebViewInterface.emit('debug', `leaflet.js click: ${JSON.stringify(e.latlng)}`)
           nsWebViewInterface.emit('mapClick', {lng: e.latlng.lng, lat: e.latlng.lat})
@@ -150,6 +167,16 @@
               [bbox[3], bbox[2]], // [max lat, maxlng]
             ])
           }) // setBounds
+
+
+          nsWebViewInterface.on('setHomeVisibility', isVisible => {
+            // set visibility of the home icon
+            isHomeVisible = isVisible
+            if (!isHomeVisible) homeMarker.setLatLng([-500, -500]) // off-screen if hidden
+          })
+          nsWebViewInterface.on('setHomePosition', feature => {
+            homeMarker.setLatLng([feature.geometry.coordinates[1], feature.geometry.coordinates[0]])
+          })
 
           // set the center and zoom of the map
           nsWebViewInterface.on('setView', ({feature, zoom}) => {

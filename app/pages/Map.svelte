@@ -39,6 +39,7 @@ let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let mapBbox: number[]
 let mapCenterPoint: Feature // centerpoint of map
 let homePoint: Feature // user's geolocation
+let isHomeVisible: boolean = false // whether to show the home marker
 let mapAutoHoming: boolean = false // whether to center on the homePoint
 let mapZoom: number = config?.map?.defaults?.zoom
 let geoUnsubscribe: any // will hold the method to unsubscribe from the geo store
@@ -48,7 +49,7 @@ let posts: Feature[] // will hold posts fetched from API
 let collection: Collection // will hold a collection fetched from the API
 let fs: FeatureService
 
-$: console.log(`mapAutoHoming: ${mapAutoHoming}`)
+$: console.log(`Map: mapAutoHoming: ${mapAutoHoming}`)
 
 let previewPost: Feature // a post the user has tapped on that we want to show preview of
 
@@ -122,6 +123,7 @@ const stopGeoTracking = () => {
     // already tracking geolocation, so stop it
     console.log(`Map: unsubscribing from geo`)
     mapAutoHoming = false
+    isHomeVisible = false
     geoUnsubscribe()
     geoUnsubscribe = null
 }
@@ -136,6 +138,7 @@ const onGPSIconTap = (e: EventData) => {
   // subscribe to the geo location store and save the method to unsubscribe later
   console.log('Map: subscribing to geo')
   mapAutoHoming = true // center the map on the user's location
+  isHomeVisible = true // show the home marker
   mapZoom = config.map.defaults.homingZoom // zoom in
   geoUnsubscribe = geo.subscribe((newGeo) => {
     // console.log(`Map: geo update: ${JSON.stringify(newGeo)}`)
@@ -265,15 +268,15 @@ const onMapLongPress = (e: CustomEvent) => {
 
 
 const onMapMove = async (e: CustomEvent) => {
-  console.log('onMapMove')
+  // console.log('onMapMove')
 }
 
 const onMapZoom = (e: CustomEvent) => {
-  console.log('onMapZoom')
+  // console.log('onMapZoom')
 }
 
 const onMapDragStart = () => {
-  console.log('onMapDragStart')
+  // console.log('onMapDragStart')
   mapAutoHoming = false // stop auto-centering on user's current location
 }
 
@@ -347,6 +350,8 @@ function toggleDrawer() {
           { posts }
           bbox={ mapBbox }
           bind:centerPoint={ mapCenterPoint }
+          bind:homePoint={ homePoint }
+          bind:isHomeVisible={ isHomeVisible }
           bind:zoom={ mapZoom }
           panToMapTapPoint={false}
           panToTappedMarker={true}

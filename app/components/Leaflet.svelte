@@ -19,6 +19,8 @@ export let htmlFilePath: string
 export let posts: any[] = [] // will hold posts to put onto map
 export let bbox: number[] = null // will hold the bounding box of the map
 export let centerPoint: Feature // will hold the center of the map
+export let homePoint: Feature // the home marker location
+export let isHomeVisible: boolean = false // whether to show the home marker
 export let zoom: number = 4 // initial zoom level
 export let panToTappedMarker: boolean = false // whether to pan to a tapped marker
 export let focusOnTappedMarker: boolean = true // whether to highlight a tapped marker
@@ -49,8 +51,12 @@ $: if (isWebViewLoaded && !(isFitBounds && bbox) && centerPoint && zoom) (() => 
   // set the view
   console.log(`Leaflet: setting center to ${JSON.stringify(centerPoint.geometry)} at zoom ${zoom}`)
   webViewInterface.emit('setView', {feature: centerPoint, zoom}) // set map center
-
 })()
+
+// if we have a home marker, set it
+$: console.log(`Leaflet: isHomeVisible: ${isHomeVisible}, homePoint: ${homePoint?.geometry?.coordinates}`)
+$: if (isWebViewLoaded) webViewInterface.emit('setHomeVisibility', isHomeVisible)
+$: if (isWebViewLoaded) webViewInterface.emit('setHomePosition', homePoint)
 
 // debugging
 // $: console.log(`Leaflet: isWebViewLoaded: ${isWebViewLoaded}`)

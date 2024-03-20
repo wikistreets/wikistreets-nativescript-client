@@ -35,11 +35,13 @@ let mapFeedback = ''
 let streetAddress: string = `Use map to select a location`
 let mapCenterPoint: Feature // centerpoint of map
 let homePoint: Feature // user's geolocation
+let isHomeVisible: boolean = false // whether to show the home marker
 let mapAutoHoming: boolean = false // whether to center on the homePoint
 let mapZoom: number = config.map.defaults.homingZoom
 let geoUnsubscribe: any // will hold the method to unsubscribe from the geo store
 let useGPSAddress = true
 
+$: console.log(`Map: mapAutoHoming: ${mapAutoHoming}`)
 
 onMount(() => {
     console.log(`NewPost: onMount`)
@@ -96,6 +98,7 @@ const stopGeoTracking = () => {
     // already tracking geolocation, so stop it
     console.log(`Map: unsubscribing from geo`)
     mapAutoHoming = false
+    isHomeVisible = false
     geoUnsubscribe()
     geoUnsubscribe = null
 }
@@ -110,6 +113,7 @@ const onGPSIconTap = (e?: EventData) => {
   // subscribe to the geo location store and save the method to unsubscribe later
   console.log('NewPost: onGPSIconTap: subscribing to geo')
   mapAutoHoming = true // center the map on the user's location
+  isHomeVisible = true // show the home marker
   mapZoom = config.map.defaults.homingZoom // zoom in
   geoUnsubscribe = geo.subscribe((newGeo) => {
     console.log(`NewPost: geo update: ${JSON.stringify(newGeo)}`)
@@ -240,7 +244,7 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                 <page actionBarHidden={true} >
 
                     <!-- BEGIN: leaflet map to pick location -->
-                    <gridLayout rows="100, *, 60, *, 100" columns="100, *, 60, *, 100" backgroundColor="red" class="w-full h-full">
+                    <gridLayout rows="100, *, 55, *, 100" columns="100, *, 55, *, 100" backgroundColor="red" class="w-full h-full">
                         <Leaflet
                             id="map"
                             row="0"
@@ -250,13 +254,15 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                             class="h-full w-full z-1"
                             htmlFilePath="~/assets/leaflet.html"
                             bind:centerPoint={ mapCenterPoint }
+                            bind:homePoint={ homePoint }
+                            bind:isHomeVisible={ isHomeVisible }
                             bind:zoom={ mapZoom }
                             panToMapTapPoint={false}
                             on:mapMove={onMapMove}
                             on:mapZoom={onMapZoom}
                             on:dragStart={onMapDragStart}
                         />
-                        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full {geoUnsubscribe ? 'text-slate-800' : 'text-slate-400'}" row="0" col="0" />
+                        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full {geoUnsubscribe ? 'text-slate-800' : 'text-slate-400'}" row="0" col={0} />
                         <label text="{icons['gps']}" on:tap={onGPSIconTap} class="icon text-6xl text-center w-full text-red-800" row="2" col={2} />
                       </gridLayout>                
                 <!-- END: leaflet map to pick location -->
