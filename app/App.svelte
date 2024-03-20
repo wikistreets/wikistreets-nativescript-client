@@ -7,7 +7,6 @@ import { Frame, Page, EventData, View, Dialogs, ConfirmOptions } from '@nativesc
 import { GPS } from '@nativescript-community/gps'
 import Map from './pages/Map.svelte'
 import BottomNavigation from '~/components/BottomNavigation.svelte'
-import { geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
 
 let page: Page
 let bottomNav: Page

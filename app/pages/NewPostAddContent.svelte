@@ -4,7 +4,7 @@
 import { onMount, onDestroy } from 'svelte'
 import { navigate, closeModal, goBack } from 'svelte-native'
 import { Template } from 'svelte-native/components'
-import { Dialogs, EventData, Frame, Image, ImageAsset, Page, TextField, TextView, Utils, View } from '@nativescript/core'
+import { Dialogs, EventData, Frame, Image, ImageAsset, Page, SwipeDirection, SwipeGestureEventData, TextField, TextView, Utils, View } from '@nativescript/core'
 import { GestureHandlerTouchEvent, GestureHandlerStateEvent, GestureStateEventData, GestureTouchEventData, HandlerType, Manager as GestureManager} from '@nativescript-community/gesturehandler'
 import * as camera from "@nativescript/camera"
 import { CollectionView } from '@nativescript-community/ui-collectionview'
@@ -327,10 +327,31 @@ const clearClutter = () => {
     Utils.dismissKeyboard()
     Utils.dismissSoftInput()
 }
+
+const onActionBarSwipe = (e: SwipeGestureEventData) => {
+  switch (e.direction) {
+    case SwipeDirection.left: // left
+      console.log('NewPost: left')
+      break
+    case SwipeDirection.right: // right
+    //   console.log('NewPost: right')
+      onGoBack() // go to previous screen
+      break
+    case SwipeDirection.down: // down
+      console.log('NewPost: down')
+      break
+    case SwipeDirection.up: // up
+      console.log('NewPost: up')
+      break
+    default:
+      console.log(`NewPost: ${e.direction}`)
+  }
+}
+
 </script>
         
     <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-        <actionBar title="{streetAddress}" flat="true">
+        <actionBar title="{`${streetAddress.substring(0, 20)}...`}" flat="true" on:swipe={onActionBarSwipe}>
             {#if __ANDROID__}
             <navigationButton
                 android.systemIcon="ic_menu_back"

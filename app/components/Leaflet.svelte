@@ -4,6 +4,7 @@
 import { Screen, Page, EventData, WebView, ViewBase, knownFolders, SwipeGestureEventData, SwipeDirection } from '@nativescript/core'
 import { onMount, createEventDispatcher } from 'svelte'
 import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom'
+import { config } from '~/config/config'
 import { Feature} from '~/models/feature'
 const webViewInterfaceModule = require('nativescript-webview-interface')
 
@@ -26,12 +27,15 @@ export let panToMapTapPoint: boolean = true // whether to pan to a tapped point 
 
 let isWebViewLoaded: boolean = false
 let isFitBounds: boolean = true
+export let autoHoming: boolean = true // whether to automatically center on the center point
 let webViewInterface: any // for passing messages to/from webview
 const dispatch = createEventDispatcher(); // for emitting custom messages to parent component
 
 // get handle on webview interface once page has loaded
 let webView = null
 let map: any // will hold map passed to use from webView
+
+$: console.log(`Leaflet: autoHoming: ${autoHoming}`)
 
 // $: if (isWebViewLoaded) webViewInterface.emit('panTo', centerPoint) // set map center on change
 
@@ -44,10 +48,11 @@ $: if (isWebViewLoaded && isFitBounds && bbox) (() => {
 })()
 
 // otherwise, if there is no bounding box, but we have a center point and zoom level, set the map to that view
-$: if (isWebViewLoaded && !(isFitBounds && bbox) && centerPoint && zoom) (() => {
+$: if (isWebViewLoaded && !(isFitBounds && bbox) && (autoHoming && centerPoint) && zoom) (() => {
   // set the view
   console.log(`Leaflet: setting center to ${JSON.stringify(centerPoint.geometry)} at zoom ${zoom}`)
   webViewInterface.emit('setView', {feature: centerPoint, zoom}) // set map center
+
 })()
 
 // debugging
@@ -62,6 +67,12 @@ $: if (isWebViewLoaded && posts.length) (() => {
   posts.forEach((post) => {
     webViewInterface.emit('makeMarker', post) // place markers on map
   })
+
+  // experiment
+  // setTimeout(() => {
+  //   webViewInterface.emit('setBaseLayer', config.map.tileServers[1])
+  // }, 2000)
+
 })()
 
 
@@ -100,6 +111,7 @@ const onWebViewLoaded = (e: EventData) => {
 
   webViewInterface.on('mapZoom', (zoomLevel: number) => {
     dispatch('mapZoom', zoomLevel)
+    // autoHoming = false // user has overriden centering
     zoom = zoomLevel
   })
 

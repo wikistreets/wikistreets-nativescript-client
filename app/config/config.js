@@ -46,21 +46,16 @@ export const config = {
         url: 'https://tiles.stadiamaps.com/tiles/stamen_toner/{z}/{x}/{y}{r}.png?api_key=ed84a9f6-26c9-4b71-b3e8-abee8eb5c180',
         attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
       }, 
-      {
-        name: "Stamen Watercolor",
-        url: 'https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}{r}.png?api_key=ed84a9f6-26c9-4b71-b3e8-abee8eb5c180',
-        attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
-      }, 
-      {
-        name: "Öpnvkarte Transport Map",
-        url: 'https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, licensed ODbL'
-      }, 
-      {
-        name: "OpenStreetMap Switzerland",
-        url: 'https://tile.osm.ch/switzerland/{z}/{x}/{y}.png',
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, licensed ODbL'
-      }, 
+      // {
+      //   name: "Stamen Watercolor",
+      //   url: 'https://tiles.stadiamaps.com/tiles/stamen_watercolor/{z}/{x}/{y}{r}.png?api_key=ed84a9f6-26c9-4b71-b3e8-abee8eb5c180',
+      //   attribution: '&copy; <a href="https://stadiamaps.com/" target="_blank">Stadia Maps</a>&copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a>&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a>'
+      // }, 
+      // {
+      //   name: "Öpnvkarte Transport Map",
+      //   url: 'https://tile.memomaps.de/tilegen/{z}/{x}/{y}.png',
+      //   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, licensed ODbL'
+      // }, 
       {
         name: "OpenStreetMap Switzerland",
         url: 'https://tile.osm.ch/switzerland/{z}/{x}/{y}.png',

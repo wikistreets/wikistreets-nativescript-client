@@ -17,6 +17,10 @@
         width: 100%;
         height: 100%;
       }
+      .leaflet-control-attribution.leaflet-control, .leaflet-control-attribution.leaflet-control a {
+        color: #909090;
+        text-decoration: none;
+      }
     </style>
     <link
       rel="stylesheet"
@@ -37,6 +41,7 @@
 
       // create the map
       let map // will hold map
+      let currentBaseLayer // will hold the base layer
       const southWest = L.latLng(-89.98155760646617, -180)
       const northEast = L.latLng(89.99346179538875, 180);
       const bounds = L.latLngBounds(southWest, northEast); // bounds of the world map
@@ -45,18 +50,20 @@
 
       const createMap = () => {
         map = L.map('map', {
-          attributionControl: false,
+          attributionControl: true,
           zoomControl: false,
           worldCopyJump: true,
           maxBounds: bounds, // prevent panning outside world map
           minZoom: 2
         }).fitWorld() 
+        map.attributionControl.setPrefix('')
         map.on('drag', function() {
           // do not allow dragging off edge of world map
          map.panInsideBounds(bounds, { animate: false });
         })
 
-        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        // initialize starting base layer
+        currentBaseLayer = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
         }).addTo(map)
@@ -65,7 +72,7 @@
       }
 
       // interface to NativeScript app
-      window.onload = () => {
+      window.onload = async () => {
 
         // initialize the leaflet map
         const map = createMap() 
@@ -99,6 +106,17 @@
 
           // shoot onload message to NativeScript app for 2-way communication handshake
           nsWebViewInterface.emit('onload') 
+
+          // receive tile server change message from NativeScript app
+          nsWebViewInterface.on('setBaseLayer', tileServer => {
+            // replace current base layer with new one
+            newBaseLayer = L.tileLayer(tileServer.url, {
+              attribution: tileServer.attribution,
+            })
+            currentBaseLayer.removeFrom(map) // remove old
+            newBaseLayer.addTo(map) // add new
+            currentBaseLayer = newBaseLayer // set new as current
+          }) // setTileServer
 
           // receive debugging messages from NativeScript app 
           nsWebViewInterface.on('debug', (message) => {
@@ -138,6 +156,7 @@
             // expects a GeoJSON Point object as argument
             if (!feature?.geometry?.coordinates) return
             const [lng, lat] = feature.geometry.coordinates
+            nsWebViewInterface.emit('debug', `setView: [${lat}, ${lng}], zoom: ${zoom}!`)
             map.setView([lat, lng], zoom)
           }) // setView
 
@@ -192,8 +211,8 @@
                 markers.push(marker) // store it for later
             }
           }) // makeMarker          
-        } catch (error) {
-          nsWebViewInterface.emit('debug', `caught error: ${error}`)
+        } catch (err) {
+          nsWebViewInterface.emit('debug', `leaflet error: ${err}`)
         }
       }
     </script>

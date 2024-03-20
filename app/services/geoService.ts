@@ -31,37 +31,45 @@ export class GeoService {
   private gpsPoints: ObservableArray<any>
   private message: string
 
+  private onEnable: () => void
+  private onStatusChange: (e: EventData) => void
+  private onWatchEvent: (location: any) => void
+
   /**
    * Constructor for the GeoService singleton
    * @param onStatusChange callback for when location status changes
    * @param onWatchEvent callback for when location is updated
    */
-  constructor(onEnable?: () => void, onStatusChange?: (e: EventData) => void, onWatchEvent?: Function, onError?: (type: string, e: any) => void, minimumUpdateTime: number = 1000) {
+  constructor(onEnable?: () => void, onStatusChange?: (e: EventData) => void, onWatchEvent?: (location: any) => void, onError?: (type: string, e: any) => void, minimumUpdateTime: number = 1000) {
     this.gps = new GPS()
     this.minimumUpdateTime = minimumUpdateTime
     setGeoLocationKeys('lat', 'lng', 'alt')
 
     this.gpsPoints = new ObservableArray([]);
-
-    onStatusChange = onStatusChange || this.handleStatusEvent; // defauld status change handler
+    
+    this.onEnable = onEnable || (() => console.log('geoService: location enabled')) // default enable location handler
+    this.onStatusChange = onStatusChange || this.handleStatusEvent; // defauld status change handler
+    this.onWatchEvent = onWatchEvent // default location update handler
     this.error = onError || this.error; // default error handler
     this.gps.on(GPS.gps_status_event, onStatusChange);
-
-    this.enableLocation() // authorize location tracking
-      .then(() => { 
-        this.watch(onWatchEvent) 
-        onEnable() // custom callback to run after attempt is made to enable location services
-      }) // set up location watcher with a callback
-      .catch(err => {
-        this.error('enableLocation', err) // report error
-      });
   }
 
   public enableLocation() {
     if (!this.gps.isEnabled()) {
         console.log('geoService: requesting location...');
         try {
-          return this.gps.authorize(true).then(() => this.gps.enable())
+          return this.gps.authorize(true).then(
+            () => this.gps.enable()
+          )
+          .then(() => { 
+            console.log('geoService: location enabled.')
+            // start watching
+            this.watch(this.onWatchEvent) // start tracking changes
+            this.onEnable() // custom callback to run after attempt is made to enable location services
+          }) // set up location watcher with a callback
+          .catch(err => {
+            this.error('enableLocation', err) // report error
+          })    
           .catch(err => {
             this.error('authorize', err)
             return Promise.reject(err)          
@@ -73,6 +81,9 @@ export class GeoService {
         }
     } else {
         console.log(`geoService: location already enabled.`)
+        // start watching
+        this.watch(this.onWatchEvent) // start tracking changes
+        this.onEnable() // custom callback to run after attempt is made to enable location services
         return Promise.resolve(true)
     }
   }
@@ -115,9 +126,9 @@ export class GeoService {
   }
 
   public clearWatch() {
-    console.log('geoService: clearWatch');
     try {
       this.gps.clearWatch(this.watchId);
+      console.log('clearWatch: done');
     }
     catch (err) {
       this.error('clearWatch', err);

@@ -3,8 +3,7 @@
 <script lang="ts">
 import { onMount, onDestroy } from 'svelte'
 import { navigate, closeModal, goBack } from 'svelte-native'
-import { Dialogs, EventData, Frame, Image, ImageAsset, Page, TextField, Utils } from '@nativescript/core'
-import { requestPermissions as requestCameraPermissions, isAvailable as isCameraAvailable } from '@nativescript/camera';
+import { Dialogs, EventData, Frame, Image, ImageAsset, Page, SwipeDirection, SwipeGestureEventData, TextField, Utils } from '@nativescript/core'
 import * as camera from "@nativescript/camera";
 // import { PreviousNextView } from '@nativescript/iqkeyboardmanager'
 import { Feature } from '~/models/feature'
@@ -13,11 +12,8 @@ import { addressData, geo, geoIsEnabled, solicitConsent as solicitGPSConsent } f
 import { config } from '~/config/config'
 import { icons } from '~/utils/icons'
 import { geocodeAddress, geocodeLocation } from '~/services/geocodeService';
-import Login from '~/pages/Login.svelte'
-import Map from '~/pages/Map.svelte'
 import NewPostAddContent from '~/pages/NewPostAddContent.svelte';
 import Leaflet from '~/components/Leaflet.svelte'
-  import { PreviousNextView } from '@nativescript/iqkeyboardmanager'
 
 // set up IQKeyboardManager for iOS
 //@ts-ignore
@@ -38,7 +34,9 @@ let mapFeedback = ''
 
 let streetAddress: string = `Use map to select a location`
 let mapCenterPoint: Feature
+let mapAutoHoming: boolean = true
 let mapZoom: number = config.map.defaults.homingZoom
+let geoUnsubscribe: any // will hold the method to unsubscribe from the geo store
 let useGPSAddress = true
 
 
@@ -47,38 +45,6 @@ onMount(() => {
 
     // enable IQKeyboardManager for iOS
     if (__IOS__) iqKeyboard = IQKeyboardManager.sharedManager();
-
-    if (!geoIsEnabled) {
-        solicitGPSConsent().then((result) => {
-            console.log(`NewPost: solicitConsent: ${result}`)
-        })
-    }
-    // subscribe to the geo location store and save the method to unsubscribe later
-    unsubscribers.push(geo.subscribe((value) => {
-        // console.log(`NewPost: geo.subscribe: ${JSON.stringify(value)}`)
-        // only auto-update the map centerpoint if the user wants to use GPS address
-        if (useGPSAddress) {
-            // set initial map center point to match user's current position
-            mapCenterPoint = {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                    type: 'Point',
-                    coordinates: [value.longitude, value.latitude]
-                }
-            }
-            // console.log(`NewPost: onMount: mapCenterPoint: ${JSON.stringify(mapCenterPoint)}`)
-        }
-    }))
-    
-    unsubscribers.push(addressData.subscribe( (newData: geocodeLocation) => {
-        // only auto-update the centerpoint if the user wants to use GPS address
-        if (useGPSAddress) {
-            // update address reactively
-            const newAddress = buildAddress(newData)
-            streetAddress = newAddress ? newAddress : streetAddress
-        }
-    }))
 
 }) // onMount
 
@@ -91,6 +57,19 @@ onDestroy(() => {
 const onPageLoad = (e: EventData) => {
     console.log(`NewPost: onPageLoad`)
     page = e.object as Page // store reference to page
+
+    // turn on gps tracking by default
+    setTimeout(onGPSIconTap, 300) // delay to allow page to load
+    
+    unsubscribers.push(addressData.subscribe( (newData: geocodeLocation) => {
+        // only auto-update the centerpoint if the user wants to use GPS address
+        if (useGPSAddress) {
+            // update address reactively
+            const newAddress = buildAddress(newData)
+            streetAddress = newAddress ? newAddress : streetAddress
+        }
+    }))
+
 }
 
 const onSubmit = () => {
@@ -112,25 +91,39 @@ const onSubmit = () => {
     })
 }
 
-const onGPSIconTap = (e: EventData) => {
-    useGPSAddress = true // use the GPS to fetch the address again
-    console.log(`NewPost: onGPSIconTap: currentLocation: ${JSON.stringify($geo)}`)
-    if (!$geoIsEnabled) {
-      console.log(`Map: onGPSIconTap: no location data`)
-      solicitGPSConsent()
-      return
-    }
+const onGPSIconTap = (e?: EventData) => {
+  // console.log(`Map: onGPSIconTap: currentLocation: ${JSON.stringify($geo)}`)
+  if (geoUnsubscribe) {
+    // already tracking geolocation, so stop it
+    console.log(`NewPost: unsubscribing from geo`)
+    geoUnsubscribe()
+    geoUnsubscribe = null
+    return
+  }
+
+  // subscribe to the geo location store and save the method to unsubscribe later
+  console.log('NewPost: onGPSIconTap: subscribing to geo')
+  mapAutoHoming = true // center the map on the user's location
+  mapZoom = config.map.defaults.homingZoom // zoom in
+  geoUnsubscribe = geo.subscribe((newGeo) => {
+    console.log(`NewPost: geo update: ${JSON.stringify(newGeo)}`)
     // center the map on the user's location
     mapCenterPoint = {
       type: 'Feature',
       properties: {},
       geometry: {
         type: 'Point',
-        coordinates: [$geo.longitude, $geo.latitude]
+        coordinates: [newGeo.longitude, newGeo.latitude]
       }
     }
-    // zoom in
-    mapZoom = config.map.defaults.homingZoom
+  }) // geo.subscribe
+  unsubscribers.push(geoUnsubscribe) // save in subscription list for remove onDestroy
+
+//   if (!$geoIsEnabled) {
+//     console.log(`NewPost: onGPSIconTap: no location data`)
+//     solicitGPSConsent()
+//     return
+//   }
 }
 
 const onMapMove = async (e: CustomEvent) => {
@@ -183,10 +176,30 @@ const clearClutter = () => {
     Utils.dismissKeyboard()
     Utils.dismissSoftInput()
 }
+
+const onActionBarSwipe = (e: SwipeGestureEventData) => {
+  switch (e.direction) {
+    case SwipeDirection.left: // left
+      onSubmit() // go forwards
+      break
+    case SwipeDirection.right: // right
+    //   console.log('NewPost: right')
+      onGoBack() // go backwards
+      break
+    case SwipeDirection.down: // down
+      console.log('NewPost: down')
+      break
+    case SwipeDirection.up: // up
+      console.log('NewPost: up')
+      break
+    default:
+      console.log(`NewPost: ${e.direction}`)
+  }
+}
 </script>
     
 <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-    <actionBar title="Select Location" flat="true">
+    <actionBar title="Select Location" flat="true" on:swipe={onActionBarSwipe}>
         {#if __ANDROID__}
         <navigationButton
             android.systemIcon="ic_menu_close_clear_cancel"
@@ -221,22 +234,23 @@ const clearClutter = () => {
                     <!-- BEGIN: leaflet map to pick location -->
                     <gridLayout rows="100, *, 60, *, 100" columns="100, *, 60, *, 100" backgroundColor="red" class="w-full h-full">
                         <Leaflet
-                          id="map"
-                          row="0"
-                          col="0"
-                          rowSpan="5"
-                          colSpan="5"
-                          class="h-full w-full z-1"
-                          htmlFilePath="~/assets/leaflet.html"
-                          centerPoint={ mapCenterPoint }
-                          zoom={ mapZoom }
-                          panToMapTapPoint={false}
-                          on:mapMove={onMapMove}
-                          on:mapZoom={onMapZoom}
-                          on:dragStart={onMapDragStart}
+                            id="map"
+                            row="0"
+                            col="0"
+                            rowSpan="5"
+                            colSpan="5"
+                            class="h-full w-full z-1"
+                            htmlFilePath="~/assets/leaflet.html"
+                            bind:centerPoint={ mapCenterPoint }
+                            bind:autoHoming={ mapAutoHoming }
+                            bind:zoom={ mapZoom }
+                            panToMapTapPoint={true}
+                            on:mapMove={onMapMove}
+                            on:mapZoom={onMapZoom}
+                            on:dragStart={onMapDragStart}
                         />
-                        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center w-full text-slate-800" row="0" col="0" />
-                        <label text="{icons['gps']}" on:tap={onGPSIconTap} class="icon text-6xl text-center w-full text-red-800" row="2" col="2" />
+                        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full {geoUnsubscribe ? 'text-slate-800' : 'text-slate-400'}" row="0" col="0" />
+                        <label text="{icons['gps']}" on:tap={onGPSIconTap} class="icon text-6xl text-center w-full text-red-800" row="2" col={2} />
                       </gridLayout>                
                 <!-- END: leaflet map to pick location -->
 

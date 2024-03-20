@@ -24,6 +24,7 @@ export const geo = writable(defaults, () => {
 
     // return method to run when no more subscribers
     return () => {
+        gs.clearWatch() // wipe out geolocation watcher
         console.log('geo: no more subscribers!')
     }
 })
@@ -62,6 +63,7 @@ export const solicitConsent = async () => {
 const onEnableLocation = async () => {
     console.log(`geo: onEnableLocation: gs.isEnabled: ${gs.isEnabled}`)
     const location = await gs.getLocation()
+    onWatchEvent(location) // initial set
     console.log(`geo: onEnableLocation: location: ${JSON.stringify(location)}`)
 }
 
@@ -80,7 +82,7 @@ const onStatusChange = (e: any) => {
  * @param e Location data
  */
 const onWatchEvent = (location: any) => {
-    // console.log(`geo: onWatchEvent: ${JSON.stringify(location)}`)
+    console.log(`geo: onWatchEvent: ${JSON.stringify(location)}`)
     geo.set({
         latitude: location.lat,
         longitude: location.lng,

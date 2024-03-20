@@ -38,11 +38,15 @@ let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 // let feed: View
 let mapBbox: number[]
 let mapCenterPoint: Feature
+let mapAutoHoming: boolean = true
 let mapZoom: number = config?.map?.defaults?.zoom
+let geoUnsubscribe: any // will hold the method to unsubscribe from the geo store
+
 // let bottomSheet: View
 let posts: Feature[] // will hold posts fetched from API
 let collection: Collection // will hold a collection fetched from the API
 let fs: FeatureService
+
 
 let previewPost: Feature // a post the user has tapped on that we want to show preview of
 
@@ -59,11 +63,6 @@ onMount(async () => {
    * Svelte hook when page is mounted
   */
 
-  // subscribe to the geo location store and save the method to unsubscribe later
-  unsubscribers.push(geo.subscribe((value) => {
-    // console.log(`Map: geo update: ${JSON.stringify(value)}`)
-  }))
-  
   // fetch data to put into feed and map
   // console.log("Map: onMount: Loading features...")
   fs = new FeatureService()
@@ -117,24 +116,44 @@ const onPageLoad = (e: EventData) => {
 
 }
 
+const stopGeoTracking = () => {
+    // already tracking geolocation, so stop it
+    console.log(`Map: unsubscribing from geo`)
+    geoUnsubscribe()
+    geoUnsubscribe = null
+}
+
 const onGPSIconTap = (e: EventData) => {
-  console.log(`Map: onGPSIconTap: currentLocation: ${JSON.stringify($geo)}`)
-  if (!$geoIsEnabled) {
-    console.log(`Map: onGPSIconTap: no location data`)
-    solicitGPSConsent()
+  // console.log(`Map: onGPSIconTap: currentLocation: ${JSON.stringify($geo)}`)
+  if (geoUnsubscribe) {
+    stopGeoTracking()
     return
   }
-  // center the map on the user's location
-  mapCenterPoint = {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Point',
-      coordinates: [$geo.longitude, $geo.latitude]
+
+  // subscribe to the geo location store and save the method to unsubscribe later
+  console.log('Map: subscribing to geo')
+  mapAutoHoming = true // center the map on the user's location
+  mapZoom = config.map.defaults.homingZoom // zoom in
+  geoUnsubscribe = geo.subscribe((newGeo) => {
+    // console.log(`Map: geo update: ${JSON.stringify(newGeo)}`)
+    // center the map on the user's location
+    mapCenterPoint = {
+      type: 'Feature',
+      properties: {},
+      geometry: {
+        type: 'Point',
+        coordinates: [newGeo.longitude, newGeo.latitude]
+      }
     }
-  }
-  // zoom in
-  mapZoom = config.map.defaults.homingZoom
+  }) // geo.subscribe
+  unsubscribers.push(geoUnsubscribe) // save in subscription list for remove onDestroy
+
+  // if (!$geoIsEnabled) {
+  //   console.log(`Map: onGPSIconTap: no location data`)
+  //   solicitGPSConsent()
+  //   return
+  // }
+
 }
 
 const onHamburgerIconTap = (e: EventData) => {
@@ -166,6 +185,7 @@ const getNext = async (post: Feature): Promise<Feature> => {
 const onPreviewPostSwipe = async (e: any) => {
   // user has swiped the preview post
   // console.log(`swiping start on post ${previewPost._id}`)
+  stopGeoTracking() // stop tracking the user's location
   switch (e.direction) {
     case SwipeDirection.right:
       console.log('onPreviewPostSwipe: right')
@@ -310,11 +330,13 @@ function toggleDrawer() {
           on:mapTap={onMapTap}
           { posts }
           bbox={ mapBbox }
-          centerPoint={ mapCenterPoint }
-          zoom={ mapZoom }
+          bind:autoHoming={ mapAutoHoming }
+          bind:centerPoint={ mapCenterPoint }
+          bind:zoom={ mapZoom }
+          panToMapTapPoint={true}
           panToTappedMarker={true}
         />
-        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-3xl text-center w-full text-slate-800" row="0" col={0} />
+        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full {geoUnsubscribe ? 'text-slate-800' : 'text-slate-400'}" row="0" col={0} />
         <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
       </gridLayout>
     </drawer>
