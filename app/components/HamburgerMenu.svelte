@@ -4,6 +4,7 @@
   import { Drawer } from '@nativescript-community/ui-drawer'
   import { navigate, showModal } from 'svelte-native'
   import { Page, Frame } from '@nativescript/core'
+  import { l, lc } from '~/services/localeService'
   import { user, isAuthenticated, logout } from '~/stores/auth'
   import AuthModalFrame from '~/components/AuthModalFrame.svelte'
   import Map from '~/pages/Map.svelte'
@@ -15,7 +16,7 @@
   const collections: Collection[] = [
     {
       _id: 0,
-      title: 'Everything',
+      title: lc('collections.default'),
       type: 'FeatureCollection',
       features: []
     },
@@ -113,7 +114,7 @@
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="+ Create new" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' />
+            <button text="+ {lc('collections.create-new')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' />
           </stacklayout>
           <!-- END: collections -->
 
@@ -125,10 +126,10 @@
               <label class="w-full" text={$user?.handle} />
               <label class="w-full" text={$user?.email} />
             </stacklayout>
-            <button text='Profile' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Settings')} />
+            <button text='{lc('account.profile')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Settings')} />
             {:else}
-            <button text='Login' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
-            <button text='Register' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />
+            <button text='{lc('account.sign-in')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
+            <button text='{lc('account.register')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />
             {/if}
           </stacklayout>
           <!-- END: account stuff -->

@@ -4,20 +4,22 @@ You can use this file to perform app-level initialization, but the primary
 purpose of the file is to pass control to the app’s first page.
 */
 
-import { Utils, Device, Screen, Application, ApplicationSettings, ApplicationEventData, OrientationChangedEventData, SystemAppearanceChangedEventData } from '@nativescript/core'
 import { svelteNativeNoFrame } from 'svelte-native'
+import { registerElement, registerNativeViewElement } from 'svelte-native/dom';
+import { Utils, Device, Screen, Application, ApplicationSettings, ApplicationEventData, OrientationChangedEventData, SystemAppearanceChangedEventData } from '@nativescript/core'
+import * as IQKeyboardManager from '@nativescript/iqkeyboardmanager'
 import { install as installDrawer } from '@nativescript-community/ui-drawer'
 import CollectionViewElement from '@nativescript-community/ui-collectionview/svelte';
 import DrawerElement from '@nativescript-community/ui-drawer/svelte'
 import { install as installBottomSheet } from '@nativescript-community/ui-persistent-bottomsheet'
 import BottomSheetElement from '@nativescript-community/ui-persistent-bottomsheet/svelte'
-import * as IQKeyboardManager from '@nativescript/iqkeyboardmanager'
 import { install as installGestureHandler} from "@nativescript-community/gesturehandler";
 // import { GestureHandlerTouchEvent, GestureHandlerStateEvent, GestureStateEventData, GestureTouchEventData, HandlerType } from '@nativescript-community/gesturehandler';
-import { registerElement, registerNativeViewElement } from 'svelte-native/dom';
 import { isConnected } from '~/stores/network'
+import { lang, getLanguage, loadLanguage} from '~/services/localeService'
 
 import App from '~/App.svelte'
+import { load } from '@nativescript/core/ui/builder';
 
 try {
 
@@ -41,6 +43,9 @@ try {
   registerNativeViewElement('previousNextView', () => IQKeyboardManager.PreviousNextView)  
   registerNativeViewElement('textViewWithHint', () => IQKeyboardManager.TextViewWithHint)
   
+  // set up locale (language & time) settings
+  loadLanguage(getLanguage())
+
   // dump any device info to the console for debugging
   console.log(`Device:`)
   console.log(`\t${Utils.isRealDevice() ? 'Physical device' : 'Emulator'}`)

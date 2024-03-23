@@ -11,6 +11,7 @@ import BottomNavigation from '~/components/BottomNavigation.svelte'
 let page: Page
 let bottomNav: Page
 
+
 onMount(() => {
   console.log(`App: onMount`)
 })

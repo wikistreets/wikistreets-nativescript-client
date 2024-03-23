@@ -6,6 +6,7 @@ import { NativeElementNode, NativeViewElementNode } from 'svelte-native/dom';
 import { onMount, onDestroy } from 'svelte'
 import { Drawer } from '@nativescript-community/ui-drawer'
 // import Theme from '@nativescript/theme' // to detect dark mode
+import { l, lc } from '~/services/localeService'
 import { Collection, Feature } from '~/models/feature'
 import { icons } from '../utils/icons'
 import { config } from '~/config/config'
@@ -56,7 +57,7 @@ let previewPost: Feature // a post the user has tapped on that we want to show p
 // default collection, or lack thereof
 export let selectedCollection: Collection = {
   _id: 0,
-  title: 'Everything',
+  title: lc('collections.default'),
   type: 'FeatureCollection',
   features: []
 }

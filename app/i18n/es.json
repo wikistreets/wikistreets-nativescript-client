@@ -1,0 +1,17 @@
+{
+    "app": {
+        "name": "Wikistreets"
+    },
+    "hello.world": "Hola Mundo",
+    "collections": {
+        "default": "Todos",
+        "create-new": "Crear nueva"
+    },
+    "account": {
+        "sign-in": "Iniciar sesión",
+        "sign-out": "Cerrar",
+        "register": "Registrarse",
+        "profile": "Perfil"
+    }
+
+}
