@@ -1,67 +1,68 @@
 <!-- @component Account Settings -->
 
 <script lang="ts">
-  import { token, user } from '~/stores/auth'
-  import { config } from '~/config/config'
-  import EditableInput from '~/components/EditableInput.svelte'
+import { l, lc } from '~/services/localeService'
+import { token, user } from '~/stores/auth'
+import { config } from '~/config/config'
+import EditableInput from '~/components/EditableInput.svelte'
 
-  let email: string
-  let handle: string
-  let password: string
-  $: email = $user?.email
-  $: handle = $user?.handle
-  $: password = $user?.password
+let email: string
+let handle: string
+let password: string
+$: email = $user?.email
+$: handle = $user?.handle
+$: password = $user?.password
 
-  let error: string
+let error: string
 
-  // export let onComplete: Function = () => {}
+// export let onComplete: Function = () => {}
 
-  const onSettingChange = async setting => {
-    /**
-     * Handle account settings form submission.  Update authentication store if successful.  Show error if not.
-     */
+const onSettingChange = async setting => {
+  /**
+   * Handle account settings form submission.  Update authentication store if successful.  Show error if not.
+   */
 
-    error = null // clear any prior error
-    // console.log(`Form data: ${JSON.stringify(setting)}`)
+  error = null // clear any prior error
+  // console.log(`Form data: ${JSON.stringify(setting)}`)
 
-    try {
-      const response = await fetch(`${config.WIKISTREETS_API}/users/update`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${$token}`, // necessary for JWT authentication
-        },
-        body: JSON.stringify(setting),
-      })
+  try {
+    const response = await fetch(`${config.WIKISTREETS_API}/users/update`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${$token}`, // necessary for JWT authentication
+      },
+      body: JSON.stringify(setting),
+    })
 
-      const data = await response.json()
-      if (response.ok) {
-        // check for a token and update auth store if present
-        if (data.token) {
-          // console.log(`Token received: ${data.token}`)
-          token.set(data.token)
-          user.set(data.user)
-          // onComplete('Settings updated')
-        } else if (data.error) {
-          error = data.error
-          // console.error(error)
-        } else {
-          error = 'No token found in response'
-          // console.error(error)
-        }
+    const data = await response.json()
+    if (response.ok) {
+      // check for a token and update auth store if present
+      if (data.token) {
+        // console.log(`Token received: ${data.token}`)
+        token.set(data.token)
+        user.set(data.user)
+        // onComplete('Settings updated')
+      } else if (data.error) {
+        error = data.error
+        // console.error(error)
       } else {
-        error = data?.error
+        error = 'No token found in response'
         // console.error(error)
       }
-    } catch (err) {
-      error = err
+    } else {
+      error = data?.error
       // console.error(error)
     }
+  } catch (err) {
+    error = err
+    // console.error(error)
   }
+}
 </script>
 
 <page {...$$restProps}>
-  <actionBar title="Settings" flat="true">
+  <actionBar title="{lc('Settings.title')}" flat="true">
     <!-- {#if __ANDROID__}
       <navigationButton
         android.systemIcon="ic_menu_close_clear_cancel"
@@ -96,7 +97,7 @@
     <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" />
     <textView editable={false} class="m-4 h-8 text-center">
       <span class="text-lg p-4 text-black dark:text-white">
-        Your account settings.
+        {lc('Settings.description')}
       </span>
     </textView>
 
@@ -109,8 +110,9 @@
     {/if}
 
     <EditableInput
-      label="Email"
+      label="{lc('Settings.form.email.label')}"
       text={email}
+      hint={lc('Settings.form.email.hint')}
       keyboardType="email"
       onChange={value => {
         email = value
@@ -120,8 +122,9 @@
     />
 
     <EditableInput
-      label="Handle"
+      label="{lc('Settings.form.handle.label')}"
       text={handle}
+      hint={lc('Settings.form.handle.hint')}
       onChange={value => {
         handle = value
         onSettingChange({ handle })
@@ -130,8 +133,8 @@
     />
 
     <EditableInput
-      label="Password"
-      text="************"
+      label="{lc('Settings.form.password.label')}"
+      hint={lc('Settings.form.password.hint')}
       secure="true"
       onChange={value => {
         handle = value

@@ -4,7 +4,7 @@
   import { Drawer } from '@nativescript-community/ui-drawer'
   import { navigate, showModal } from 'svelte-native'
   import { Page, Frame } from '@nativescript/core'
-  import { l, lc } from '~/services/localeService'
+  import { l, lc, lt } from '~/services/localeService'
   import { user, isAuthenticated, logout } from '~/stores/auth'
   import AuthModalFrame from '~/components/AuthModalFrame.svelte'
   import Map from '~/pages/Map.svelte'
@@ -16,7 +16,7 @@
   const collections: Collection[] = [
     {
       _id: 0,
-      title: lc('collections.default'),
+      title: lc('HamburgerMenu.collections.default'),
       type: 'FeatureCollection',
       features: []
     },
@@ -108,28 +108,28 @@
 
           <!-- BEGIN: collections -->
           <stacklayout class='m-0 my-2 p-0'>
-            <label text='Collections' class='font-bold text-2xl' />
+            <label text='{lc('HamburgerMenu.collections.heading')}' class='font-bold text-2xl' />
             {#each collections as collection}
               <button text={collection.title} textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => {
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="+ {lc('collections.create-new')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' />
+            <button text="+ {lc('HamburgerMenu.collections.create-new')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' />
           </stacklayout>
           <!-- END: collections -->
 
           <!-- BEGIN: account stuff -->
           <stacklayout class='m-0 my-2 p-0'>
-            <label text='Account' class='font-bold text-2xl' />
+            <label text='{lc('HamburgerMenu.account.heading')}' class='font-bold text-2xl' />
             {#if $isAuthenticated}
             <stacklayout class="p-12 align-middle text-center">
               <label class="w-full" text={$user?.handle} />
               <label class="w-full" text={$user?.email} />
             </stacklayout>
-            <button text='{lc('account.profile')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Settings')} />
+            <button text='{lc('HamburgerMenu.profile')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Settings')} />
             {:else}
-            <button text='{lc('account.sign-in')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
-            <button text='{lc('account.register')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />
+            <button text='{lc('HamburgerMenu.account.sign-in')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
+            <button text='{lc('HamburgerMenu.account.register')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />
             {/if}
           </stacklayout>
           <!-- END: account stuff -->

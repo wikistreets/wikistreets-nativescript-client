@@ -1,17 +1,188 @@
 {
+
+    "---- GLOBALS ----": "------------",
+
     "app": {
         "name": "Wikistreets"
     },
     "hello.world": "Bonjour le monde",
-    "collections": {
-        "default": "Tous",
-        "create-new": "Créer nouvelle"
+    "common": {
+        "buttons": {
+            "ok": "OK",
+            "cancel": "Annuler",
+            "back": "Retour",
+            "edit": "Modifier",
+            "save": "Enregistrer",
+            "next": "Suivant",
+            "yes": "Oui",
+            "no": "Non",
+            "register": "S'inscrire",
+            "login": "Se connecter"
+        }
     },
-    "account": {
-        "sign-in": "Iniciar sesión",
-        "sign-out": "Cerrar sesión",
-        "register": "Registro",
-        "profile": "Perfil"
 
+    "---- PAGES ----": "------------",
+
+    "Login": {
+        "title": "Connexion",
+        "description": "Connectez-vous à votre compte",
+        "registerLink": "Vous n'avez pas de compte?",
+        "form": {
+            "email": {
+                "label": "Email",
+                "hint": "Entrez votre email"
+            },
+            "handle": {
+                "label": "Nom d'utilisateur",
+                "hint": "Entrez votre nom d'utilisateur"
+            },
+            "password": {
+                "label": "Mot de passe",
+                "hint": "Entrez votre mot de passe"
+            }
+        }
+    },
+
+    "Register": {
+        "title": "S'inscrire",
+        "description": "Créez un nouveau compte",
+        "loginLink": "Vous avez déjà un compte?",
+        "form": {
+            "email": {
+                "label": "Email",
+                "hint": "Entrez votre email"
+            },
+            "handle": {
+                "label": "Nom d'utilisateur",
+                "hint": "Entrez votre nom d'utilisateur"
+            },
+            "password": {
+                "label": "Mot de passe",
+                "hint": "Entrez votre mot de passe"
+            }
+        }
+    },
+
+    "NewPostSelectLocation": {
+        "title": "Sélectionner un emplacement",
+        "postLocation": "Emplacement du post"
+    },
+
+    "NewPostAddContent": {
+        "title": "Ajouter du contenu",
+        "form": {
+            "title": {
+                "hint": "Entrez le titre du post"
+            },
+            "text": {
+                "hint": "Entrez le texte"
+            },
+            "audio": {
+                "hint": "Légende audio"
+            },
+            "image": {
+                "hint": "Légende de l'image"
+            }
+        },
+        "controls": {
+            "feedback": {
+                "default": "Ajoutez des photos, du texte ou enregistrez de l'audio",
+                "instructions": "Appuyez et maintenez pour enregistrer de l'audio",
+                "recording": "Enregistrement en cours..."
+            }
+        },
+        "dialogs": {
+            "confirmDiscard": {
+                "title": "Annuler les modifications?",
+                "message": "Êtes-vous sûr de vouloir annuler vos modifications?"
+            },
+            "camera": {
+                "unavailable": {
+                    "title": "Appareil photo non disponible",
+                    "message": "L'appareil photo n'est pas disponible sur cet appareil"    
+                },
+                "permissionDenied": {
+                    "title": "Accès à l'appareil photo refusé",
+                    "message": "Autorisez l'accès à l'appareil photo dans les paramètres de l'appareil pour ajouter des photos"
+                }
+            }
+        }
+    },
+
+    "Search": {
+        "title": "Recherche",
+        "form": {
+            "text": {
+                "hint": "Entrez votre recherche"
+            }
+        },
+        "results": {
+            "placeholder": "Résultats de recherche à déterminer"
+        }
+    },
+
+    "Settings": {
+        "title": "Paramètres",
+        "description": "Paramètres de votre compte.",
+        "form": {
+            "email": {
+                "label": "Email",
+                "hint": "Entrez votre email"
+            },
+            "handle": {
+                "label": "Nom d'utilisateur",
+                "hint": "Entrez votre nom d'utilisateur"
+            },
+            "password": {
+                "label": "Mot de passe",
+                "hint": "Entrez votre mot de passe"
+            }
+        }
+    },    
+
+    "---- COMPONENTS ----": "------------",
+
+    "EditableInput": {
+        "form": {
+            "text": {
+                "hint": "Entrez le texte"
+            }
+        }
+    },
+
+    "HamburgerMenu": {
+        "account": {
+            "heading": "Compte",
+            "sign-in": "Se connecter",
+            "sign-out": "Se déconnecter",
+            "register": "S'inscrire",
+            "profile": "Profil"
+        },
+        "collections": {
+            "heading": "Collections",
+            "default": "Tout",
+            "create-new": "Créer un nouveau"
+        }
+    },
+
+    "PostContentBlock": {
+        "form": {
+            "text": {
+                "hint": "Entrez le texte"
+            }
+        }
+    },
+
+    "---- STORES ----": "------------",
+
+    "geo": {
+        "dialogs": {
+            "permissionDenied": {
+                "title": "Localisation GPS désactivée",
+                "message": "Veuillez activer le partage de localisation dans les paramètres de votre appareil.",
+                "okButtonText": "Aller aux paramètres",
+                "cancelButtonText": "Pas maintenant"
+            }
+        }
     }
 }

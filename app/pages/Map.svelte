@@ -57,7 +57,7 @@ let previewPost: Feature // a post the user has tapped on that we want to show p
 // default collection, or lack thereof
 export let selectedCollection: Collection = {
   _id: 0,
-  title: lc('collections.default'),
+  title: lc('HamburgerMenu.collections.default'),
   type: 'FeatureCollection',
   features: []
 }

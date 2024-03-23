@@ -3,6 +3,7 @@
 <script lang="ts">
   import { navigate, closeModal } from 'svelte-native'
   import { TextField } from '@nativescript/core'
+  import { lc } from '@nativescript-community/l'
   import { user, token } from '~/stores/auth'
   import { config } from '~/config/config'
   import Login from '~/pages/Login.svelte'
@@ -63,7 +64,7 @@
     {#if __ANDROID__}
       <navigationButton
         android.systemIcon="ic_menu_close_clear_cancel"
-        text="Cancel"
+        text="{ lc('common.buttons.cancel') }"
         on:tap={e => { onComplete('Register canceling') }}
       />
     {:else }
@@ -72,13 +73,13 @@
       android.position="actionBar"
       ios.systemIcon="24"
       android.systemIcon="ic_menu_close_clear_cancel"
-      text="Cancel"
+      text="{ lc('common.buttons.cancel') }"
       on:tap={e => { onComplete('Register canceling') }}
     />
     {/if}    <actionItem
       ios.position="right"
       android.position="actionBar"
-      text="Register"
+      text="{ lc('common.buttons.register') }"
       on:tap={onSubmit}
     />
   </actionBar>
@@ -93,7 +94,7 @@
     <textView editable={false} class="m-4 h-8 text-center">
       <span class="w-full text-center text-lg my-0 p-4">
         {#if !error}
-          Create a new account
+        { lc('Register.description')}
         {:else}
           {error}
         {/if}
@@ -101,7 +102,7 @@
     </textView>
 
     <textField
-      hint="Email"
+      hint="{ lc('Register.form.email.hint') }"
       bind:text={email}
       keyboardType="email"
       autocapitalizationType="none"
@@ -109,14 +110,14 @@
       class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
     />
     <textField
-      hint="Handle"
+      hint="{ lc('Register.form.handle.hint') }"
       bind:text={handle}
       autocapitalizationType="none"
       autocorrect="false"
       class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
     />
     <textField
-      hint="Password"
+      hint="{ lc('Register.form.password.hint') }"
       bind:text={password}
       secure="true"
       autocapitalizationType="none"
@@ -127,7 +128,7 @@
 
     <label
       class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
-      text="Register"
+      text="{ lc('common.buttons.register') }"
       on:tap={onSubmit}
     />
 
@@ -143,7 +144,7 @@
         })}
     >
       <span class="text-md p-4 text-black dark:text-white">
-        Already have an account?
+        { lc('Register.loginLink') }
       </span>
     </textView>
   </stackLayout>

@@ -2,6 +2,7 @@
 import { onDestroy, onMount, createEventDispatcher } from 'svelte'
 import { Image, TextField } from '@nativescript/core'
 // import { TNSPlayer } from '@nativescript-community/audio';
+import { l, lc, lt } from '~/services/localeService'
 import { AudioPlayer } from '~/services/audioService'
 import { NativeViewElementNode } from 'svelte-native/dom'
 import { icons } from '~/utils/icons';
@@ -9,7 +10,7 @@ import { ContentBlock } from '~/models/contentBlock'
 
 export let item: ContentBlock = null
 export let type: string
-export let textHint: string = 'Enter text'
+export let textHint: string = lc('PostContentBlock.form.text.hint')
 
 // audio
 let playIcon: string = icons['play-circle']

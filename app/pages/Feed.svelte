@@ -10,6 +10,7 @@ import { Drawer } from '@nativescript-community/ui-drawer'
 import { PullToRefresh } from '@nativescript-community/ui-pulltorefresh'
 import { Feature, Collection } from '~/models/feature'
 import { FeatureService } from '../services/FeatureService'
+import { l, lc } from '~/services/localeService'
 import { icons } from '../utils/icons'
 import { geo } from '~/stores/geo'
 import PostPreview from '~/components/PostPreview.svelte'
@@ -33,7 +34,7 @@ let fs: FeatureService
 // default collection, or lack thereof
 export let selectedCollection: Collection = {
   _id: 0,
-  title: 'Everything',
+  title: lc('HamburgerMenu.collections.default'),
   type: 'FeatureCollection',
   features: []
 }

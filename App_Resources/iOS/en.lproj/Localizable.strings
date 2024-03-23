@@ -1,1 +1,9 @@
-"hello.world" = "Hello world in English";
+"HamburgerMenu.collections.create-new" = "Create new";
+"HamburgerMenu.collections.default" = "Everything";
+"HamburgerMenu.collections.heading" = "Collections";
+"HamburgerMenu.account.profile" = "Profile";
+"HamburgerMenu.account.register" = "Register";
+"HamburgerMenu.account.sign-out" = "Sign out";
+"HamburgerMenu.account.sign-in" = "Sign in";
+"HamburgerMenu.account.heading" = "Account";
+"hello.world" = "Hello world";
