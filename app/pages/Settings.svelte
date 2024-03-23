@@ -134,6 +134,7 @@ const onSettingChange = async setting => {
 
     <EditableInput
       label="{lc('Settings.form.password.label')}"
+      text='********'
       hint={lc('Settings.form.password.hint')}
       secure="true"
       onChange={value => {
