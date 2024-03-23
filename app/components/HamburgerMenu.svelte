@@ -6,7 +6,7 @@
   import { Page, Frame } from '@nativescript/core'
   import { l, lc, lt } from '~/services/localeService'
   import { user, isAuthenticated, logout } from '~/stores/auth'
-  import AuthModalFrame from '~/components/AuthModalFrame.svelte'
+  import ModalFrame from '~/components/ModalFrame.svelte'
   import Map from '~/pages/Map.svelte'
   import { Collection } from '~/models/feature'
 
@@ -74,12 +74,12 @@
 
   const modalTo = (pageName: string | null): void => {
     /**
-     * Open a modal dialog with the AuthModalFrame component and pass an inner child page to show within.
+     * Open a modal dialog with the ModalFrame component and pass an inner child page to show within.
      */
     drawer.close()
     if (pageName) {
       showModal({
-        page: AuthModalFrame,
+        page: ModalFrame,
         animated: true,
         props: {
           pageName: pageName,
@@ -114,7 +114,7 @@
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="+ {lc('HamburgerMenu.collections.create-new')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' />
+            <button text="+ {lc('HamburgerMenu.collections.create-new')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => modalTo('CreateCollection')} />
           </stacklayout>
           <!-- END: collections -->
 
@@ -126,7 +126,7 @@
               <label class="w-full" text={$user?.handle} />
               <label class="w-full" text={$user?.email} />
             </stacklayout>
-            <button text='{lc('HamburgerMenu.profile')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Settings')} />
+            <button text='{lc('HamburgerMenu.profile')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => modalTo('Settings')} />
             {:else}
             <button text='{lc('HamburgerMenu.account.sign-in')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
             <button text='{lc('HamburgerMenu.account.register')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />

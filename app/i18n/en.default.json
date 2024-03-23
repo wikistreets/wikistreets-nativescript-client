@@ -13,6 +13,7 @@
             "back": "Back",
             "edit": "Edit",
             "save": "Save",
+            "create": "Create",
             "next": "Next",
             "yes": "Yes",
             "no": "No",
@@ -22,6 +23,24 @@
     },
 
     "---- PAGES ----": "------------",
+
+    "CreateCollection": {
+        "title": "Create collection",
+        "description": "Create a new collection",
+        "form": {
+            "name": {
+                "label": "Name",
+                "hint": "Collection name"
+            },
+            "description": {
+                "label": "Description",
+                "hint": "Collection description (optional)"
+            },
+            "isPrivate": {
+                "label": "Private"
+            }
+        }
+    },
 
     "Login": {
         "title": "Sign in",

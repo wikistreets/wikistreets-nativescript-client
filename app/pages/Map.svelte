@@ -12,7 +12,6 @@ import { icons } from '../utils/icons'
 import { config } from '~/config/config'
 import { geo, geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
 import { FeatureService } from '../services/FeatureService'
-import AuthModalFrame from '~/components/AuthModalFrame.svelte';
 import HamburgerMenu from '~/components/HamburgerMenu.svelte'
 import Leaflet from '~/components/Leaflet.svelte'
 import Map from '~/pages/Map.svelte'

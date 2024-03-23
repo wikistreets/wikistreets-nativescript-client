@@ -13,6 +13,7 @@
             "back": "Retour",
             "edit": "Modifier",
             "save": "Enregistrer",
+            "create": "Créer",
             "next": "Suivant",
             "yes": "Oui",
             "no": "Non",
@@ -22,6 +23,24 @@
     },
 
     "---- PAGES ----": "------------",
+
+    "CreateCollection": {
+        "title": "Créer une collection",
+        "description": "Créer une nouvelle collection",
+        "form": {
+            "name": {
+                "label": "Nom",
+                "hint": "Nom de la collection"
+            },
+            "description": {
+                "label": "Description",
+                "hint": "Description de la collection (facultatif)"
+            },
+            "isPrivate": {
+                "label": "Privé"
+            }
+        }
+    },
 
     "Login": {
         "title": "Connexion",
