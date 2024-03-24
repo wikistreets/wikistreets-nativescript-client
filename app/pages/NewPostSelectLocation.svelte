@@ -180,7 +180,6 @@ const buildAddress = (addressData) => {
     address += (country != null) ? `, ${country}` : ''
     address = address.trim() // remove any leading/trailing whitespace
     address = address.replace(/(^,)|(,$)/g, '') // remove comma
-    // address = (address != '') ? address : config.address.DEFAULT_ADDRESS // if still empty, use default
     return (address != '') ? address : null
 }
 

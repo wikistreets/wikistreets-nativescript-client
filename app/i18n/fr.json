@@ -1,6 +1,6 @@
 {
 
-    "---- GLOBALS ----": "------------",
+    "GLOBALS": "------------",
 
     "app": {
         "name": "Wikistreets"
@@ -22,7 +22,7 @@
         }
     },
 
-    "---- PAGES ----": "------------",
+    "PAGES": "------------",
 
     "CreateCollection": {
         "title": "Créer une collection",
@@ -159,7 +159,7 @@
         }
     },    
 
-    "---- COMPONENTS ----": "------------",
+    "COMPONENTS": "------------",
 
     "EditableInput": {
         "form": {
@@ -172,15 +172,15 @@
     "HamburgerMenu": {
         "account": {
             "heading": "Compte",
-            "sign-in": "Se connecter",
-            "sign-out": "Se déconnecter",
+            "signIn": "Se connecter",
+            "signOut": "Se déconnecter",
             "register": "S'inscrire",
             "profile": "Profil"
         },
         "collections": {
             "heading": "Collections",
             "default": "Tout",
-            "create-new": "Créer un nouveau"
+            "createNew": "Créer un nouveau"
         }
     },
 
@@ -192,7 +192,7 @@
         }
     },
 
-    "---- STORES ----": "------------",
+    "STORES": "------------",
 
     "geo": {
         "dialogs": {
