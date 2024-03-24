@@ -1,6 +1,6 @@
 {
 
-    "GLOBALS": "------------",
+    "GLOBALS": "GLOBALS",
 
     "app": {
         "name": "Wikistreets"
@@ -22,7 +22,7 @@
         }
     },
 
-    "PAGES": "------------",
+    "PAGES": "PAGES",
 
     "CreateCollection": {
         "title": "Создать коллекцию",
@@ -159,7 +159,7 @@
         }
     },    
 
-    "COMPONENTS": "------------",
+    "COMPONENTS": "COMPONENTS",
 
     "EditableInput": {
         "form": {
@@ -192,7 +192,7 @@
         }
     },
 
-    "STORES": "------------",
+    "STORES": "STORES",
 
     "geo": {
         "dialogs": {

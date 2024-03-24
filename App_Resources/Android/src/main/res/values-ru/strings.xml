@@ -4,7 +4,7 @@
   <string name="geo.dialogs.permissionDenied.okButtonText">"Перейти в настройки"</string>
   <string name="geo.dialogs.permissionDenied.message">"Пожалуйста, включите обмен местоположением в настройках вашего устройства."</string>
   <string name="geo.dialogs.permissionDenied.title">"Отключено местоположение GPS"</string>
-  <string name="STORES">"------------"</string>
+  <string name="STORES">"STORES"</string>
   <string name="PostContentBlock.form.text.hint">"Введите текст"</string>
   <string name="HamburgerMenu.collections.createNew">"Создать новую"</string>
   <string name="HamburgerMenu.collections.default">"Все"</string>
@@ -15,7 +15,7 @@
   <string name="HamburgerMenu.account.signIn">"Войти"</string>
   <string name="HamburgerMenu.account.heading">"Аккаунт"</string>
   <string name="EditableInput.form.text.hint">"Введите текст"</string>
-  <string name="COMPONENTS">"------------"</string>
+  <string name="COMPONENTS">"COMPONENTS"</string>
   <string name="Settings.form.password.hint">"Введите пароль"</string>
   <string name="Settings.form.password.label">"Пароль"</string>
   <string name="Settings.form.handle.hint">"Введите имя пользователя"</string>
@@ -68,7 +68,7 @@
   <string name="CreateCollection.form.name.label">"Название"</string>
   <string name="CreateCollection.description">"Создать новую коллекцию"</string>
   <string name="CreateCollection.title">"Создать коллекцию"</string>
-  <string name="PAGES">"------------"</string>
+  <string name="PAGES">"PAGES"</string>
   <string name="common.buttons.login">"Войти"</string>
   <string name="common.buttons.register">"Зарегистрироваться"</string>
   <string name="common.buttons.no">"Нет"</string>
@@ -83,5 +83,5 @@
   <string name="hello.world">"Привет, мир"</string>
   <string name="app_name">"Wikistreets"</string>
   <string name="title_activity_kimera">"Wikistreets"</string>
-  <string name="GLOBALS">"------------"</string>
+  <string name="GLOBALS">"GLOBALS"</string>
 </resources>

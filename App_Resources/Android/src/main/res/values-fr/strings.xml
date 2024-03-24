@@ -4,7 +4,7 @@
   <string name="geo.dialogs.permissionDenied.okButtonText">"Aller aux paramètres"</string>
   <string name="geo.dialogs.permissionDenied.message">"Veuillez activer le partage de localisation dans les paramètres de votre appareil."</string>
   <string name="geo.dialogs.permissionDenied.title">"Localisation GPS désactivée"</string>
-  <string name="STORES">"------------"</string>
+  <string name="STORES">"STORES"</string>
   <string name="PostContentBlock.form.text.hint">"Entrez le texte"</string>
   <string name="HamburgerMenu.collections.createNew">"Créer un nouveau"</string>
   <string name="HamburgerMenu.collections.default">"Tout"</string>
@@ -15,7 +15,7 @@
   <string name="HamburgerMenu.account.signIn">"Se connecter"</string>
   <string name="HamburgerMenu.account.heading">"Compte"</string>
   <string name="EditableInput.form.text.hint">"Entrez le texte"</string>
-  <string name="COMPONENTS">"------------"</string>
+  <string name="COMPONENTS">"COMPONENTS"</string>
   <string name="Settings.form.password.hint">"Entrez votre mot de passe"</string>
   <string name="Settings.form.password.label">"Mot de passe"</string>
   <string name="Settings.form.handle.hint">"Entrez votre nom d\'utilisateur"</string>
@@ -68,7 +68,7 @@
   <string name="CreateCollection.form.name.label">"Nom"</string>
   <string name="CreateCollection.description">"Créer une nouvelle collection"</string>
   <string name="CreateCollection.title">"Créer une collection"</string>
-  <string name="PAGES">"------------"</string>
+  <string name="PAGES">"PAGES"</string>
   <string name="common.buttons.login">"Se connecter"</string>
   <string name="common.buttons.register">"S\'inscrire"</string>
   <string name="common.buttons.no">"Non"</string>
@@ -83,5 +83,5 @@
   <string name="hello.world">"Bonjour le monde"</string>
   <string name="app_name">"Wikistreets"</string>
   <string name="title_activity_kimera">"Wikistreets"</string>
-  <string name="GLOBALS">"------------"</string>
+  <string name="GLOBALS">"GLOBALS"</string>
 </resources>
