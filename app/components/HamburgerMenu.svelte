@@ -114,7 +114,7 @@
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="+ {lc('HamburgerMenu.account.createNew')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => modalTo('CreateCollection')} />
+            <button text="+ {lc('HamburgerMenu.collections.createNew')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => modalTo('CreateCollection')} />
           </stacklayout>
           <!-- END: collections -->
 
