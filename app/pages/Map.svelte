@@ -192,7 +192,6 @@ const getNext = async (post: Feature): Promise<Feature> => {
 const onPreviewPostSwipe = async (e: any) => {
   // user has swiped the preview post
   // console.log(`swiping start on post ${previewPost._id}`)
-  stopGeoTracking() // stop tracking the user's location
   switch (e.direction) {
     case SwipeDirection.right:
       console.log('onPreviewPostSwipe: right')
@@ -219,6 +218,7 @@ const onPreviewPostSwipe = async (e: any) => {
     default:
       console.log(`unknown swipe direction: ${e.direction}`)
   }
+  stopGeoTracking() // stop tracking the user's location
   // console.log(`swiping end on post ${previewPost._id}`)
 }
 
