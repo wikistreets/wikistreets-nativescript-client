@@ -22,7 +22,7 @@
     // console.log(`Form data: email='${email}', password='${password}'`)
 
     try {
-      const response = await fetch(`${config.WIKISTREETS_API}/users/signin`, {
+      const response = await fetch(`${process.env.WIKISTREETS_API}/users/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

@@ -21,7 +21,6 @@
     "@nativescript/tailwind": "^2.0.1",
     "@nativescript/theme": "~3.0.2",
     "@nativescript/unit-test-runner": "^3.0.4",
-    "@triniwiz/nativescript-couchbase": "^1.4.0",
     "@turf/turf": "^6.5.0",
     "@types/geojson": "^7946.0.14",
     "markdown-it": "^14.0.0",

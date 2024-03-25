@@ -14,7 +14,6 @@ let bottomNav: Page
 
 onMount(() => {
   console.log(`App: onMount`)
-  console.log(`App: FOO: ${process.env.FOO}`)
 })
 onDestroy(() => {
   console.log(`App: onDestroy`)

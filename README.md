@@ -21,7 +21,8 @@ OpenStreetMap maintains a list of [raster](https://wiki.openstreetmap.org/wiki/R
 - set up environment according to [instructions](https://docs.nativescript.org/setup/)
 - install nativescript: `npm install -g nativescript`
 - install dependencies: `npm install`
-- ensure that `tailwindcss` is at version 3.1.8, since later versions are [currently incompatible](https://github.com/NativeScript/tailwind/issues/187)
+- ensure that `tailwindcss` is at version `3.1.8`, since later versions are [currently incompatible](https://github.com/NativeScript/tailwind/issues/187)
+- create an `.env` file based on the [env.example](./env.example) with correct values for each variable
 - run the app in debug mode in simulator: `ns debug ios` or `ns debug android`
 - run the app without debugging in simulator: `ns run ios` or `ns run android`
 - run the app on a physical device - [see details](https://docs.nativescript.org/guide/running#running-on-physical-devices)
