@@ -1,1 +1,7 @@
-"hello.world" = "Hello world in English";
+"account.profile" = "Profile";
+"account.register" = "Register";
+"account.sign-out" = "Sign out";
+"account.sign-in" = "Sign in";
+"collections.create-new" = "Create new";
+"collections.default" = "Everything";
+"hello.world" = "Hello world";

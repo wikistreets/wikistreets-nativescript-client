@@ -1,1 +1,7 @@
-"hello.world" = "Hello world in French";
+"account.profile" = "Perfil";
+"account.register" = "Registro";
+"account.sign-out" = "Cerrar sesión";
+"account.sign-in" = "Iniciar sesión";
+"collections.create-new" = "Créer nouvelle";
+"collections.default" = "Tous";
+"hello.world" = "Bonjour le monde";
