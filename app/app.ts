@@ -19,7 +19,7 @@ import { isConnected } from '~/stores/network'
 import { lang, getLanguage, loadLanguage} from '~/services/localeService'
 
 import App from '~/App.svelte'
-import { load } from '@nativescript/core/ui/builder';
+// import { load } from '@nativescript/core/ui/builder'
 
 try {
 

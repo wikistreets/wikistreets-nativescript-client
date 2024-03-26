@@ -88,7 +88,8 @@ Leaflet
 - [Using SVG icons for Leaflet js markers](https://onestepcode.com/leaflet-markers-svg-icons/)
 
 Nativescript
-- CollectionView: [yarn documentation](https://yarnpkg.com/package?q=%40nativescript-community%2Fui-collectionview&name=%40nativescript-community%2Fui-collectionview) and [Harness the power of CollectionView](https://blog.nativescript.org/collectionview-power/)
+- useful plugins by [nativescript](https://github.com/nativescript), [nativescript-community](https://github.com/nativescript-community), and [plugins by triniwiz](https://github.com/triniwiz/nativescript-plugins)
+- CollectionView plugin: [yarn documentation](https://yarnpkg.com/package?q=%40nativescript-community%2Fui-collectionview&name=%40nativescript-community%2Fui-collectionview) and [Harness the power of CollectionView](https://blog.nativescript.org/collectionview-power/)
 - [Filterable List Picker in NativeScript](https://blog.nativescript.org/filterable-list-picker-in-nativescript/)
 - [Animated Bottom Sheet in NativeScript Tutorial](https://www.youtube.com/watch?v=SeTol800wFQ&list=PLPwbI_iIX3aS0_AcjiIEgVoEEEUhk0Bs5&index=87)
 
