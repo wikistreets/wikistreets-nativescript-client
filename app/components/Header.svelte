@@ -107,7 +107,7 @@
       row="0"
       col="0"
       text={icons.menu}
-      class="text-heading-sm icon bg-white dark:bg-black px-4 h-12 mx-2"
+      class="icon bg-white dark:bg-black px-4 h-12 mx-2"
       on:tap={onShowMenu}
     />
     <searchBar bind:this={searchBar} id="searchbar" row="0" col="1" class="bg-none text-lg ml-2 mr-6" hint="Search" on:load={onSearchBarLoaded} />

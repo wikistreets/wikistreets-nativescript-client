@@ -218,7 +218,7 @@ function toggleDrawer() {
   <actionBar title="{selectedCollection.title}" flat="true">
     <gridLayout columns="auto, *, auto" class="w-full h-full mx-2">
       <label col={0} text="{icons.menu}" on:tap={onHamburgerIconTap} class="icons text-2xl icon text-left" />
-      <label col={1} text='{selectedCollection.title}' class="w-full text-center text-lg" />
+      <label col={1} text='{selectedCollection.title}' class="w-full text-center text-heading-sm" />
       <label col={2} text="{icons.share}" class="text-2xl icon text-right" on:tap={e => { console.log('share button click')}} />
     </gridLayout>
   </actionBar>
