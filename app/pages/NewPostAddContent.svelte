@@ -12,6 +12,7 @@ import { Feature } from '~/models/feature'
 import { user, token } from '~/stores/auth'
 import { icons } from '~/utils/icons'
 import { config } from '~/config/config'
+import { l, lc, lt } from '~/services/localeService'
 import { cameraService } from '~/services/cameraService'
 import { AudioPlayer, AudioRecorder } from '~/services/audioService'
 import PostContentBlock from '~/components/PostContentBlock.svelte'
@@ -19,9 +20,9 @@ import { ContentBlock } from '~/models/contentBlock'
 
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
-const CONTROLS_FEEDBACK_DEFAULT = 'Add photos, text, or record audio.'
-const CONTROLS_FEEDBACK_INSTRUCTIONS = 'Press and hold to record audio'
-const CONTROLS_FEEDBACK_RECORDING = 'Recording...'
+const CONTROLS_FEEDBACK_DEFAULT = lc('NewPostAddContent.controls.feedback.default')
+const CONTROLS_FEEDBACK_INSTRUCTIONS = lc('NewPostAddContent.controls.feedback.instructions')
+const CONTROLS_FEEDBACK_RECORDING = lc('NewPostAddContent.controls.feedback.recording')
 let controlsFeedback = CONTROLS_FEEDBACK_DEFAULT
 
 // audio recorder
@@ -231,10 +232,10 @@ const onItemDragHandleTap = (e: CustomEvent) => {
 const onGoBack = async () => {
     console.log(`NewPost: onGoBack: ${items.length > 0}`)
     const confirmed = (items.length > 0) ? await Dialogs.confirm({
-            title: "Discard changes?",
-            message: "Are you sure you want to discard your changes?",
-            okButtonText: "Yes",
-            cancelButtonText: "No"
+            title: lc("NewPostAddContent.dialogs.confirmDiscard.title"),
+            message: lc("NewPostAddContent.dialogs.confirmDiscard.message"),
+            okButtonText: lc("common.buttons.yes"),
+            cancelButtonText: lc("common.buttons.no")
     }) : await Promise.resolve(true)        
     if (confirmed) goBack()
 }
@@ -246,9 +247,9 @@ const onSubmit = async () => {
 const onPhotoButtonTap =  async () => {
     if (!camera.isAvailable()) {
         Dialogs.alert({
-            title: "Camera not available",
-            message: "Camera is not available on this device",
-            okButtonText: "OK"
+            title: lc("NewPostAddContent.dialogs.camera.unavailable.title"),
+            message: lc("NewPostAddContent.dialogs.camera.unavailable.message"),
+            okButtonText: lc("common.buttons.ok")
         })
         return
     }
@@ -272,9 +273,9 @@ const onPhotoButtonTap =  async () => {
             else {
                 // permission denied
                 Dialogs.alert({
-                    title: "Camera access denied",
-                    message: "Allow camera access in device settings to add photos",
-                    okButtonText: "OK"
+                    title: lc("NewPostAddContent.dialogs.camera.permissionDenied.title"),
+                    message: lc("NewPostAddContent.dialogs.camera.permissionDenied.message"),
+                    okButtonText: lc("common.buttons.ok")
                 })
 
             }
@@ -355,7 +356,7 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
             {#if __ANDROID__}
             <navigationButton
                 android.systemIcon="ic_menu_back"
-                text="Back"
+                text="{lc('common.buttons.back')}"
                 on:tap={onGoBack}
             />
             {:else }
@@ -364,14 +365,14 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                 ios.position="left"
                 android.position="actionBar"
                 android.systemIcon="ic_menu_close_clear_cancel"
-                text="Back"
+                text="{lc('common.buttons.back')}"
                 on:tap={onGoBack}
             />
             {/if}
                 <actionItem
             ios.position="right"
             android.position="actionBar"
-            text="Save"
+            text="{lc('common.buttons.save')}"
             on:tap={onSubmit}
         />
         </actionBar>
@@ -382,7 +383,7 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                     <page actionBarHidden={true} >
                         <gridLayout rows="60, *" class='w-full h-full'>
                             <!-- Post title -->
-                            <textField row={0} id='post-title' hint="Enter post title" class="text-2xl text-center p-2 m-2"  />
+                            <textField row={0} id='post-title' hint="{lc('NewPostAddContent.form.title.hint')}" class="text-2xl text-center p-2 m-2"  />
 
                             <!-- BEGIN: post content builder -->
                             <collectionView 
@@ -406,13 +407,13 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                                     <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                                 </Template>
                                 <Template key='text' let:item>
-                                    <PostContentBlock type={item.type} item={item} textHint='Enter text' class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock type={item.type} item={item} textHint='{lc('NewPostAddContent.form.text.hint')}' class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                                 </Template>
                                 <Template key='image' let:item>
-                                    <PostContentBlock type={item.type} item={item} textHint='Image caption'class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock type={item.type} item={item} textHint='{lc('NewPostAddContent.form.image.hint')}' class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                                 </Template>
                                 <Template key='audio' let:item>
-                                    <PostContentBlock on:audioStop={ onAudioStop } on:audioPlay={ onAudioPlay } type={item.type} textHint='Audio caption' item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock on:audioStop={ onAudioStop } on:audioPlay={ onAudioPlay } type={item.type} textHint='{lc('NewPostAddContent.form.audio.hint')}' item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
                                 </Template>
                             </collectionView>
                             <!-- END: post content builder -->

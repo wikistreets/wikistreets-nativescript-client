@@ -13,13 +13,13 @@ import CollectionViewElement from '@nativescript-community/ui-collectionview/sve
 import DrawerElement from '@nativescript-community/ui-drawer/svelte'
 import { install as installBottomSheet } from '@nativescript-community/ui-persistent-bottomsheet'
 import BottomSheetElement from '@nativescript-community/ui-persistent-bottomsheet/svelte'
-import { install as installGestureHandler} from "@nativescript-community/gesturehandler";
+import { GestureRootView, install as installGestureHandler} from "@nativescript-community/gesturehandler";
 // import { GestureHandlerTouchEvent, GestureHandlerStateEvent, GestureStateEventData, GestureTouchEventData, HandlerType } from '@nativescript-community/gesturehandler';
 import { isConnected } from '~/stores/network'
 import { lang, getLanguage, loadLanguage} from '~/services/localeService'
 
 import App from '~/App.svelte'
-import { load } from '@nativescript/core/ui/builder';
+// import { load } from '@nativescript/core/ui/builder'
 
 try {
 
@@ -30,6 +30,7 @@ try {
   BottomSheetElement.register()
 
   installGestureHandler(true) // see https://github.com/nativescript-community/gesturehandler
+  // registerNativeViewElement('gestureRootView', () => GestureRootView);
 
   CollectionViewElement.register(); // see https://github.com/nativescript-community/ui-collectionview/tree/master
 

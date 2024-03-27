@@ -2,6 +2,7 @@
 
 <script lang="ts">
   import { navigate, closeModal } from 'svelte-native'
+  import { lc } from '@nativescript-community/l'
   import Register from '~/pages/Register.svelte'
   import { token, user } from '~/stores/auth'
   import { config } from '~/config/config'
@@ -21,7 +22,7 @@
     // console.log(`Form data: email='${email}', password='${password}'`)
 
     try {
-      const response = await fetch(`${config.WIKISTREETS_API}/users/signin`, {
+      const response = await fetch(`${process.env.WIKISTREETS_API}/users/signin`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -60,7 +61,7 @@
     {#if __ANDROID__}
       <navigationButton
         android.systemIcon="ic_menu_close_clear_cancel"
-        text="Cancel"
+        text="{ lc('common.buttons.cancel') }"
         on:tap={e => { onComplete('Login canceling') }}
       />
     {:else }
@@ -69,14 +70,14 @@
       android.position="actionBar"
       ios.systemIcon="24"
       android.systemIcon="ic_menu_close_clear_cancel"
-      text="Cancel"
+      text="{ lc('common.buttons.cancel') }"
       on:tap={e => { onComplete('Login canceling') }}
     />
     {/if}
     <actionItem
       ios.position="right"
       android.position="actionBar"
-      text="Log in"
+      text="{ lc('common.buttons.login') }"
       on:tap={onSubmit}
     />
   </actionBar>
@@ -91,7 +92,7 @@
     <textView editable={false} class="m-4 h-8 text-center">
       <span class="w-full text-center text-lg my-0 p-4">
         {#if !error}
-          Log in to your account.
+          { lc('Login.description') }
         {:else}
           {error}
         {/if}
@@ -99,7 +100,7 @@
     </textView>
 
     <textField
-      hint="Email"
+      hint="{ lc('Login.form.email.hint') }"
       bind:text={email}
       keyboardType="email"
       autocapitalizationType="none"
@@ -107,7 +108,7 @@
       class="text-lg p-4 my-4 border-2 rounded-md border-slate-500"
     />
     <textField
-      hint="Password"
+      hint="{ lc('Login.form.password.hint') }"
       bind:text={password}
       secure="true"
       autocapitalizationType="none"
@@ -118,7 +119,7 @@
 
     <label
       class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
-      text="Log in"
+      text="{ lc('common.buttons.login') }"
       on:tap={onSubmit}
     />
     <textView
@@ -133,7 +134,7 @@
         })}
     >
       <span class="text-md p-4 text-black dark:text-white">
-        Don't have an account?
+        { lc('Login.registerLink') }
       </span>
     </textView>
   </stackLayout>

@@ -40,8 +40,11 @@ let map: any // will hold map passed to use from webView
 
 // if we have a bounding box for the current collection, set the map to frame it
 $: if (isWebViewLoaded && isFitBounds && bbox) (() => {
+  // validate the bbox
+  const onlyNumbers = bbox.every((n) => !isNaN(n) && (n !== null) && (Math.abs(n) !== Infinity)) // bbox actually contains numbers
+  if (bbox.length !== 4 || !onlyNumbers) return // abort if not a valid bbox
   // set the view
-  // console.log(`Leaflet: setting bbox to ${JSON.stringify(bbox)}`)
+  console.log(`Leaflet: setting bbox to ${JSON.stringify(bbox)}`)
   webViewInterface.emit('fitBounds', bbox) // fit map to bounding box
   isFitBounds = false // only do this once
 })()

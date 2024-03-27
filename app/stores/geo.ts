@@ -1,9 +1,9 @@
 import { writable, readable, derived, get, Readable } from 'svelte/store'
-import { CoreTypes, EventData, confirm, ConfirmOptions, alert, AlertOptions } from '@nativescript/core'
+import { CoreTypes, Dialogs, EventData, confirm, ConfirmOptions, alert, AlertOptions } from '@nativescript/core'
+import { DefaultLatLonKeys} from '@nativescript-community/gps'
+import { lc } from '@nativescript-community/l'
 import { geocodeAddress, geocodeLocation } from '~/services/geocodeService'
 import { GeoService } from '~/services/geoService'
-import { DefaultLatLonKeys} from '@nativescript-community/gps'
-import { Dialogs } from '@nativescript/core'
 
 const defaults: DefaultLatLonKeys = { latitude: null, longitude: null, altitude: null }
 
@@ -47,10 +47,10 @@ export const addressData: Readable<geocodeLocation> = derived(geo, ($geo, set) =
 export const solicitConsent = async () => {
     console.log(`geo: solicitConsent: enabled: ${get(geoIsEnabled)}`)
     Dialogs.confirm({
-        title: 'GPS Location disabled',
-        message: `Please turn Location sharing in your device's settings.`,
-        okButtonText: 'Go to Settings',
-        cancelButtonText: 'Not now'
+        title: lc('geo.dialogs.permissionDenied.title'),
+        message: lc('geo.dialogs.permissionDenied.message'),
+        okButtonText: lc('geo.dialogs.permissionDenied.okButtonText'),
+        cancelButtonText: lc('geo.dialogs.permissionDenied.cancelButtonText'),
     } as ConfirmOptions)
     .then((consented: boolean) => {
         if (consented) gs.openGPSSettings();

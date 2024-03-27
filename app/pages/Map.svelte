@@ -12,7 +12,6 @@ import { icons } from '../utils/icons'
 import { config } from '~/config/config'
 import { geo, geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
 import { FeatureService } from '../services/FeatureService'
-import AuthModalFrame from '~/components/AuthModalFrame.svelte';
 import HamburgerMenu from '~/components/HamburgerMenu.svelte'
 import Leaflet from '~/components/Leaflet.svelte'
 import Map from '~/pages/Map.svelte'
@@ -57,7 +56,7 @@ let previewPost: Feature // a post the user has tapped on that we want to show p
 // default collection, or lack thereof
 export let selectedCollection: Collection = {
   _id: 0,
-  title: lc('collections.default'),
+  title: lc('HamburgerMenu.collections.default'),
   type: 'FeatureCollection',
   features: []
 }
@@ -193,7 +192,6 @@ const getNext = async (post: Feature): Promise<Feature> => {
 const onPreviewPostSwipe = async (e: any) => {
   // user has swiped the preview post
   // console.log(`swiping start on post ${previewPost._id}`)
-  stopGeoTracking() // stop tracking the user's location
   switch (e.direction) {
     case SwipeDirection.right:
       console.log('onPreviewPostSwipe: right')
@@ -220,6 +218,7 @@ const onPreviewPostSwipe = async (e: any) => {
     default:
       console.log(`unknown swipe direction: ${e.direction}`)
   }
+  stopGeoTracking() // stop tracking the user's location
   // console.log(`swiping end on post ${previewPost._id}`)
 }
 

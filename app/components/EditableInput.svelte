@@ -1,9 +1,11 @@
 <script lang="ts">
   import { EventData } from '@nativescript/core'
   import { TapGestureEventData } from "@nativescript/core/ui/gestures"
+  import { l, lc } from '~/services/localeService'
 
-  export let text: string = 'Enter here...'
   export let label: string = ''
+  export let text: string
+  export let hint: string = lc('EditableInput.form.text.hint')
   export let onChange: Function = () => {}
   export let secure: 'true' | 'false' = 'false'
   export let keyboardType:
@@ -38,7 +40,7 @@
   <label text={label} on:tap={toggleEditable} class="text-lg text-left w-1/4" />
   {#if editable}
     <textField
-      hint={text}
+      hint={hint}
       bind:text
       {secure}
       {autocorrect}
@@ -49,14 +51,14 @@
     />
     <label
       class="w-1/4 text-sm text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
-      text="Save"
+      text="{lc('common.buttons.save')}"
       on:tap={onSubmit}
     />
   {:else}
     <label {text} on:tap={toggleEditable} class="w-1/2 text-lg p-4 my-0" />
     <label
       class="w-1/4 text-sm text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
-      text="Edit"
+      text="{lc('common.buttons.edit')}"
       on:tap={() => (editable = true)}
     />
   {/if}

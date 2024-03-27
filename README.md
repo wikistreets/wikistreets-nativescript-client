@@ -21,7 +21,8 @@ OpenStreetMap maintains a list of [raster](https://wiki.openstreetmap.org/wiki/R
 - set up environment according to [instructions](https://docs.nativescript.org/setup/)
 - install nativescript: `npm install -g nativescript`
 - install dependencies: `npm install`
-- ensure that `tailwindcss` is at version 3.1.8, since later versions are [currently incompatible](https://github.com/NativeScript/tailwind/issues/187)
+- ensure that `tailwindcss` is at version `3.1.8`, since later versions are [currently incompatible](https://github.com/NativeScript/tailwind/issues/187)
+- create an `.env` file based on the [env.example](./env.example) with correct values for each variable
 - run the app in debug mode in simulator: `ns debug ios` or `ns debug android`
 - run the app without debugging in simulator: `ns run ios` or `ns run android`
 - run the app on a physical device - [see details](https://docs.nativescript.org/guide/running#running-on-physical-devices)
@@ -87,7 +88,8 @@ Leaflet
 - [Using SVG icons for Leaflet js markers](https://onestepcode.com/leaflet-markers-svg-icons/)
 
 Nativescript
-- CollectionView: [yarn documentation](https://yarnpkg.com/package?q=%40nativescript-community%2Fui-collectionview&name=%40nativescript-community%2Fui-collectionview) and [Harness the power of CollectionView](https://blog.nativescript.org/collectionview-power/)
+- useful plugins by [nativescript](https://github.com/nativescript), [nativescript-community](https://github.com/nativescript-community), and [plugins by triniwiz](https://github.com/triniwiz/nativescript-plugins)
+- CollectionView plugin: [yarn documentation](https://yarnpkg.com/package?q=%40nativescript-community%2Fui-collectionview&name=%40nativescript-community%2Fui-collectionview) and [Harness the power of CollectionView](https://blog.nativescript.org/collectionview-power/)
 - [Filterable List Picker in NativeScript](https://blog.nativescript.org/filterable-list-picker-in-nativescript/)
 - [Animated Bottom Sheet in NativeScript Tutorial](https://www.youtube.com/watch?v=SeTol800wFQ&list=PLPwbI_iIX3aS0_AcjiIEgVoEEEUhk0Bs5&index=87)
 

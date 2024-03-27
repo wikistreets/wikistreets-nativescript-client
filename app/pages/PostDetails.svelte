@@ -5,6 +5,7 @@
   import { closeModal, goBack } from 'svelte-native'
   import { Page, EventData, fromObject, SwipeGestureEventData, SwipeDirection } from '@nativescript/core'
   import { SharedTransition, ModalTransition } from '@nativescript/core'
+  import { lc } from '@nativescript-community/l'
   import { FeatureService } from '../services/FeatureService'
   import { Feature } from '~/models/feature'
 
@@ -60,13 +61,13 @@
 <page on:shownModally={onShownModally} {...$$restProps} on:swipe={onSwipe}>
   <actionBar title="" flat="true">
     {#if __ANDROID__}
-      <navigationButton text="Back" android.systemIcon="ic_menu_back" on:tap={goBack} />
+      <navigationButton text="{ lc('common.buttons.back') }" android.systemIcon="ic_menu_back" on:tap={goBack} />
     {/if}
     {#if editable}
       <actionItem
         ios.position="right"
         android.position="actionBar"
-        text="Edit"
+        text="{ lc('common.buttons.edit') }"
         on:tap={e => { onComplete('PostDetail.svelte editing') }}
       />
     {/if}
@@ -75,7 +76,7 @@
       android.position="actionBar"
       ios.systemIcon="9"
       android.systemIcon="ic_menu_share"
-      text="Cancel"
+      text="{ lc('common.buttons.cancel') }"
       on:tap={e => { onComplete('PostDetail.svelte share tapped... not functional yet.') }}
     />
   </actionBar>

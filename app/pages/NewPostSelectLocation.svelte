@@ -6,6 +6,7 @@ import { navigate, closeModal, goBack } from 'svelte-native'
 import { Dialogs, EventData, Frame, Image, ImageAsset, Page, SwipeDirection, SwipeGestureEventData, TextField, Utils } from '@nativescript/core'
 import * as camera from "@nativescript/camera";
 // import { PreviousNextView } from '@nativescript/iqkeyboardmanager'
+import { l, lc, lt } from '~/services/localeService'
 import { Feature } from '~/models/feature'
 import { user, token } from '~/stores/auth'
 import { addressData, geo, geoIsEnabled, solicitConsent as solicitGPSConsent } from '~/stores/geo'
@@ -179,7 +180,6 @@ const buildAddress = (addressData) => {
     address += (country != null) ? `, ${country}` : ''
     address = address.trim() // remove any leading/trailing whitespace
     address = address.replace(/(^,)|(,$)/g, '') // remove comma
-    // address = (address != '') ? address : config.address.DEFAULT_ADDRESS // if still empty, use default
     return (address != '') ? address : null
 }
 
@@ -211,11 +211,11 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
 </script>
     
 <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-    <actionBar title="Select Location" flat="true" on:swipe={onActionBarSwipe}>
+    <actionBar title="{lc('NewPostSelectLocation.title')}" flat="true" on:swipe={onActionBarSwipe}>
         {#if __ANDROID__}
         <navigationButton
             android.systemIcon="ic_menu_close_clear_cancel"
-            text="Cancel"
+            text="{lc('common.buttons.cancel')}"
             on:tap={onGoBack}
         />
         {:else }
@@ -225,14 +225,14 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
             android.position="actionBar"
             ios.systemIcon="24"
             android.systemIcon="ic_menu_close_clear_cancel"
-            text="Cancel"
+            text="{lc('common.buttons.cancel')}"
             on:tap={onGoBack}
         />
         {/if}
         <actionItem
             ios.position="right"
             android.position="actionBar"
-            text="Next"
+            text="{lc('common.buttons.next')}"
             on:tap={onSubmit}
         />
     </actionBar>
@@ -274,7 +274,7 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
             <frame id="addMediaButtons">
                 <page actionBarHidden={true}>
                     <gridLayout row={0} rows="auto, 70" class="w-full h-full p-2 pb-4 m-2 text-center">
-                        <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400" text="Post location" />
+                        <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400" text="{lc('NewPostSelectLocation.postLocation')}" />
                         <label row={1} bind:text="{streetAddress}" class="text-lg" lineHeight={0} />
                     </gridLayout>
                 </page>

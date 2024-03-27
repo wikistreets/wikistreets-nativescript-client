@@ -4,6 +4,7 @@ dependencies {
 }
 
 android {
+  
   compileSdkVersion 33
   buildToolsVersion "33"
   // ndkVersion ""
@@ -22,4 +23,11 @@ android {
   aaptOptions {
     additionalParameters "--no-version-vectors"
   }
+
+  // for couchbase plugin: https://triniwiz.github.io/nativescript-plugins/api-reference/couchbase.html#android
+  // Set minimum JVM level to ensure availability of, for example, lambda expressions
+  // compileOptions {
+  //     targetCompatibility 1.8
+  //     sourceCompatibility 1.8
+  // }  
 }
