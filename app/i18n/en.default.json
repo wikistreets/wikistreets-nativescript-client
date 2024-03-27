@@ -43,23 +43,23 @@
     },
 
     "Login": {
-        "title": "Sign in",
-        "description": "Log in to your account",
-        "registerLink": "Don't have an account?",
-        "form": {
-            "email": {
-                "label": "Email",
-                "hint": "Enter email"
-            },
-            "handle": {
-                "label": "Handle",
-                "hint": "Enter handle"
-            },
-            "password": {
-                "label": "Password",
-                "hint": "Enter password"
-            }
+      "title": "Sign in",
+      "description": "Welcome back.",
+      "registerLink": "Don't have an account?",
+      "form": {
+        "email": {
+          "label": "Email",
+          "hint": "Email"
+        },
+        "handle": {
+          "label": "Handle",
+          "hint": "Enter handle"
+        },
+        "password": {
+          "label": "Password",
+          "hint": "Password"
         }
+      }
     },
 
     "Register": {

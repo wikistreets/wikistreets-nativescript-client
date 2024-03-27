@@ -50,14 +50,14 @@
 "Register.loginLink" = "Already have an account?";
 "Register.description" = "Create a new account";
 "Register.title" = "Register";
-"Login.form.password.hint" = "Enter password";
+"Login.form.password.hint" = "Password";
 "Login.form.password.label" = "Password";
 "Login.form.handle.hint" = "Enter handle";
 "Login.form.handle.label" = "Handle";
-"Login.form.email.hint" = "Enter email";
+"Login.form.email.hint" = "Email";
 "Login.form.email.label" = "Email";
 "Login.registerLink" = "Don't have an account?";
-"Login.description" = "Log in to your account";
+"Login.description" = "Welcome back.";
 "Login.title" = "Sign in";
 "CreateCollection.form.isPrivate.label" = "Private";
 "CreateCollection.form.description.hint" = "Collection description (optional)";
