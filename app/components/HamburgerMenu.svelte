@@ -109,19 +109,19 @@
 
           <!-- BEGIN: collections -->
           <stacklayout style="margin-top: 3%;">
-            <label text='{lc('HamburgerMenu.collections.heading')}' style="margin-bottom: 2rem; margin-top: 0;" class='font-medium text-heading-sm' />
+            <label text='{lc('HamburgerMenu.collections.heading')}' style="margin-bottom: 4rem; margin-top: 0; margin-left: 0; margin-right: 0;" class='font-medium text-heading-sm' />
             {#each collections as collection}
               <button text={collection.title} textWrap={false} lineHeight={0} style="margin-top: 2rem; margin-bottom: 2rem; margin-left: 0; margin-right: 0; padding: 0;" class='text-left text-body-sm text-t-light-primary bg-transparent' boxShadow='none' on:tap={() => {
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="{lc('HamburgerMenu.collections.createNew')}" textWrap={true} style="margin-top: 10rem; margin-bottom: 0; margin-left: 0; margin-right: 0; padding: 12rem; border-radius: 6rem;" class='text-center text-body-md font-medium text-t-light-primary bg-s-light-brand' boxShadow='none' />
+            <button text="{lc('HamburgerMenu.collections.createNew')}" textWrap={true} style="margin-top: 10rem; margin-bottom: 0; margin-left: 0; margin-right: 0; padding: 14rem; border-radius: 5rem;" class='text-center text-body-md text-t-light-primary bg-s-light-brand' boxShadow='none' />
           </stacklayout>
           <!-- END: collections -->
 
           <!-- BEGIN: account stuff -->
           <stacklayout style="margin-top: 7%;">
-            <label text='{lc('HamburgerMenu.account.heading')}' style="margin-bottom: 2rem; margin-top: 0;" class='font-medium text-heading-sm' />
+            <label text='{lc('HamburgerMenu.account.heading')}' style="margin-bottom: 4rem; margin-top: 0; margin-left: 0; margin-right: 0;" class='font-medium text-heading-sm' />
             {#if $isAuthenticated}
             <stacklayout class="p-12 align-middle text-center">
               <label class="w-full" text={$user?.handle} />
