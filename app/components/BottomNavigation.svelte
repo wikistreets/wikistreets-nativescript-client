@@ -93,13 +93,13 @@ const getNextTab = (): Label => {
 
 </script>
 
-<page title="" {...$$restProps} actionBarHidden={true} class="w-full h-full" on:loaded={onPageLoad} on:swipe={onTabsSwipe}>
+<page title="" {...$$restProps} actionBarHidden={true} class="w-full h-full text-t-light-primary" on:loaded={onPageLoad} on:swipe={onTabsSwipe}>
     <flexboxLayout class="w-full h-full" id="tabs">
         <label text="{icons.map}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Map)} />
         <label text="{icons['format-list-bulleted']}" class="text-2xl icon text-center m-1 w-full h-full"  on:tap={() => onTabTap(Feed)} />
-        <label text="{icons['plus-box']}" class="text-5xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(NewPostSelectLocation, 'topmost', false)} />
+        <label text="{icons['plus-circle']}" class="text-5xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(NewPostSelectLocation, 'topmost', false)} />
         <label text="{icons.search}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Search)} />
-        <label text="{icons.account}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Settings)} />
+        <label text="{icons['account-o']}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Settings)} />
     </flexboxLayout>
 </page>
 

@@ -9,6 +9,7 @@
   import ModalFrame from '~/components/ModalFrame.svelte'
   import Map from '~/pages/Map.svelte'
   import { Collection } from '~/models/feature'
+  import { icons } from '../utils/icons'
 
   export let collectionPage: Page = Map
 
@@ -104,32 +105,32 @@
   <contentView row={0} col={0} class='w-full h-full'>
     <frame id="menu">
       <page actionBarHidden={true}>
-        <stacklayout class='p-4'>
+        <stacklayout class='p-16'>
 
           <!-- BEGIN: collections -->
-          <stacklayout class='m-0 my-2 p-0'>
-            <label text='{lc('HamburgerMenu.collections.heading')}' class='font-bold text-2xl' />
+          <stacklayout style="margin-top: 3%;">
+            <label text='{lc('HamburgerMenu.collections.heading')}' style="margin-bottom: 4rem; margin-top: 0; margin-left: 0; margin-right: 0;" class='font-medium text-heading-sm' />
             {#each collections as collection}
-              <button text={collection.title} textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => {
+              <button text={collection.title} textWrap={false} lineHeight={0} style="margin-top: 2rem; margin-bottom: 2rem; margin-left: 0; margin-right: 0; padding: 0;" class='text-left text-body-sm text-t-light-primary bg-transparent' boxShadow='none' on:tap={() => {
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="+ {lc('HamburgerMenu.collections.createNew')}" textWrap={true} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => modalTo('CreateCollection')} />
+            <button text="{lc('HamburgerMenu.collections.createNew')}" textWrap={true} style="margin-top: 10rem; margin-bottom: 0; margin-left: 0; margin-right: 0; padding: 14rem; border-radius: 5rem;" class='text-center text-body-md text-t-light-primary bg-s-light-brand' boxShadow='none' />
           </stacklayout>
           <!-- END: collections -->
 
           <!-- BEGIN: account stuff -->
-          <stacklayout class='m-0 my-2 p-0'>
-            <label text='{lc('HamburgerMenu.account.heading')}' class='font-bold text-2xl' />
+          <stacklayout style="margin-top: 7%;">
+            <label text='{lc('HamburgerMenu.account.heading')}' style="margin-bottom: 4rem; margin-top: 0; margin-left: 0; margin-right: 0;" class='font-medium text-heading-sm' />
             {#if $isAuthenticated}
             <stacklayout class="p-12 align-middle text-center">
               <label class="w-full" text={$user?.handle} />
               <label class="w-full" text={$user?.email} />
             </stacklayout>
-            <button text='{lc('HamburgerMenu.profile')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none' on:tap={() => modalTo('Settings')} />
+            <button text='{lc('HamburgerMenu.profile')}' textWrap={false} lineHeight={0} class='text-left first-line:text-body-sm text-t-light-primary m-0 p-0 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Settings')} />
             {:else}
-            <button text='{lc('HamburgerMenu.account.signIn')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
-            <button text='{lc('HamburgerMenu.account.register')}' textWrap={false} lineHeight={0} class='text-left text-lg mx-4 my-1 bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />
+            <button text='{lc('HamburgerMenu.account.signIn')}' textWrap={false} lineHeight={0} style="margin-top: 2rem; margin-bottom: 0; margin-left: 0; margin-right: 0; padding: 0;" class='text-left text-body-sm text-t-light-primary bg-transparent' boxShadow='none'  on:tap={() => modalTo('Login')} />
+            <button text='{lc('HamburgerMenu.account.register')}' textWrap={false} lineHeight={0} style="margin-top: 2rem; margin-bottom: 0; margin-left: 0; margin-right: 0; padding: 0;" class='text-left text-body-sm text-t-light-primary bg-transparent' boxShadow='none'  on:tap={() => modalTo('Register')} />
             {/if}
           </stacklayout>
           <!-- END: account stuff -->

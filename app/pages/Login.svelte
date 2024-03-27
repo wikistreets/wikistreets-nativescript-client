@@ -78,6 +78,7 @@
       ios.position="right"
       android.position="actionBar"
       text="{ lc('common.buttons.login') }"
+      class="text-label-md"
       on:tap={onSubmit}
     />
   </actionBar>
@@ -86,11 +87,12 @@
     orientation="vertical"
     horizontalAlignment="center"
     class="w-full"
+    style="padding: 28rem; margin-top: 32rem; margin-bottom: 0; margin-left: 0; margin-right: 0;"
   >
-    <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" />
+    <!-- <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" /> -->
 
-    <textView editable={false} class="m-4 h-8 text-center">
-      <span class="w-full text-center text-lg my-0 p-4">
+    <textView editable={false} class="w-full text-left">
+      <span class="text-heading-md font-bold m-0">
         {#if !error}
           { lc('Login.description') }
         {:else}
@@ -105,7 +107,8 @@
       keyboardType="email"
       autocapitalizationType="none"
       autocorrect="false"
-      class="text-lg p-4 my-4 border-2 rounded-md border-slate-500"
+      style="padding-top: 16rem; padding-bottom: 16rem; padding-left: 0; padding-right: 0; margin-bottom: 20rem; margin-top: 0; margin-left: 0; margin-right: 0;"
+      class="text-label-md border-b-2 border-b-s-light-primary placeholder-t-light-secondary"
     />
     <textField
       hint="{ lc('Login.form.password.hint') }"
@@ -113,18 +116,23 @@
       secure="true"
       autocapitalizationType="none"
       autocorrect="false"
-      class="text-lg p-4 my-4 border-2 rounded-md border-slate-600"
+      style="padding-top: 16rem; padding-bottom: 16rem; padding-left: 0; padding-right: 0; margin-bottom: 44rem; margin-top: 0; margin-left: 0; margin-right: 0;"
+      class="text-label-md border-b-2 border-b-s-light-primary placeholder-t-light-secondary"
       on:returnPress={onSubmit}
     />
 
+    <!-- Forgot password? -->
+
     <label
-      class="w-1/2 text-lg text-center text-slate-700 p-4 my-4 rounded-md bg-slate-300"
+      style="padding: 14rem; border-radius: 5rem;"
+      class="w-full text-body-md text-center text-t-light-primary bg-s-light-brand"
       text="{ lc('common.buttons.login') }"
       on:tap={onSubmit}
     />
     <textView
       editable={false}
-      class="m-4 text-center"
+      style="margin-top: 12rem; margin-bottom: 0; margin-left: 0; margin-right: 0;"
+      class="text-center"
       on:tap={() =>
         navigate({
           page: Register,
@@ -133,8 +141,8 @@
           props: { onComplete },
         })}
     >
-      <span class="text-md p-4 text-black dark:text-white">
-        { lc('Login.registerLink') }
+      <span class="text-label-md px-4 text-t-light-secondary dark:text-white">
+        { lc('Login.registerLink') } 
       </span>
     </textView>
   </stackLayout>

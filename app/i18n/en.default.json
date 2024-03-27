@@ -43,43 +43,43 @@
     },
 
     "Login": {
-        "title": "Sign in",
-        "description": "Log in to your account",
-        "registerLink": "Don't have an account?",
-        "form": {
-            "email": {
-                "label": "Email",
-                "hint": "Enter email"
-            },
-            "handle": {
-                "label": "Handle",
-                "hint": "Enter handle"
-            },
-            "password": {
-                "label": "Password",
-                "hint": "Enter password"
-            }
+      "title": "Sign in",
+      "description": "Welcome back.",
+      "registerLink": "Don't have an account?",
+      "form": {
+        "email": {
+          "label": "Email",
+          "hint": "Email"
+        },
+        "handle": {
+          "label": "Handle",
+          "hint": "Enter handle"
+        },
+        "password": {
+          "label": "Password",
+          "hint": "Password"
         }
+      }
     },
 
     "Register": {
-        "title": "Register",
-        "description": "Create a new account",
-        "loginLink": "Already have an account?",
-        "form": {
-            "email": {
-                "label": "Email",
-                "hint": "Enter email"
-            },
-            "handle": {
-                "label": "Handle",
-                "hint": "Enter handle"
-            },
-            "password": {
-                "label": "Password",
-                "hint": "Enter password"
-            }
+      "title": "Register",
+      "description": "Hello there!",
+      "loginLink": "Already have an account?",
+      "form": {
+        "email": {
+          "label": "Email",
+          "hint": "Email"
+        },
+        "handle": {
+          "label": "Handle",
+          "hint": "Handle"
+        },
+        "password": {
+          "label": "Password",
+          "hint": "Password"
         }
+      }
     },
 
     "NewPostSelectLocation": {
