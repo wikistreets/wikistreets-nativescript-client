@@ -125,7 +125,7 @@
 
     <label
       style="padding: 14rem; border-radius: 5rem;"
-      class="w-full text-body-md text-center text-t-light-primary rounded-md bg-s-light-brand"
+      class="w-full text-body-md text-center text-t-light-primary bg-s-light-brand"
       text="{ lc('common.buttons.login') }"
       on:tap={onSubmit}
     />
