@@ -238,7 +238,7 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
     </actionBar>
 
     <previousNextView>
-        <gridLayout rows="*, 120" class="h-full w-full m-0 p-0">
+        <gridLayout rows="*, 50" class="h-full w-full m-0 p-0">
             <contentView row="0">
             <frame id="content">
                 <page actionBarHidden={true} >
@@ -253,6 +253,7 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                             colSpan="5"
                             class="h-full w-full z-1"
                             htmlFilePath="~/assets/leaflet.html"
+                            attributionControl={false}
                             bind:centerPoint={ mapCenterPoint }
                             bind:homePoint={ homePoint }
                             bind:isHomeVisible={ isHomeVisible }
@@ -262,24 +263,26 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                             on:mapZoom={onMapZoom}
                             on:dragStart={onMapDragStart}
                         />
-                        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full {geoUnsubscribe ? 'text-slate-800' : 'text-slate-400'}" row="0" col={0} />
-                        <label text="{icons['gps']}" on:tap={onGPSIconTap} class="icon text-6xl text-center w-full text-red-800" row="2" col={2} />
+                        
+                        <label text="{icons['navigation']}" on:tap={onGPSIconTap} style="margin-top: 0; margin-bottom: 24rem; margin-right: 10rem; margin-left: 0; transform: rotate(40);" class="icon text-2xl text-right {geoUnsubscribe ? 'text-t-light-primary' : 'text-t-light-secondary'}" row="4" col={4} />
+                        <label text="{icons['gps']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full text-t-light-primary" row="2" col={2} />
                       </gridLayout>                
                 <!-- END: leaflet map to pick location -->
 
                 </page>
             </frame>
           </contentView>
-          <contentView row="1">
+           <contentView row="1" height="">
             <frame id="addMediaButtons">
                 <page actionBarHidden={true}>
-                    <gridLayout row={0} rows="auto, 70" class="w-full h-full p-2 pb-4 m-2 text-center">
-                        <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400" text="{lc('NewPostSelectLocation.postLocation')}" />
-                        <label row={1} bind:text="{streetAddress}" class="text-lg" lineHeight={0} />
+                    <gridLayout row={0} rows="auto, 50" class="text-center">
+                        <!-- <label row={0} class="text-center text-sm p-0 m-0 text-slate-600 dark:text-slate-400" text="{lc('NewPostSelectLocation.postLocation')}" /> -->
+                        <label row={0} bind:text="{streetAddress}" style="padding-top: 16rem; padding-bottom: 16rem;" class="text-body-lg" lineHeight={0} />
                     </gridLayout>
                 </page>
             </frame>
           </contentView>  
+         
     </gridLayout>
 </previousNextView>
 

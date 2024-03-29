@@ -323,7 +323,7 @@ function toggleDrawer() {
   <actionBar title="{selectedCollection.title}" flat="true">
     <gridLayout columns="auto, *, auto" class="w-full h-full mx-2">
       <label col={0} text="{icons.menu}" on:tap={onHamburgerIconTap} class="icons text-2xl icon text-left" />
-      <label col={1} text='{selectedCollection.title}' class="w-full text-center text-lg" />
+      <label col={1} text='{selectedCollection.title}' class="w-full text-center text-heading-sm" />
       <label col={2} text="{icons.share}" class="text-2xl icon text-right" on:tap={e => { console.log('share button click')}} />
     </gridLayout>
   </actionBar>
@@ -338,15 +338,16 @@ function toggleDrawer() {
 
       <HamburgerMenu prop:leftDrawer class="w-2/3 h-full" {drawer} collectionPage={Map} />
 
-      <gridLayout rows="100, *, 100" columns="100, *, 100" prop:mainContent backgroundColor="red" class="w-full h-full">
+      <gridLayout rows="100, 70, *, 70, 100" columns="100, 70, *, 70, 100" prop:mainContent backgroundColor="red" class="w-full h-full">
         <Leaflet
           id="map"
           row="0"
           col="0"
-          rowSpan="3"
-          colSpan="3"
+          rowSpan="5"
+          colSpan="5"
           class="h-full w-full z-1"
           htmlFilePath="~/assets/leaflet.html"
+          attributionControl={false}
           { posts }
           bbox={ mapBbox }
           bind:centerPoint={ mapCenterPoint }
@@ -362,8 +363,10 @@ function toggleDrawer() {
           on:mapZoom={onMapZoom}
           on:dragStart={onMapDragStart}
 />
-        <label text="{icons['gps-dot']}" on:tap={onGPSIconTap} class="icon text-4xl text-center w-full {geoUnsubscribe ? 'text-slate-800' : 'text-slate-400'}" row="0" col={0} />
-        <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={2} col={0} colSpan={3} class="w-11/12 mb-3 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
+       
+        <label text="{icons['navigation']}" on:tap={onGPSIconTap} style="margin-left: 0; margin-right: 10rem; margin-top: 0; margin-bottom: 24rem; transform: rotate(40);" class="icon text-2xl text-right {geoUnsubscribe ? 'text-t-light-primary' : 'text-t-light-secondary'}" row="3" col={4} />
+         
+        <PostPreview visibility={previewPost ? 'visible' : 'hidden'} on:postPreviewTap={ ()=> { showPost(previewPost)} } on:swipe={onPreviewPostSwipe} item={previewPost} row={4} col={0} colSpan={5} style="margin-bottom: 10rem; margin-top: 0; margin-left: 0; margin-right: 0; border-radius: 5rem;" class="w-11/12 bg-white dark:bg-s-dark-primary" />
       </gridLayout>
     </drawer>
     <!-- <Feed
