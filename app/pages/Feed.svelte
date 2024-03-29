@@ -253,10 +253,10 @@ function toggleDrawer() {
             <UsersPreview items={item.users} class="h-5"/>
           </Template> -->
           <Template key="post-odd" let:item>
-            <PostPreview on:postPreviewTap={onListItemTap} item={item} class="w-full h-40 mb-1 bg-slate-800 dark:bg-slate-800 text-slate-200 dark:text-slate-200"  />
+            <PostPreview on:postPreviewTap={onListItemTap} item={item} style="margin-bottom: 10rem;" class="w-full bg-white dark:bg-s-dark-primary text-t-light-primary dark:text-t-dark-primary"  />
           </Template>
           <Template key="post-even" let:item>
-            <PostPreview on:postPreviewTap={onListItemTap} item={item} class="w-full h-40 mb-1 bg-slate-700 dark:bg-slate-700 text-slate-200 dark:text-slate-200"  />
+            <PostPreview on:postPreviewTap={onListItemTap} item={item} style="margin-bottom: 10rem;" class="w-full bg-white dark:bg-s-dark-primary text-t-light-primary dark:text-t-dark-primary"  />
           </Template>
         </collectionView>
       </pullrefresh>

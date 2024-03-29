@@ -35,12 +35,12 @@
 
 <flexboxLayout flexDirection="row" sharedTransitionTag="selectedPost" justifyContent="flex-start" {...$$restProps} on:tap={onPostPreviewTap} on:swipe on:loaded={onComponentLoaded}>
 {#if item}
-    <stackLayout class="w-1/3 mr-4">
+    <stackLayout class="w-1/3">
       <image class="h-full" src="https://source.unsplash.com/random?id={item._id}" stretch="aspectFill" />
     </stackLayout>
-    <stackLayout class="w-2/3" horizontalAlignment="left" verticalAlignment="middle">
-      <label text="{item.properties.title}" class="text-left text-lg w-full" />
-      <label text="{item.properties.address}" class="text-left text-md w-full" />
+    <stackLayout style="padding: 10rem;" class="w-2/3" horizontalAlignment="left" verticalAlignment="middle">
+      <label text="{item.properties.title}" class="text-left text-subheading-md w-full text-t-light-primary dark:text-t-dark-primary" />
+      <label text="{item.properties.address}" class="text-left text-label-sm w-full text-t-light-secondary dark:text-t-dark-secondary" />
     </stackLayout>
 {/if}
 </flexboxLayout>

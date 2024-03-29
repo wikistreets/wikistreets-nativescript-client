@@ -1,5 +1,6 @@
 // tailwind.config.js
 const plugin = require('tailwindcss/plugin')
+const colors = require('tailwindcss/colors')
 
 /** @type {import('tailwindcss').Config} */
 module.exports = {
@@ -70,6 +71,12 @@ module.exports = {
       current: 'currentColor',
       white: '#FFF',
       black: '#000',
+      red: colors.red,
+      slate: colors.slate,
+      gray: colors.gray,
+      emerald: colors.emerald,
+      blue: colors.blue,
+      yellow: colors.yellow,
       // TEXT
       t: {
         light: {

@@ -97,7 +97,7 @@ const getNextTab = (): Label => {
     <flexboxLayout class="w-full h-full" id="tabs">
         <label text="{icons.map}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Map)} />
         <label text="{icons['format-list-bulleted']}" class="text-2xl icon text-center m-1 w-full h-full"  on:tap={() => onTabTap(Feed)} />
-        <label text="{icons['plus-circle']}" class="text-5xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(NewPostSelectLocation, 'topmost', false)} />
+        <label text="{icons['plus-circle']}" class="text-4xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(NewPostSelectLocation, 'topmost', false)} />
         <label text="{icons.search}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Search)} />
         <label text="{icons['account-o']}" class="text-2xl icon text-center m-1 w-full h-full" on:tap={() => onTabTap(Settings)} />
     </flexboxLayout>
