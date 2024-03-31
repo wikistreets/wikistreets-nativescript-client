@@ -74,13 +74,13 @@
       on:tap={e => { onComplete('Login canceling') }}
     />
     {/if}
-    <actionItem
+    <!-- <actionItem
       ios.position="right"
       android.position="actionBar"
       text="{ lc('common.buttons.login') }"
       class="text-label-md"
       on:tap={onSubmit}
-    />
+    /> -->
   </actionBar>
 
   <stackLayout
@@ -92,7 +92,7 @@
     <!-- <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" /> -->
 
     <textView editable={false} class="w-full text-left">
-      <span class="text-heading-md font-bold m-0">
+      <span class="text-heading-md font-bold" style="margin: 0; padding: 0;">
         {#if !error}
           { lc('Login.description') }
         {:else}
@@ -131,7 +131,7 @@
     />
     <textView
       editable={false}
-      style="margin-top: 12rem; margin-bottom: 0; margin-left: 0; margin-right: 0;"
+      style="margin-top: 8rem; margin-bottom: 0; margin-left: 0; margin-right: 0;"
       class="text-center"
       on:tap={() =>
         navigate({

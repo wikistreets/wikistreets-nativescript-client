@@ -76,12 +76,13 @@
       text="{ lc('common.buttons.cancel') }"
       on:tap={e => { onComplete('Register canceling') }}
     />
-    {/if}    <actionItem
+    {/if}    
+    <!-- <actionItem
       ios.position="right"
       android.position="actionBar"
       text="{ lc('common.buttons.register') }"
       on:tap={onSubmit}
-    />
+    /> -->
   </actionBar>
 
   <stackLayout
@@ -108,7 +109,7 @@
       keyboardType="email"
       autocapitalizationType="none"
       autocorrect="false"
-     style="padding-top: 16rem; padding-bottom: 16rem; padding-left: 0; padding-right: 0; margin-bottom: 20rem; margin-top: 0; margin-left: 0; margin-right: 0;"
+      style="padding-top: 16rem; padding-bottom: 16rem; padding-left: 0; padding-right: 0; margin-bottom: 20rem; margin-top: 0; margin-left: 0; margin-right: 0;"
       class="text-label-md border-b-2 border-b-s-light-primary placeholder-t-light-secondary"
     />
     <textField
@@ -139,7 +140,7 @@
 
     <textView
       editable={false}
-       style="margin-top: 12rem; margin-bottom: 0; margin-left: 0; margin-right: 0;"
+      style="margin-top: 8rem; margin-bottom: 0; margin-left: 0; margin-right: 0;"
       class="text-center"
       on:tap={() =>
         navigate({
@@ -149,7 +150,7 @@
           props: { onComplete },
         })}
     >
-      <span class="text-label-md px-4 text-t-light-secondary dark:text-white">
+      <span class="text-label-md px-4 text-t-light-secondary dark:text-t-dark-secondary">
         { lc('Register.loginLink') }
       </span>
     </textView>
