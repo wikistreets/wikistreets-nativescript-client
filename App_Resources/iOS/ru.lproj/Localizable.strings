@@ -20,6 +20,7 @@
 "Settings.form.handle.label" = "Имя пользователя";
 "Settings.form.email.hint" = "Введите email";
 "Settings.form.email.label" = "Email";
+"Settings.form.title" = "Cчет";
 "Settings.description" = "Настройки вашей учетной записи.";
 "Settings.title" = "Настройки";
 "Search.results.placeholder" = "Результаты поиска будут доступны позже";

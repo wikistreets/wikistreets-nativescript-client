@@ -20,6 +20,7 @@
 "Settings.form.handle.label" = "Nom d'utilisateur";
 "Settings.form.email.hint" = "Entrez votre email";
 "Settings.form.email.label" = "Email";
+"Settings.form.title" = "Le compte";
 "Settings.description" = "Paramètres de votre compte.";
 "Settings.title" = "Paramètres";
 "Search.results.placeholder" = "Résultats de recherche à déterminer";

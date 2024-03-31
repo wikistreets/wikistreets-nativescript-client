@@ -144,18 +144,19 @@
         "title": "Paramètres",
         "description": "Paramètres de votre compte.",
         "form": {
-            "email": {
-                "label": "Email",
-                "hint": "Entrez votre email"
-            },
-            "handle": {
-                "label": "Nom d'utilisateur",
-                "hint": "Entrez votre nom d'utilisateur"
-            },
-            "password": {
-                "label": "Mot de passe",
-                "hint": "Entrez votre mot de passe"
-            }
+          "title": "Le compte",
+          "email": {
+            "label": "Email",
+            "hint": "Entrez votre email"
+          },
+          "handle": {
+            "label": "Nom d'utilisateur",
+            "hint": "Entrez votre nom d'utilisateur"
+          },
+          "password": {
+            "label": "Mot de passe",
+            "hint": "Entrez votre mot de passe"
+          }
         }
     },    
 
