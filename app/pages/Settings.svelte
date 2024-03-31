@@ -91,23 +91,26 @@ const onSettingChange = async setting => {
 
   <stackLayout
     orientation="vertical"
-    horizontalAlignment="center"
+    horizontalAlignment="left"
     class="w-full"
+    style="padding: 15rem;"
   >
-    <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" />
-    <textView editable={false} class="m-4 h-8 text-center">
+    <!-- <image src="~/assets/share_image.png" class="mt-8 w-32 h-32" /> -->
+    <!-- <textView editable={false} class="m-4 h-8 text-center">
       <span class="text-lg p-4 text-black dark:text-white">
         {lc('Settings.description')}
       </span>
-    </textView>
+    </textView> -->
 
     {#if error}
-      <textView editable={false} class="m-4 h-8 text-center">
-        <span class="text-lg p-4 text-red dark:text-red">
+      <textView editable={false} class="m-4 h-6 text-center">
+        <span class="text-body-md p-4 text-alert dark:text-alert">
           {error}
         </span>
       </textView>
     {/if}
+
+    <label text="{lc('Settings.form.title')}" class="text-heading-sm font-medium"/>
 
     <EditableInput
       label="{lc('Settings.form.email.label')}"
@@ -118,7 +121,8 @@ const onSettingChange = async setting => {
         email = value
         onSettingChange({ email })
       }}
-      class="p-4 m-4"
+      class="align-center p-8"
+      style="margin-bottom: 15rem; margin-top: 15rem; margin-left: 0; margin-right: 0;"
     />
 
     <EditableInput
@@ -129,7 +133,8 @@ const onSettingChange = async setting => {
         handle = value
         onSettingChange({ handle })
       }}
-      class="px-4 m-4"
+      class="align-center p-8"
+      style="margin-bottom: 15rem; margin-top: 0; margin-left: 0; margin-right: 0;"
     />
 
     <EditableInput
@@ -141,7 +146,8 @@ const onSettingChange = async setting => {
         handle = value
         onSettingChange({ password })
       }}
-      class="px-4 m-4"
+      class="align-center p-8"
+      style="margin-bottom: 15rem; margin-top: 0; margin-left: 0; margin-right: 0;"
     />
   </stackLayout>
 </page>

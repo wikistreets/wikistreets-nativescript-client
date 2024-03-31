@@ -2,6 +2,7 @@
   import { EventData } from '@nativescript/core'
   import { TapGestureEventData } from "@nativescript/core/ui/gestures"
   import { l, lc } from '~/services/localeService'
+  import { icons } from '~/utils/icons'
 
   export let label: string = ''
   export let text: string
@@ -36,8 +37,9 @@
   }
 </script>
 
-<flexboxLayout {...$$restProps}>
-  <label text={label} on:tap={toggleEditable} class="text-lg text-left w-1/4" />
+<flexboxLayout {...$$restProps} justifyContent="flex-start" class="w-full">
+  <!-- <label text={label} on:tap={toggleEditable} class="text-body-md text-left w-1/4" /> -->
+
   {#if editable}
     <textField
       hint={hint}
@@ -46,18 +48,19 @@
       {autocorrect}
       {keyboardType}
       {autocapitalizationType}
-      class="w-1/2 text-lg p-4 px-4 my-0 border-2 rounded-md border-slate-500"
+      class="w-11/12 text-body-md p-8"
+      style="border-radius: 5rem; margin: 0;"
       on:returnPress={onSubmit}
     />
     <label
-      class="w-1/4 text-sm text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
+      class="text-label-md text-left text-t-light-secondary p-8"
       text="{lc('common.buttons.save')}"
       on:tap={onSubmit}
     />
   {:else}
-    <label {text} on:tap={toggleEditable} class="w-1/2 text-lg p-4 my-0" />
+    <label {text} on:tap={toggleEditable} class="w-11/12 text-heading-sm p-8" />
     <label
-      class="w-1/4 text-sm text-center text-slate-700 p-4 my-0 rounded-md bg-slate-300"
+      class="text-label-md text-left text-t-light-secondary p-8"
       text="{lc('common.buttons.edit')}"
       on:tap={() => (editable = true)}
     />
