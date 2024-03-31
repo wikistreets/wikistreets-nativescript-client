@@ -77,6 +77,7 @@ module.exports = {
       emerald: colors.emerald,
       blue: colors.blue,
       yellow: colors.yellow,
+      alert: '#dc2626', // red-600 
       // TEXT
       t: {
         light: {
