@@ -80,3 +80,4 @@
 "common.buttons.ok" = "Aceptar";
 "hello.world" = "Hola mundo";
 "GLOBALS" = "GLOBALS";
+"Settings.form.title" = "Account";

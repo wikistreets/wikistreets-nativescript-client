@@ -1,207 +1,207 @@
 {
+  "GLOBALS": "GLOBALS",
 
-    "GLOBALS": "GLOBALS",
-
-    "app": {
-        "name": "Wikistreets"
-    },
-    "hello.world": "Hello world",
-    "common": {
-        "buttons": {
-            "ok": "OK",
-            "cancel": "Cancel",
-            "back": "Back",
-            "edit": "Edit",
-            "save": "Save",
-            "create": "Create",
-            "next": "Next",
-            "yes": "Yes",
-            "no": "No",
-            "register": "Register",
-            "login": "Log in"
-        }
-    },
-
-    "PAGES": "PAGES",
-
-    "CreateCollection": {
-        "title": "Create collection",
-        "description": "Create a new collection",
-        "form": {
-            "name": {
-                "label": "Name",
-                "hint": "Collection name"
-            },
-            "description": {
-                "label": "Description",
-                "hint": "Collection description (optional)"
-            },
-            "isPrivate": {
-                "label": "Private"
-            }
-        }
-    },
-
-    "Login": {
-      "title": "Sign in",
-      "description": "Welcome back.",
-      "registerLink": "Don't have an account?",
-      "form": {
-        "email": {
-          "label": "Email",
-          "hint": "Email"
-        },
-        "handle": {
-          "label": "Handle",
-          "hint": "Enter handle"
-        },
-        "password": {
-          "label": "Password",
-          "hint": "Password"
-        }
-      }
-    },
-
-    "Register": {
-      "title": "Register",
-      "description": "Hello there!",
-      "loginLink": "Already have an account?",
-      "form": {
-        "email": {
-          "label": "Email",
-          "hint": "Email"
-        },
-        "handle": {
-          "label": "Handle",
-          "hint": "Handle"
-        },
-        "password": {
-          "label": "Password",
-          "hint": "Password"
-        }
-      }
-    },
-
-    "NewPostSelectLocation": {
-        "title": "Select location",
-        "postLocation": "Post location"
-    },
-
-    "NewPostAddContent": {
-        "title": "Add content",
-        "form": {
-            "title": {
-                "hint": "Enter post title"
-            },
-            "text": {
-                "hint": "Enter text"
-            },
-            "audio": {
-                "hint": "Audio caption"
-            },
-            "image": {
-                "hint": "Image caption"
-            }
-        },
-        "controls": {
-            "feedback": {
-                "default": "Add photos, text, or record audio",
-                "instructions": "Press and hold to record audio",
-                "recording": "Recording..."
-            }
-        },
-        "dialogs": {
-            "confirmDiscard": {
-                "title": "Discard changes?",
-                "message": "Are you sure you want to discard your changes?"
-            },
-            "camera": {
-                "unavailable": {
-                    "title": "Camera not available",
-                    "message": "Camera is not available on this device"    
-                },
-                "permissionDenied": {
-                    "title": "Camera access denied",
-                    "message": "Allow camera access in device settings to add photos"
-                }
-            }
-        }
-    },
-
-    "Search": {
-        "title": "Search",
-        "form": {
-            "text": {
-                "hint": "Enter search"
-            }
-        },
-        "results": {
-            "placeholder": "Search results TBD"
-        }
-    },
-
-    "Settings": {
-        "title": "Settings",
-        "description": "Your account settings.",
-        "form": {
-            "email": {
-                "label": "Email",
-                "hint": "Enter email"
-            },
-            "handle": {
-                "label": "Handle",
-                "hint": "Enter handle"
-            },
-            "password": {
-                "label": "Password",
-                "hint": "Enter password"
-            }
-        }
-    },    
-
-    "COMPONENTS": "COMPONENTS",
-
-    "EditableInput": {
-        "form": {
-            "text": {
-                "hint": "Enter text"
-            }
-        }
-    },
-
-    "HamburgerMenu": {
-        "account": {
-            "heading": "Account",
-            "signIn": "Sign in",
-            "signOut": "Sign out",
-            "register": "Register",
-            "profile": "Profile"
-        },
-        "collections": {
-            "heading": "Collections",
-            "default": "Everything",
-            "createNew": "Create new"
-        }
-    },
-
-    "PostContentBlock": {
-        "form": {
-            "text": {
-                "hint": "Enter text"
-            }
-        }
-    },
-
-    "STORES": "STORES",
-
-    "geo": {
-        "dialogs": {
-            "permissionDenied": {
-                "title": "GPS Location disabled",
-                "message": "Please turn Location sharing in your device's settings.",
-                "okButtonText": "Go to Settings",
-                "cancelButtonText": "Not now"
-            }
-        }
+  "app": {
+    "name": "Wikistreets"
+  },
+  "hello.world": "Hello world",
+  "common": {
+    "buttons": {
+      "ok": "OK",
+      "cancel": "Cancel",
+      "back": "Back",
+      "edit": "Edit",
+      "save": "Save",
+      "create": "Create",
+      "next": "Next",
+      "yes": "Yes",
+      "no": "No",
+      "register": "Register",
+      "login": "Log in"
     }
+  },
+
+  "PAGES": "PAGES",
+
+  "CreateCollection": {
+    "title": "Create collection",
+    "description": "Create a new collection",
+    "form": {
+      "name": {
+        "label": "Name",
+        "hint": "Collection name"
+      },
+      "description": {
+        "label": "Description",
+        "hint": "Collection description (optional)"
+      },
+      "isPrivate": {
+        "label": "Private"
+      }
+    }
+  },
+
+  "Login": {
+    "title": "Sign in",
+    "description": "Welcome back.",
+    "registerLink": "Don't have an account?",
+    "form": {
+      "email": {
+        "label": "Email",
+        "hint": "Email"
+      },
+      "handle": {
+        "label": "Handle",
+        "hint": "Enter handle"
+      },
+      "password": {
+        "label": "Password",
+        "hint": "Password"
+      }
+    }
+  },
+
+  "Register": {
+    "title": "Register",
+    "description": "Hello there!",
+    "loginLink": "Already have an account?",
+    "form": {
+      "email": {
+        "label": "Email",
+        "hint": "Email"
+      },
+      "handle": {
+        "label": "Handle",
+        "hint": "Handle"
+      },
+      "password": {
+        "label": "Password",
+        "hint": "Password"
+      }
+    }
+  },
+
+  "NewPostSelectLocation": {
+    "title": "Select location",
+    "postLocation": "Post location"
+  },
+
+  "NewPostAddContent": {
+    "title": "New Post",
+    "form": {
+      "title": {
+        "hint": "Title"
+      },
+      "text": {
+        "hint": "Share your thoughts..."
+      },
+      "audio": {
+        "hint": "Add caption"
+      },
+      "image": {
+        "hint": "Add caption"
+      }
+    },
+    "controls": {
+      "feedback": {
+        "default": "Add images, text, or record audio",
+        "instructions": "Press and hold to record audio",
+        "recording": "Recording..."
+      }
+    },
+    "dialogs": {
+      "confirmDiscard": {
+        "title": "Discard changes?",
+        "message": "Are you sure you want to discard your changes?"
+      },
+      "camera": {
+        "unavailable": {
+          "title": "Camera not available",
+          "message": "Camera is not available on this device"
+        },
+        "permissionDenied": {
+          "title": "Camera access denied",
+          "message": "Allow camera access in device settings to add photos"
+        }
+      }
+    }
+  },
+
+  "Search": {
+    "title": "Search",
+    "form": {
+      "text": {
+        "hint": "Search here"
+      }
+    },
+    "results": {
+      "placeholder": "Search results TBD"
+    }
+  },
+
+  "Settings": {
+    "title": "Settings",
+    "description": "Your account settings.",
+    "form": {
+      "title": "Account",
+      "email": {
+        "label": "Email",
+        "hint": "Enter email"
+      },
+      "handle": {
+        "label": "Handle",
+        "hint": "Enter handle"
+      },
+      "password": {
+        "label": "Password",
+        "hint": "Enter password"
+      }
+    }
+  },
+
+  "COMPONENTS": "COMPONENTS",
+
+  "EditableInput": {
+    "form": {
+      "text": {
+        "hint": "Enter text"
+      }
+    }
+  },
+
+  "HamburgerMenu": {
+    "account": {
+      "heading": "Account",
+      "signIn": "Sign in",
+      "signOut": "Sign out",
+      "register": "Create Account",
+      "profile": "Profile"
+    },
+    "collections": {
+      "heading": "Collections",
+      "default": "Everything",
+      "createNew": "Create new"
+    }
+  },
+
+  "PostContentBlock": {
+    "form": {
+      "text": {
+        "hint": "Enter text"
+      }
+    }
+  },
+
+  "STORES": "STORES",
+
+  "geo": {
+    "dialogs": {
+      "permissionDenied": {
+        "title": "GPS Location disabled",
+        "message": "Please turn Location sharing in your device's settings.",
+        "okButtonText": "Go to Settings",
+        "cancelButtonText": "Not now"
+      }
+    }
+  }
 }
