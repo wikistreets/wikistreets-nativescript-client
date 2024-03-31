@@ -115,7 +115,7 @@
                 onCollectionTap(collection)
               }} />
             {/each}
-            <button text="{lc('HamburgerMenu.collections.createNew')}" textWrap={true} style="margin-top: 10rem; margin-bottom: 0; margin-left: 0; margin-right: 0; padding: 14rem; border-radius: 5rem;" class='text-center text-body-md text-t-light-primary bg-s-light-brand' boxShadow='none' />
+            <button text="{lc('HamburgerMenu.collections.createNew')}" textWrap={true} style="margin-top: 10rem; margin-bottom: 0; margin-left: 0; margin-right: 0; padding: 14rem; border-radius: 5rem;" class='text-center text-body-sm text-t-light-primary bg-s-light-brand' boxShadow='none' />
           </stacklayout>
           <!-- END: collections -->
 
