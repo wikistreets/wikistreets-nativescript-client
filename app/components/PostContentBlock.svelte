@@ -61,7 +61,7 @@ const onDragHandleTap = () => {
     </stackLayout> -->
     <gridLayout row={0} col={1} rows='{imageMode == 'portrait' ? 550: 350}, 60' class='m-4'  verticalAlignment="top">
         <image row={0} bind:src={item.image.src} />
-        <textViewWithHint row={1} bind:text={item.text} hint='{textHint}' autocapitalizationType="sentences" autocorrect={true} returnKeyType='done' editable={true} lineHeight={0} class='text-lg text-center w-full dark:text-slate-700' />
+        <textViewWithHint row={1} bind:text={item.text} hint='{textHint}' autocapitalizationType="sentences" autocorrect={true} returnKeyType='done' editable={true} lineHeight={0} class='text-body-md text-center w-full dark:text-slate-700' />
     </gridLayout>
 </gridLayout>
 
@@ -74,7 +74,7 @@ const onDragHandleTap = () => {
     <gridLayout row={0} col={1} columns='auto, *' rows='80, 0' class='m-4 w-full h-full' verticalAlignment='middle'>
         <textView visibility={isPlaying ? 'hidden' : 'visible'} row={0} col={0} bind:text={playIcon} on:tap={ onPlayAudioButtonTap } editable={false} class="icon text-4xl mx-4 my-0" />
         <textView visibility={isPlaying ? 'visible' : 'hidden'} row={0} col={0} bind:text={pauseIcon} on:tap={ onPlayAudioButtonTap } editable={false} class="icon text-4xl mx-4 my-0" />
-        <textViewWithHint row={0} col={1} bind:text={item.text} hint='{textHint}' autocapitalizationType="sentences" autocorrect={true} editable={true}  lineHeight={0} class='text-lg w-full my-2 dark:text-slate-700' />
+        <textViewWithHint row={0} col={1} bind:text={item.text} hint='{textHint}' autocapitalizationType="sentences" autocorrect={true} editable={true}  lineHeight={0} class='text-body-md w-full my-2 dark:text-slate-700' />
     </gridLayout>
 </gridLayout>
 
@@ -84,7 +84,7 @@ const onDragHandleTap = () => {
     <!-- <stackLayout row={0} col={0} orientation='vertical' class='bg-slate-300'>
         <textView on:tap={onDragHandleTap} text='{icons.blur}' class='icon text-sm text-center p-0 m-0 mt-2' editable={false} />
     </stackLayout> -->
-    <textViewWithHint row={0} col={1} bind:text={item.text} hint='{textHint}' autocorrect={true} autocapitalizationType='sentences' returnKeyType='done' editable={true} lineHeight={0} class="text-lg m-4 dark:text-slate-700"  />
+    <textViewWithHint row={0} col={1} bind:text={item.text} hint='{textHint}' autocorrect={true} autocapitalizationType='sentences' returnKeyType='done' editable={true} lineHeight={0} class="text-body-md m-4 dark:text-slate-700"  />
 </gridLayout>
 
 {:else if type == 'blank-slate'}
@@ -93,7 +93,7 @@ const onDragHandleTap = () => {
     <!-- <stackLayout row={0} col={0} orientation='vertical' class='bg-slate-300'>
         <textView on:tap={onDragHandleTap} text='{icons.blur}' class='icon text-sm text-center p-0 m-0 mt-2' editable={false} />
     </stackLayout> -->
-    <label row={0} col={1} bind:text="{item.text}" lineHeight={0} class="text-lg m-4 dark:text-slate-800" />
+    <label row={0} col={1} bind:text="{item.text}" lineHeight={0} class="text-body-md m-4 dark:text-slate-800" />
 </gridLayout>
 
 {:else}

@@ -17,6 +17,7 @@ import { cameraService } from '~/services/cameraService'
 import { AudioPlayer, AudioRecorder } from '~/services/audioService'
 import PostContentBlock from '~/components/PostContentBlock.svelte'
 import { ContentBlock } from '~/models/contentBlock'
+  import NewPostSelectLocation from './NewPostSelectLocation.svelte'
 
 let unsubscribers: any[] = [] // will store any svelte stores we subscribe to
 let items: ContentBlock[]
@@ -352,7 +353,8 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
 </script>
         
     <page {...$$restProps} actionBarHidden={false} on:loaded={onPageLoad} on:tap={clearClutter}>
-        <actionBar title="{`${streetAddress.substring(0, 20)}...`}" flat="true" on:swipe={onActionBarSwipe}>
+        <actionBar title="{`${streetAddress.substring(0, 25)}...`}" flat="true" on:swipe={onActionBarSwipe}>
+             <!-- <actionBar title="{lc('NewPostAddContent.title')}" flat="true" on:swipe={onActionBarSwipe}> -->
             {#if __ANDROID__}
             <navigationButton
                 android.systemIcon="ic_menu_back"
@@ -377,13 +379,18 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
         />
         </actionBar>
     
-        <gridLayout rows="*, 120" class="h-full w-full m-0 p-0">
+        <gridLayout rows="*, 60" class="h-full w-full">
             <contentView row="0">
                 <frame id="content">
                     <page actionBarHidden={true} >
-                        <gridLayout rows="60, *" class='w-full h-full'>
+                        <gridLayout rows="60, *" class='w-full h-full' style="padding: 15rem;">
                             <!-- Post title -->
-                            <textField row={0} id='post-title' hint="{lc('NewPostAddContent.form.title.hint')}" class="text-2xl text-center p-2 m-2"  />
+                                <textField id='post-title' hint="{lc('NewPostAddContent.form.title.hint')}" class="w-full text-body-md text-left placeholder-t-light-secondary" style="padding-left: 0; padding-right: 0; padding-top: 15rem; padding-bottom: 15rem; margin-bottom: 15rem; margin-top: 0; margin-left: 0; margin-right: 0;"/>
+                            
+                                <!-- <flexboxLayout flexDirection="column" justifyContent="center"> -->
+                                <!-- Post location --> 
+                                <!-- <label id='post-location' text="{`${streetAddress.substring(0, 20)}...`}" class="text-heading-sm text-center bg-s-light-brand-light" style="padding-left: 12rem; padding-right: 15rem; padding-top: 15rem; padding-bottom: 15rem; margin-top: 0rem; margin-bottom: 0; border-radius: 10rem;"/> -->
+                            <!-- </flexboxLayout> -->
 
                             <!-- BEGIN: post content builder -->
                             <collectionView 
@@ -404,16 +411,16 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
                                 on:swipe={e => { console.log(`Feed: swipe`) }}
                             >
                                 <Template key='blank-slate' let:item>
-                                    <PostContentBlock type={item.type} item={item} class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock type={item.type} item={item} class="w-full text-t-light-secondary bg-s-light-primary" style="border-radius: 5rem; margin-top: 5rem; margin-bottom: 5rem; margin-left: 0; margin-right: 0;" />
                                 </Template>
                                 <Template key='text' let:item>
-                                    <PostContentBlock type={item.type} item={item} textHint='{lc('NewPostAddContent.form.text.hint')}' class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock type={item.type} item={item} textHint='{lc('NewPostAddContent.form.text.hint')}' class="w-full text-t-light-secondary bg-s-light-primary" style="border-radius: 5rem; margin-top: 5rem; margin-bottom: 5rem; margin-left: 0; margin-right: 0;" />
                                 </Template>
                                 <Template key='image' let:item>
-                                    <PostContentBlock type={item.type} item={item} textHint='{lc('NewPostAddContent.form.image.hint')}' class="w-11/12 rounded-md rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock type={item.type} item={item} textHint='{lc('NewPostAddContent.form.image.hint')}' class="w-full text-t-light-secondary bg-s-light-primary" style="border-radius: 5rem; margin-top: 5rem; margin-bottom: 5rem; margin-left: 0; margin-right: 0;" />
                                 </Template>
                                 <Template key='audio' let:item>
-                                    <PostContentBlock on:audioStop={ onAudioStop } on:audioPlay={ onAudioPlay } type={item.type} textHint='{lc('NewPostAddContent.form.audio.hint')}' item={item} class="w-11/12 rounded-m rounded-r-none mx-0 my-2 bg-slate-100" borderWidth={1} borderStyle='solid' borderColor='black' />
+                                    <PostContentBlock on:audioStop={ onAudioStop } on:audioPlay={ onAudioPlay } type={item.type} textHint='{lc('NewPostAddContent.form.audio.hint')}' item={item} class="w-full text-t-light-secondary bg-s-light-primary" style="border-radius: 5rem; margin-top: 5rem; margin-bottom: 5rem; margin-left: 0; margin-right: 0;" />
                                 </Template>
                             </collectionView>
                             <!-- END: post content builder -->
@@ -425,13 +432,13 @@ const onActionBarSwipe = (e: SwipeGestureEventData) => {
               <contentView row="1">
                 <frame id="addMediaButtons">
                     <page actionBarHidden={true} on:loaded={onMediaButtonsLoad}>
-                        <gridLayout row={1} rows="auto, auto" class="w-full h-full p-2 pb-4 m-2 border-t-2 border-b-2 border-t-slate-200 border-b-slate-200 border-solid">
-                            <label row={0} color={isRecording ? 'red' : ''} class="text-center text-sm p-0 m-0 text-slate-400 dark:text-slate-300"  text="{controlsFeedback}" />
-                            <flexboxLayout id="media-controls" row={1} flexDirection="row" justifyContent="center" backgroundColor={isRecording ? 'red' : ''} class="p-0 m-0">
-                                    <label on:tap={onPhotoButtonTap} text="{icons.camera}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />
-                                    <label on:tap={onMicrophoneButtonTap} on:tap={()=> {controlsFeedback=CONTROLS_FEEDBACK_INSTRUCTIONS}} text="{icons.mic}" id='microphone-button' class="text-5xl icon text-center align-middle m-4" />
-                                    <label on:tap={onTextButtonTap} text="{icons['font']}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-5xl icon text-center align-middle m-4" />
+                        <gridLayout row={1} rows="auto, auto" class="w-full h-full border-t-2 border-b-2 border-t-slate-200 border-b-slate-200 border-solid" style="padding: 2rem;">
+                            <flexboxLayout id="media-controls" row={0} col={3} flexDirection="row" justifyContent="space-around" backgroundColor={isRecording ? '#FFFBEB' : ''} class="p-0 m-0" style="padding-top: 8rem; padding-bottom: 8rem; margin: 0;">
+                                    <label on:tap={onPhotoButtonTap} text="{icons.image}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-3xl icon text-center align-middle" />
+                                    <label on:tap={onMicrophoneButtonTap} on:tap={()=> {controlsFeedback=CONTROLS_FEEDBACK_INSTRUCTIONS}} text="{icons['graphic-eq']}" id='microphone-button' class="text-3xl icon text-center align-middle" />
+                                    <label on:tap={onTextButtonTap} text="{icons['font']}" visibility={isRecording ? 'collapsed' : 'visible'} class="text-2xl icon text-center align-middle" />
                             </flexboxLayout>
+                            <label row={1} color={isRecording ? 'red' : ''} text="{controlsFeedback}" class="text-center text-label-sm text-t-light-secondary dark:text-t-dark-secondary" style="padding-top: 4em; padding-bottom: 4rem;"/>
                         </gridLayout>
                     </page>
                 </frame>
